@@ -3,7 +3,7 @@ export default async function handler(req, res) {
   const { email } = req.body;
   if (!email) return res.status(400).json({ error: 'Email is required' });
   const SUPABASE_URL = process.env.SUPABASE_URL;
-  const SUPABASE_KEY = process.env.SUPABASE_KEY;
+  const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY;
   try {
     const response = await fetch(
       `${SUPABASE_URL}/rest/v1/paid_users?email=eq.${encodeURIComponent(email.toLowerCase().trim())}&select=status,expires_at,plan`,
