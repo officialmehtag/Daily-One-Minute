@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   if (!email) return res.status(400).json({ error: 'Email is required' });
   const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
   const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
-  const PLAN_ID = plan === 'platinum' ? 'plan_SkvlnxULrPHeTD' : 'plan_Skvl8EpK1cH0ia';
+  const PLAN_ID = plan === 'platinum' ? 'plan_SmVHjaoGLH4tcO' : 'plan_SmVHDFedh6D2P7';
   const auth = 'Basic ' + Buffer.from(`${RAZORPAY_KEY_ID}:${RAZORPAY_KEY_SECRET}`).toString('base64');
   const cleanEmail = email.toLowerCase().trim();
   const customerName = name || cleanEmail.split('@')[0];
