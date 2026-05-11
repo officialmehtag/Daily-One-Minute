@@ -1,0 +1,1753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YourBragBook</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0D0F1A;--bg2:#131627;--sur:#161929;--sur2:#1C2035;--bdr:#252A42;--bdr2:#2E3450;
+  --acc:#7C6FF7;--acc2:rgba(124,111,247,0.12);--acc3:#A89DF9;
+  --grad-start:#7C6FF7;--grad-end:#38D9C0;
+  --tx:#E8EAF5;--tx2:#B8C0D8;--tx3:#9AA3BC;--tx4:#6B7494;
+  --green:#2EC97A;--green-bg:rgba(46,201,122,0.1);--green-bdr:rgba(46,201,122,0.25);
+  --amber:#F0A030;--amber-bg:rgba(240,160,48,0.1);--amber-bdr:rgba(240,160,48,0.25);
+  --red:#F05060;--red-bg:rgba(240,80,96,0.1);--red-bdr:rgba(240,80,96,0.25);
+  --teal2:rgba(56,217,192,0.08);--r:12px;--rs:8px;--rp:50px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{background:var(--bg);color:var(--tx);font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
+.screen{display:none;min-height:100vh;flex-direction:column;}
+.screen.on{display:flex;}
+.btn-primary{background:linear-gradient(135deg,var(--grad-start),var(--grad-end));color:#fff;border:none;padding:11px 24px;border-radius:var(--rp);font-size:14px;font-weight:600;cursor:pointer;transition:opacity .15s,transform .15s;}
+.btn-primary:hover{opacity:.88;transform:translateY(-1px);}
+.btn-ghost{background:transparent;border:1px solid var(--bdr2);color:var(--tx2);padding:10px 22px;border-radius:var(--rp);font-size:14px;font-weight:500;cursor:pointer;transition:all .15s;}
+.btn-ghost:hover{border-color:var(--acc);color:var(--acc3);}
+.spinner{width:18px;height:18px;border:2px solid var(--bdr2);border-top-color:var(--acc);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* SALES PAGE */
+#screen-land{overflow-y:auto;flex:1;}
+.land-nav{background:rgba(13,15,26,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--bdr);padding:0 48px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.nav-logo{font-size:17px;font-weight:800;color:var(--tx);letter-spacing:-.3px;}
+.nav-logo span{background:linear-gradient(135deg,var(--grad-start),var(--grad-end));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.nav-right{display:flex;align-items:center;gap:6px;}
+.nav-text-btn{background:none;border:none;color:var(--tx3);font-size:14px;font-weight:500;cursor:pointer;padding:7px 14px;border-radius:var(--rs);transition:all .15s;}
+.nav-text-btn:hover{color:var(--tx);background:var(--sur2);}
+.nav-sample-btn{color:var(--acc3);}
+.nav-sample-btn:hover{background:var(--acc2);}
+.hero{min-height:calc(100vh - 56px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px 120px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-160px;left:50%;transform:translateX(-50%);width:860px;height:640px;background:radial-gradient(ellipse at center,rgba(124,111,247,0.15) 0%,transparent 65%);pointer-events:none;}
+.hero::after{content:'';position:absolute;bottom:-80px;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse at center,rgba(56,217,192,0.08) 0%,transparent 65%);pointer-events:none;}
+.hero-kicker{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;background:linear-gradient(135deg,var(--grad-start),var(--grad-end));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:20px;}
+.hero-h1{font-size:clamp(28px,4vw,52px);font-weight:800;line-height:1.15;letter-spacing:-.4px;color:var(--tx);margin-bottom:16px;max-width:700px;}
+.hero-h1 span{background:linear-gradient(135deg,var(--grad-start),var(--grad-end));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block;}
+.hero-sub{font-size:17px;color:var(--tx2);line-height:1.75;max-width:460px;margin:0 auto 40px;font-weight:400;}
+.hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;}
+.hero-note{font-size:13px;color:var(--tx4);}
+.story-sec{background:var(--bg2);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);padding:80px 24px;}
+.story-inner{max-width:860px;margin:0 auto;}
+.sec-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:linear-gradient(135deg,var(--grad-start),var(--grad-end));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:14px;}
+.sec-h{font-size:clamp(22px,2.8vw,34px);font-weight:800;line-height:1.2;letter-spacing:-.3px;color:var(--tx);margin-bottom:36px;max-width:580px;}
+.story-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start;}
+.story-text{font-size:16px;line-height:1.9;color:var(--tx2);}
+.story-text strong{color:var(--tx);font-weight:600;}
+.story-text p{margin-bottom:18px;}
+.story-text p:last-child{margin-bottom:0;}
+.result-cards{display:flex;flex-direction:column;gap:12px;}
+.result-card{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:16px 18px;display:flex;align-items:flex-start;gap:12px;}
+.result-icon{width:36px;height:36px;border-radius:9px;background:var(--acc2);border:1px solid rgba(124,111,247,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.result-body strong{display:block;font-size:15px;color:var(--tx);font-weight:600;margin-bottom:3px;}
+.result-body span{font-size:13px;color:var(--tx2);line-height:1.6;}
+.hiw-sec{padding:80px 24px;background:var(--bg);}
+.hiw-inner{max-width:800px;margin:0 auto;}
+.steps-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.step-card{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:24px 20px;}
+.step-num{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:linear-gradient(135deg,var(--grad-start),var(--grad-end));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px;text-align:center;}
+.step-card h3{font-size:16px;font-weight:700;color:var(--tx);margin-bottom:8px;letter-spacing:-.1px;text-align:center;}
+.step-card p{font-size:13px;color:var(--tx2);line-height:1.7;text-align:justify;}
+.uses-sec{background:var(--bg2);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);padding:80px 24px;}
+.uses-inner{max-width:800px;margin:0 auto;}
+.uses-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.use-card{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:18px 20px;display:flex;gap:12px;align-items:flex-start;transition:border-color .2s;}
+.use-card:hover{border-color:var(--bdr2);}
+.use-dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,var(--grad-start),var(--grad-end));flex-shrink:0;margin-top:6px;}
+.use-card-text strong{display:block;font-size:15px;color:var(--tx);font-weight:600;margin-bottom:4px;}
+.use-card-text span{font-size:13px;color:var(--tx2);line-height:1.65;}
+.preview-sec{padding:80px 24px;background:var(--bg);}
+.preview-inner{max-width:780px;margin:0 auto;}
+.report-mock{background:var(--sur);border:1px solid var(--bdr2);border-radius:var(--r);overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,0.35);margin-bottom:24px;}
+.rm-bar{background:var(--sur2);border-bottom:1px solid var(--bdr);padding:10px 16px;display:flex;align-items:center;gap:8px;}
+.rm-dots{display:flex;gap:5px;}
+.rm-dot{width:10px;height:10px;border-radius:50%;background:var(--bdr2);}
+.rm-bar-title{font-size:12px;color:var(--tx3);margin-left:8px;}
+.rm-body{padding:24px;}
+.rm-top-row{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rs);padding:14px 16px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.rm-summary{font-size:14px;color:var(--tx2);line-height:1.55;flex:1;}
+.rm-pct{font-size:26px;font-weight:800;color:var(--green);}
+.rm-pct-lbl{font-size:10px;color:var(--tx3);}
+.rm-sec-lbl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tx4);margin-bottom:10px;}
+.rm-narrative{font-size:14px;color:var(--tx);line-height:1.85;background:var(--bg2);border:1px solid var(--bdr);border-left:3px solid var(--acc);border-radius:0 var(--rs) var(--rs) 0;padding:14px 16px;margin-bottom:18px;}
+.rm-point{display:flex;gap:10px;align-items:flex-start;background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rs);padding:12px 14px;margin-bottom:8px;}
+.rm-pdot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:5px;}
+.rm-ptext{font-size:13px;color:var(--tx2);line-height:1.55;}
+.preview-cta-row{text-align:center;}
+.preview-cta-row p{font-size:14px;color:var(--tx3);margin-bottom:16px;line-height:1.65;}
+.pricing-sec{background:var(--bg2);border-top:1px solid var(--bdr);padding:80px 24px 100px;}
+.pricing-inner{max-width:500px;margin:0 auto;text-align:center;}
+.pricing-h{font-size:clamp(22px,2.8vw,34px);font-weight:800;line-height:1.2;letter-spacing:-.3px;color:var(--tx);margin-bottom:12px;}
+.pricing-sub{font-size:15px;color:var(--tx3);margin-bottom:44px;line-height:1.65;}
+.plan-card{background:var(--sur);border:1.5px solid var(--acc);border-radius:var(--r);padding:36px 32px;text-align:left;position:relative;box-shadow:0 0 40px rgba(124,111,247,0.1);}
+.plan-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--grad-start),var(--grad-end));color:#fff;font-size:11px;font-weight:700;padding:4px 16px;border-radius:var(--rp);white-space:nowrap;letter-spacing:.5px;}
+.plan-name{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);margin-bottom:10px;}
+.plan-price{font-size:52px;font-weight:800;color:var(--tx);letter-spacing:-.5px;line-height:1;margin-bottom:6px;}
+.plan-price sup{font-size:24px;font-weight:600;vertical-align:top;margin-top:10px;display:inline-block;}
+.plan-period{font-size:14px;color:var(--tx3);margin-bottom:6px;}
+.plan-subtext{font-size:13px;color:var(--tx3);margin-bottom:28px;line-height:1.6;}
+.plan-feats{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:28px;}
+.plan-feats li{font-size:14px;color:var(--tx2);display:flex;gap:10px;align-items:flex-start;line-height:1.5;}
+.plan-check{width:18px;height:18px;border-radius:50%;background:var(--green-bg);border:1px solid var(--green-bdr);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.pricing-note{font-size:13px;color:var(--tx4);margin-top:16px;line-height:1.65;}
+.land-footer{background:var(--bg);border-top:1px solid var(--bdr);padding:24px 48px;display:flex;align-items:center;justify-content:space-between;}
+.footer-logo{font-size:15px;font-weight:800;color:var(--tx3);letter-spacing:-.2px;}
+.footer-logo span{background:linear-gradient(135deg,var(--grad-start),var(--grad-end));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.footer-copy{font-size:12px;color:var(--tx4);}
+
+/* GOAL ONBOARDING */
+.goal-opt{width:100%;background:var(--sur2);border:1.5px solid var(--bdr2);border-radius:var(--rs);padding:12px 16px;font-size:14px;font-weight:500;color:var(--tx2);text-align:left;cursor:pointer;transition:all .15s;}
+.goal-opt:hover{border-color:var(--acc);color:var(--tx);}
+.goal-opt.selected{border-color:var(--acc);background:var(--acc2);color:var(--acc3);font-weight:600;}
+
+
+/* COVERAGE TILE */
+.cov-tile{background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--rs);padding:10px 12px;text-align:center;}
+.cov-tile.covered{border-color:var(--green-bdr);background:var(--green-bg);}
+.cov-tile.empty{border-color:var(--amber-bdr);background:var(--amber-bg);}
+.cov-tile-label{font-size:10px;font-weight:600;color:var(--tx3);margin-bottom:3px;line-height:1.3;}
+.cov-tile.covered .cov-tile-label{color:var(--green);}
+.cov-tile.empty .cov-tile-label{color:var(--amber);}
+.cov-tile-count{font-size:16px;font-weight:800;color:var(--tx);}
+.cov-tile.empty .cov-tile-count{font-size:13px;font-weight:600;color:var(--amber);}
+
+/* REPORT HISTORY TABS */
+.rep-hist-tab{background:none;border:none;padding:12px 16px;font-size:13px;font-weight:500;color:var(--tx3);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .15s;font-family:'Plus Jakarta Sans',sans-serif;}
+.rep-hist-tab:hover{color:var(--tx);}
+.rep-hist-tab.active{color:var(--acc3);border-bottom-color:var(--acc);}
+
+/* COPY BUTTON */
+.copy-btn{display:inline-flex;align-items:center;gap:5px;background:var(--sur2);border:1px solid var(--bdr2);border-radius:var(--rs);padding:5px 10px;font-size:11px;font-weight:600;color:var(--tx3);cursor:pointer;transition:all .15s;font-family:'Plus Jakarta Sans',sans-serif;margin-top:8px;}
+.copy-btn:hover{border-color:var(--acc);color:var(--acc3);}
+.copy-btn.copied{border-color:var(--green-bdr);color:var(--green);background:var(--green-bg);}
+
+/* PRINT */
+@media print{
+  .land-nav,.sub-nav,.app-nav,.rep-nav,.rep-history-bar,.sr-bottom,.copy-btn,.btn-primary,.btn-ghost,.back-btn,.signout-btn{display:none!important;}
+  body{background:#fff;color:#111;}
+  .rep-body{max-width:100%;padding:20px;}
+  .rep-narrative-block,.rep-point-card,.rep-gap-card,.rep-commit-block,.rep-plain-card{background:#f5f5f5;border:1px solid #ddd;}
+  :root{--tx:#111;--tx2:#333;--tx3:#555;--tx4:#888;--sur:#f5f5f5;--sur2:#eee;--bdr:#ddd;--bdr2:#ccc;--bg:#fff;--bg2:#fafafa;}
+}
+.faq-item{border-bottom:1px solid var(--bdr);}
+.faq-item:first-child{border-top:1px solid var(--bdr);}
+.faq-q{width:100%;background:none;border:none;color:var(--tx);font-size:15px;font-weight:600;text-align:left;padding:20px 0;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;line-height:1.4;letter-spacing:-.1px;}
+.faq-q:hover{color:var(--acc3);}
+.faq-icon{width:28px;height:28px;border-radius:50%;background:var(--sur2);border:1px solid var(--bdr2);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:400;color:var(--tx3);flex-shrink:0;transition:all .2s;line-height:1;}
+.faq-item.open .faq-icon{background:var(--acc2);border-color:rgba(124,111,247,0.4);color:var(--acc3);transform:rotate(45deg);}
+.faq-a{display:none;font-size:14px;color:var(--tx3);line-height:1.75;padding-bottom:18px;}
+
+/* SAMPLE REPORT */
+#screen-sample{overflow-y:auto;flex:1;}
+.sub-nav{background:rgba(13,15,26,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--bdr);padding:0 40px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;flex-shrink:0;}
+.back-btn{background:none;border:none;color:var(--tx3);font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--rp);transition:all .15s;}
+.back-btn:hover{color:var(--tx);background:var(--sur2);}
+.sub-nav-title{font-size:15px;font-weight:600;color:var(--tx);}
+.sr-wrap{max-width:700px;margin:0 auto;padding:40px 24px 80px;}
+.sr-banner{background:var(--acc2);border:1px solid rgba(124,111,247,0.25);border-radius:var(--r);padding:16px 20px;margin-bottom:32px;font-size:14px;color:var(--acc3);line-height:1.65;}
+.rep-sec{margin-bottom:24px;}
+.rep-narrative{font-size:15px;color:var(--tx);line-height:1.85;background:var(--sur);border:1px solid var(--bdr);border-left:3px solid var(--acc);border-radius:0 var(--rs) var(--rs) 0;padding:16px 18px;}
+.rep-coach-note{background:var(--teal2);border:1px solid rgba(56,217,192,0.2);border-radius:var(--rs);padding:14px 18px;margin-top:10px;font-size:13px;color:var(--tx2);line-height:1.75;}
+.rep-commit{background:var(--acc2);border:1px solid rgba(124,111,247,0.25);border-radius:var(--r);padding:16px 18px;}
+.rep-commit-text{font-size:15px;color:var(--tx);line-height:1.75;margin-bottom:8px;}
+.rep-commit-note{font-size:13px;color:var(--tx3);line-height:1.6;}
+.rep-chk-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;}
+.rep-checkbox{width:18px;height:18px;border-radius:4px;background:var(--sur2);border:1.5px solid var(--bdr2);flex-shrink:0;margin-top:2px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;}
+.rep-checkbox:hover{border-color:var(--acc);}
+.rep-checkbox.checked{background:linear-gradient(135deg,var(--grad-start),var(--grad-end));border-color:transparent;}
+.rep-ctext{font-size:13px;color:var(--tx2);line-height:1.55;}
+.sr-bottom{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:24px;text-align:center;margin-top:32px;}
+.sr-bottom h3{font-size:18px;font-weight:700;color:var(--tx);margin-bottom:8px;}
+.sr-bottom p{font-size:14px;color:var(--tx3);margin-bottom:20px;line-height:1.65;}
+
+/* LOGIN */
+#screen-login{align-items:center;justify-content:center;position:relative;overflow:hidden;}
+#screen-goal{align-items:center;justify-content:center;}
+#screen-resume{align-items:center;justify-content:center;}
+#screen-login::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:700px;height:600px;background:radial-gradient(ellipse,rgba(124,111,247,0.12) 0%,transparent 65%);pointer-events:none;}
+.login-wrap{width:100%;max-width:420px;padding:24px;position:relative;z-index:1;}
+.login-logo{font-size:19px;font-weight:800;color:var(--tx);letter-spacing:-.3px;text-align:center;margin-bottom:5px;}
+.login-logo span{background:linear-gradient(135deg,var(--grad-start),var(--grad-end));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.login-tagline{font-size:14px;color:var(--tx3);text-align:center;margin-bottom:30px;}
+.login-card{background:var(--sur);border:1px solid var(--bdr2);border-radius:var(--r);padding:28px;}
+.login-h{font-size:18px;font-weight:700;color:var(--tx);margin-bottom:5px;}
+.login-hint{font-size:13px;color:var(--tx3);margin-bottom:22px;line-height:1.6;}
+.google-btn{width:100%;background:var(--sur2);border:1px solid var(--bdr2);border-radius:var(--rs);padding:12px 16px;font-size:14px;font-weight:500;color:var(--tx);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .15s;margin-bottom:14px;}
+.google-btn:hover{border-color:var(--acc3);background:var(--bg2);}
+.or-divider{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.or-line{flex:1;height:1px;background:var(--bdr);}
+.or-text{font-size:12px;color:var(--tx4);}
+.login-input{width:100%;background:var(--sur2);border:1.5px solid var(--bdr);border-radius:var(--rs);padding:12px 14px;font-size:14px;color:var(--tx);outline:none;transition:border-color .15s;margin-bottom:10px;display:block;}
+.login-input:focus{border-color:var(--acc);}
+.login-input::placeholder{color:var(--tx4);}
+.login-err{font-size:13px;color:var(--red);margin-bottom:10px;display:none;}
+.login-success{background:var(--green-bg);border:1px solid var(--green-bdr);border-radius:var(--rs);padding:14px 16px;font-size:14px;color:var(--green);line-height:1.65;display:none;text-align:center;margin-top:10px;}
+.login-back{text-align:center;margin-top:18px;}
+.login-back button{background:none;border:none;font-size:13px;color:var(--tx3);cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
+.login-back button:hover{color:var(--tx2);}
+.dev-bypass{margin-top:18px;text-align:center;}
+.dev-bypass button{background:none;border:1px dashed var(--bdr2);color:var(--tx4);font-size:12px;padding:6px 16px;border-radius:var(--rp);cursor:pointer;transition:all .15s;}
+.dev-bypass button:hover{border-color:var(--bdr2);color:var(--tx3);}
+
+/* APP */
+#screen-app{background:var(--bg);}
+.app-nav{background:rgba(13,15,26,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--bdr);padding:0 40px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;flex-shrink:0;}
+.app-logo{font-size:17px;font-weight:800;color:var(--tx);letter-spacing:-.3px;}
+.app-logo span{background:linear-gradient(135deg,var(--grad-start),var(--grad-end));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.app-nav-right{display:flex;align-items:center;gap:8px;}
+.app-user{font-size:13px;color:var(--tx3);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.signout-btn{background:none;border:1px solid var(--bdr);color:var(--tx3);padding:5px 14px;border-radius:var(--rp);font-size:12px;cursor:pointer;transition:all .15s;}
+.signout-btn:hover{border-color:var(--bdr2);color:var(--tx2);}
+.app-main{flex:1;max-width:700px;width:100%;margin:0 auto;padding:36px 24px 80px;}
+.app-greeting{font-size:26px;font-weight:800;color:var(--tx);letter-spacing:-.3px;margin-bottom:5px;}
+.app-hint{font-size:14px;color:var(--tx3);margin-bottom:28px;line-height:1.6;}
+.record-box{background:var(--sur);border:1.5px solid var(--bdr2);border-radius:var(--r);overflow:hidden;transition:border-color .2s,box-shadow .2s;margin-bottom:12px;}
+.record-box:focus-within{border-color:var(--acc);box-shadow:0 0 0 3px rgba(124,111,247,0.08);}
+.record-ta{width:100%;background:none;border:none;outline:none;font-size:15px;color:var(--tx);line-height:1.75;resize:none;min-height:100px;padding:18px 20px 0;font-family:'Plus Jakarta Sans',sans-serif;}
+.record-ta::placeholder{color:var(--tx4);}
+.record-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 12px;}
+.record-char{font-size:12px;color:var(--tx4);}
+.record-actions{display:flex;gap:8px;}
+.saving-state{display:none;padding:14px 18px;background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);margin-bottom:12px;align-items:center;gap:10px;font-size:13px;color:var(--tx3);}
+.confirm-card{background:var(--sur);border:1px solid rgba(46,201,122,0.25);border-radius:var(--r);padding:18px 20px;display:none;animation:fadeUp .3s ease forwards;margin-bottom:12px;}
+.confirm-card.on{display:block;}
+.cc-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:8px;}
+.cc-text{font-size:15px;color:var(--tx);line-height:1.7;margin-bottom:10px;}
+.cc-date{font-size:12px;color:var(--tx4);margin-bottom:14px;}
+.cc-btn{background:none;border:1px solid var(--bdr2);color:var(--tx2);padding:8px 18px;border-radius:var(--rp);font-size:13px;cursor:pointer;transition:all .15s;}
+.cc-btn:hover{border-color:var(--acc);color:var(--acc3);}
+.report-strip{background:var(--acc2);border:1px solid rgba(124,111,247,0.25);border-radius:var(--r);padding:18px 20px;margin-bottom:28px;display:none;align-items:center;justify-content:space-between;gap:14px;}
+.rs-left h3{font-size:16px;font-weight:700;color:var(--tx);margin-bottom:4px;letter-spacing:-.1px;}
+.rs-left p{font-size:13px;color:var(--tx3);line-height:1.5;}
+.entries-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.entries-title{font-size:14px;font-weight:600;color:var(--tx2);}
+.entries-badge{background:var(--acc2);color:var(--acc3);font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;}
+.entry-group{margin-bottom:20px;}
+.eg-month{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tx4);margin-bottom:10px;}
+.entry-item{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--rs);padding:14px 16px;margin-bottom:8px;position:relative;transition:border-color .15s;}
+.entry-item:hover{border-color:var(--bdr2);}
+.ei-text{font-size:14px;color:var(--tx);line-height:1.7;margin-bottom:6px;padding-right:26px;}
+.ei-date{font-size:11px;color:var(--tx4);}
+.ei-del{position:absolute;top:12px;right:12px;background:none;border:none;color:var(--tx4);cursor:pointer;padding:2px 6px;border-radius:4px;font-size:14px;line-height:1;transition:all .15s;}
+.ei-del:hover{color:var(--red);background:var(--red-bg);}
+.empty-state{text-align:center;padding:44px 24px;color:var(--tx3);}
+.empty-state p{font-size:14px;line-height:1.7;max-width:320px;margin:0 auto;}
+
+/* REPORT */
+#screen-report{background:var(--bg);}
+.rep-nav{background:rgba(13,15,26,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--bdr);padding:0 40px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;flex-shrink:0;}
+.rep-nav-left{display:flex;align-items:center;gap:10px;}
+.rep-nav-title{font-size:15px;font-weight:600;color:var(--tx);}
+.rep-body{max-width:700px;margin:0 auto;padding:40px 24px 80px;}
+.rep-loading{display:flex;flex-direction:column;align-items:center;gap:16px;padding:80px 24px;color:var(--tx3);text-align:center;}
+.rep-loading p{font-size:14px;line-height:1.65;}
+.rep-error{text-align:center;padding:60px 24px;display:none;}
+.rep-error p{font-size:14px;color:var(--tx3);margin-bottom:20px;line-height:1.65;}
+.rep-content{display:none;animation:fadeUp .4s ease forwards;}
+.rep-topbar{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:16px 18px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.rep-summary-txt{font-size:14px;color:var(--tx2);line-height:1.55;flex:1;}
+.rep-pct-num{font-size:28px;font-weight:800;color:var(--green);}
+.rep-pct-lbl{font-size:10px;color:var(--tx3);}
+.rep-section{margin-bottom:28px;}
+.rep-sec-lbl{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.rep-sec-lbl-num{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--grad-start),var(--grad-end));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0;}
+.rep-sec-lbl-text{background:linear-gradient(135deg,var(--grad-start),var(--grad-end));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;}
+.rep-narrative-block{font-size:15px;color:var(--tx);line-height:1.85;background:var(--sur);border:1px solid var(--bdr);border-left:3px solid var(--acc);border-radius:0 var(--rs) var(--rs) 0;padding:16px 18px;}
+.rep-coach{background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--rs);padding:12px 14px;margin-top:10px;font-size:13px;color:var(--tx2);line-height:1.65;}
+.rep-coach-lbl{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--acc3);display:block;margin-bottom:4px;}
+.rep-point-card{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:16px 18px;margin-bottom:10px;}
+.rep-conf{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;margin-bottom:6px;}
+.rep-point-title{font-size:14px;font-weight:600;color:var(--tx);line-height:1.5;margin-bottom:0;}
+.rep-point-note{font-size:13px;color:var(--tx2);line-height:1.65;border-top:1px solid var(--bdr);padding-top:10px;margin-top:10px;}
+.rep-gap-card{background:var(--sur);border:1px solid var(--amber-bdr);border-radius:var(--r);padding:16px 18px;margin-bottom:10px;}
+.rep-gap-title{font-size:14px;font-weight:600;color:var(--amber);margin-bottom:8px;}
+.rep-gap-script{background:var(--bg2);border-left:2px solid var(--amber);padding:10px 14px;border-radius:0 var(--rs) var(--rs) 0;font-size:13px;color:var(--tx2);line-height:1.7;margin-bottom:8px;}
+.rep-gap-note{font-size:12px;color:var(--tx3);line-height:1.6;}
+.rep-commit-block{background:var(--acc2);border:1px solid rgba(124,111,247,0.25);border-radius:var(--r);padding:16px 18px;}
+.rep-commit-text{font-size:15px;color:var(--tx);line-height:1.75;margin-bottom:8px;}
+.rep-commit-note{font-size:13px;color:var(--tx3);line-height:1.6;}
+.rep-leave-row{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;}
+.rep-leave-x{width:18px;height:18px;border-radius:50%;background:var(--red-bg);border:1px solid var(--red-bdr);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;font-size:10px;color:var(--red);font-weight:700;}
+.rep-chk-row2{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;}
+.rep-checkbox2{width:18px;height:18px;border-radius:4px;background:var(--sur2);border:1.5px solid var(--bdr2);flex-shrink:0;margin-top:2px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;}
+.rep-checkbox2:hover{border-color:var(--acc);}
+.rep-checkbox2.checked{background:linear-gradient(135deg,var(--grad-start),var(--grad-end));border-color:transparent;}
+.rep-plain-card{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:16px 18px;}
+
+@media(max-width:768px){
+  .land-nav,.land-footer,.app-nav,.rep-nav,.sub-nav{padding:0 16px;}
+  .story-grid{grid-template-columns:1fr;}
+  .steps-row{grid-template-columns:1fr;}
+  .uses-grid{grid-template-columns:1fr;}
+  .app-user{display:none;}
+  .plan-card{padding:28px 20px;}
+  .hero-h1{white-space:normal;}
+  #flow-row{flex-direction:column!important;}
+  #flow-row .flow-arrow{transform:rotate(90deg);}
+}
+</style>
+</head>
+<body>
+
+<!-- SALES PAGE -->
+<div class="screen on" id="screen-land">
+  <nav class="land-nav">
+    <div class="nav-logo"><span>Your</span>BragBook</div>
+    <div class="nav-right">
+      <button class="nav-text-btn nav-sample-btn" onclick="goTo('screen-sample')">See a sample playbook</button>
+      <button class="nav-text-btn" onclick="goTo('screen-login')">Sign in</button>
+      <button class="btn-primary" style="padding:9px 20px;" onclick="goTo('screen-login')">Get started</button>
+    </div>
+  </nav>
+
+  <!-- LAUNCH OFFER BANNER -->
+  <div id="launch-banner" style="background:linear-gradient(135deg,var(--grad-start),var(--grad-end));padding:10px 24px;text-align:center;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;">
+    <div style="font-size:13px;font-weight:700;color:#fff;letter-spacing:.1px;">
+      Launch offer: buy one year, get one year free.
+      <span id="banner-countdown" style="background:rgba(255,255,255,0.2);border-radius:20px;padding:2px 10px;margin-left:6px;font-size:12px;font-weight:700;letter-spacing:.5px;"></span>
+    </div>
+    <button onclick="document.getElementById('pricing-sec').scrollIntoView({behavior:'smooth'})" style="background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.5);color:#fff;font-size:12px;font-weight:700;padding:5px 14px;border-radius:20px;cursor:pointer;white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s;" onmouseover="this.style.background='rgba(255,255,255,0.35)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">Claim offer</button>
+  </div>
+
+  <!-- SITUATION TICKER -->
+  <div style="background:var(--bg);border-bottom:1px solid var(--bdr);padding:13px 0;overflow:hidden;position:relative;">
+    <div style="position:absolute;left:0;top:0;bottom:0;width:120px;background:linear-gradient(to right,var(--bg),transparent);z-index:2;pointer-events:none;"></div>
+    <div style="position:absolute;right:0;top:0;bottom:0;width:120px;background:linear-gradient(to left,var(--bg),transparent);z-index:2;pointer-events:none;"></div>
+    <div id="sit-track" style="display:flex;white-space:nowrap;align-items:center;"></div>
+  </div>
+
+  <section class="hero">
+    <div class="hero-kicker">Daily one minute.</div>
+    <h1 class="hero-h1">Stop forgetting your wins.<span>Start building your case.</span></h1>
+    <p class="hero-sub">Capture your daily wins as they happen. Build the case for your next promotion, interview, or review.</p>
+    <div class="hero-cta">
+      <button class="btn-primary" style="padding:13px 30px;font-size:15px;" onclick="goTo('screen-login')">Create your Brag Book</button>
+      <button class="btn-ghost" onclick="goTo('screen-sample')">See a sample playbook</button>
+    </div>
+    <p class="hero-note">Secure login. Your data is private.</p>
+  </section>
+  <!-- FOUR STAGE FLOW -->
+  <section style="background:var(--sur);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);padding:60px 24px;">
+    <div style="max-width:860px;margin:0 auto;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:linear-gradient(135deg,var(--grad-start),var(--grad-end));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:14px;text-align:center;">How your record becomes a playbook</div>
+      <div style="display:flex;align-items:stretch;gap:0;justify-content:center;flex-wrap:nowrap;">
+        <div style="flex:1;min-width:0;background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--r);padding:24px 20px;text-align:center;">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--acc2);border:1px solid rgba(124,111,247,0.3);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--acc3);margin:0 auto 14px;">1</div>
+          <div style="font-size:15px;font-weight:700;color:var(--tx);margin-bottom:6px;">You log it</div>
+          <div style="font-size:12px;color:var(--tx3);line-height:1.65;">One minute before you leave. Write what happened while it is fresh.</div>
+        </div>
+        <div style="display:flex;align-items:center;padding:0 10px;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--bdr2)" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div style="flex:1;min-width:0;background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--r);padding:24px 20px;text-align:center;">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--acc2);border:1px solid rgba(124,111,247,0.3);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--acc3);margin:0 auto 14px;">2</div>
+          <div style="font-size:15px;font-weight:700;color:var(--tx);margin-bottom:6px;">We read it</div>
+          <div style="font-size:12px;color:var(--tx3);line-height:1.65;">Gap intelligence spots what is covered and what is missing.</div>
+        </div>
+        <div style="display:flex;align-items:center;padding:0 10px;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--bdr2)" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div style="flex:1;min-width:0;background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--r);padding:24px 20px;text-align:center;">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--acc2);border:1px solid rgba(124,111,247,0.3);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--acc3);margin:0 auto 14px;">3</div>
+          <div style="font-size:15px;font-weight:700;color:var(--tx);margin-bottom:6px;">We build your playbook</div>
+          <div style="font-size:12px;color:var(--tx3);line-height:1.65;">What to lead with. What to own. What to skip.</div>
+        </div>
+        <div style="display:flex;align-items:center;padding:0 10px;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--bdr2)" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div style="flex:1;min-width:0;background:var(--sur2);border:1px solid var(--bdr2);border-radius:var(--r);padding:24px 20px;text-align:center;border-color:rgba(46,201,122,0.3);">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--green-bg);border:1px solid var(--green-bdr);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--green);margin:0 auto 14px;">4</div>
+          <div style="font-size:15px;font-weight:700;color:var(--tx);margin-bottom:6px;">You are ready</div>
+          <div style="font-size:12px;color:var(--tx3);line-height:1.65;">You know what to say, what to fix, and how to close.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="story-sec">
+    <div class="story-inner">
+      <div class="sec-label">A true story</div>
+      <h2 class="sec-h">I did not expect to become a CFO.<br>Then I started writing everything down.</h2>
+      <div class="story-grid">
+        <div class="story-text">
+          <p>One of my early managers gave me simple advice. He said: <strong>write everything down.</strong></p>
+          <p>Write your wins. Write what went wrong. Write what you learned. Write what you delivered.</p>
+          <p>I called it my Brag Book. A running record of everything I had done. Not a CV. Not a list of job titles. The real stuff, written the way I would say it.</p>
+          <p>When appraisals came, when salary conversations happened, when interviews called, <strong>I was always ready.</strong> The record was there. I did not have to scramble or guess.</p>
+          <p>One minute a day before you leave work. While it is still fresh in your mind. That is all it takes. The effort is small. The benefit far exceeds it.</p>
+        </div>
+        <div class="result-cards">
+          <div class="result-card">
+            <div class="result-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc3)" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+            <div class="result-body"><strong>Back to back promotions</strong><span>Because the evidence was documented and specific. Not vague. Not guesswork.</span></div>
+          </div>
+          <div class="result-card">
+            <div class="result-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc3)" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+            <div class="result-body"><strong>50% salary increase, twice</strong><span>The record made the case. No negotiation is strong without specific evidence behind it.</span></div>
+          </div>
+          <div class="result-card">
+            <div class="result-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc3)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></div>
+            <div class="result-body"><strong>International role secured</strong><span>A documented track record travels. It opens doors a CV alone cannot open.</span></div>
+          </div>
+          <div class="result-card">
+            <div class="result-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc3)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <div class="result-body"><strong>One minute a day</strong><span>Before you get in the car. While it is fresh. That is the whole habit. Small effort. Big advantage when it matters.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="hiw-sec">
+    <div class="hiw-inner">
+      <div class="sec-label">How it works</div>
+      <h2 class="sec-h">Three things. That is the whole app.</h2>
+      <div class="steps-row">
+        <div class="step-card"><div class="step-num">Step 01</div><h3>Log what happened today</h3><p>Before you leave work, type one thing that went well. One minute. While it is still fresh. No categories, no forms. Just write it the way you would say it to a colleague.</p></div>
+        <div class="step-card"><div class="step-num">Step 02</div><h3>Keep adding over time</h3><p>Come back each day or each week. Your record builds on its own. Everything is kept. Nothing is lost. The longer you do it, the stronger your case gets.</p></div>
+        <div class="step-card"><div class="step-num">Step 03</div><h3>Get your playbook</h3><p>You have logged it. Now use it. One button gives you a playbook that tells you what to say, what to skip, and where you are short on evidence.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="uses-sec">
+    <div class="uses-inner">
+      <div class="sec-label">What you use it for</div>
+      <h2 class="sec-h">One record. Many purposes.</h2>
+      <div class="uses-grid">
+        <div class="use-card"><div class="use-dot"></div><div class="use-card-text"><strong>Performance reviews</strong><span>Walk in with specific evidence. Not a rough memory of what happened six months ago.</span></div></div>
+        <div class="use-card"><div class="use-dot"></div><div class="use-card-text"><strong>Salary negotiations</strong><span>The strongest ask is one backed by documented results. Know exactly what to say.</span></div></div>
+        <div class="use-card"><div class="use-dot"></div><div class="use-card-text"><strong>Job interviews</strong><span>Every question has a real answer drawn from your actual record. No blanks, no guessing.</span></div></div>
+        <div class="use-card"><div class="use-dot"></div><div class="use-card-text"><strong>Updating your CV</strong><span>The entries are already written. Picking what to include takes minutes, not days.</span></div></div>
+        <div class="use-card"><div class="use-dot"></div><div class="use-card-text"><strong>LinkedIn and content</strong><span>Real experiences make real posts. Your record is a source of stories people want to read.</span></div></div>
+        <div class="use-card"><div class="use-dot"></div><div class="use-card-text"><strong>Building confidence</strong><span>You forget more than you think. Reading your own record reminds you what you are capable of.</span></div></div>
+      </div>
+    </div>
+  </section>
+  <section class="preview-sec">
+    <div class="preview-inner">
+      <div class="sec-label">The report</div>
+      <h2 class="sec-h" style="white-space:nowrap;">One report. Built from your actual record.</h2>
+      <div class="report-mock">
+        <div class="rm-bar"><div class="rm-dots"><div class="rm-dot"></div><div class="rm-dot"></div><div class="rm-dot"></div></div><span class="rm-bar-title">YourBragBook Playbook</span></div>
+        <div class="rm-body">
+
+          <!-- Header pills -->
+          <div style="margin-bottom:18px;">
+            <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--acc3);margin-bottom:6px;">Promotion brief with coaching</div>
+            <div style="font-size:18px;font-weight:800;color:var(--tx);letter-spacing:-.3px;margin-bottom:8px;">Priya's case for Finance Director</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <div style="background:var(--sur2);border:1px solid var(--bdr);border-radius:20px;padding:3px 10px;font-size:10px;color:var(--tx3);"><strong style="color:var(--tx2);">Period:</strong> Apr 2024 to Mar 2025</div>
+              <div style="background:var(--sur2);border:1px solid var(--bdr);border-radius:20px;padding:3px 10px;font-size:10px;color:var(--tx3);"><strong style="color:var(--tx2);">Entries:</strong> 36 across 12 months</div>
+              <div style="background:var(--acc2);border:1px solid rgba(124,111,247,0.3);border-radius:20px;padding:3px 10px;font-size:10px;color:var(--acc3);font-weight:700;">SAMPLE</div>
+            </div>
+          </div>
+
+          <!-- Readiness ring -->
+          <div style="background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--r);padding:14px 18px;margin-bottom:12px;display:flex;align-items:center;gap:16px;">
+            <div style="position:relative;width:56px;height:56px;flex-shrink:0;">
+              <svg width="56" height="56" viewBox="0 0 56 56" style="transform:rotate(-90deg);">
+                <circle cx="28" cy="28" r="22" fill="none" stroke="var(--bdr2)" stroke-width="5"/>
+                <circle cx="28" cy="28" r="22" fill="none" stroke="var(--acc3)" stroke-width="5" stroke-dasharray="138.2" stroke-dashoffset="27.6" stroke-linecap="round"/>
+              </svg>
+              <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--acc3);">80%</div>
+            </div>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--tx);margin-bottom:3px;">Brief readiness: Strong</div>
+              <div style="font-size:11px;color:var(--tx3);line-height:1.6;">Built from 36 entries across 12 months. Leadership and financial results are well covered. External stakeholder work is the one remaining gap to own proactively.</div>
+            </div>
+          </div>
+
+          <!-- Competency bars -->
+          <div style="background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--r);padding:14px 18px;margin-bottom:16px;">
+            <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tx4);margin-bottom:12px;">Evidence across competency areas</div>
+            <div style="display:flex;flex-direction:column;gap:9px;">
+              <div style="display:flex;align-items:center;gap:10px;"><div style="font-size:11px;color:var(--tx2);width:140px;flex-shrink:0;">Financial leadership</div><div style="flex:1;height:4px;background:var(--bdr2);border-radius:2px;overflow:hidden;"><div style="height:100%;width:92%;background:var(--green);border-radius:2px;"></div></div><div style="font-size:10px;font-weight:600;width:54px;text-align:right;color:var(--green);">14 entries</div></div>
+              <div style="display:flex;align-items:center;gap:10px;"><div style="font-size:11px;color:var(--tx2);width:140px;flex-shrink:0;">Results and impact</div><div style="flex:1;height:4px;background:var(--bdr2);border-radius:2px;overflow:hidden;"><div style="height:100%;width:75%;background:var(--green);border-radius:2px;"></div></div><div style="font-size:10px;font-weight:600;width:54px;text-align:right;color:var(--green);">11 entries</div></div>
+              <div style="display:flex;align-items:center;gap:10px;"><div style="font-size:11px;color:var(--tx2);width:140px;flex-shrink:0;">Problem solving</div><div style="flex:1;height:4px;background:var(--bdr2);border-radius:2px;overflow:hidden;"><div style="height:100%;width:45%;background:var(--green);border-radius:2px;"></div></div><div style="font-size:10px;font-weight:600;width:54px;text-align:right;color:var(--green);">7 entries</div></div>
+              <div style="display:flex;align-items:center;gap:10px;"><div style="font-size:11px;color:var(--tx2);width:140px;flex-shrink:0;">Revenue and cost</div><div style="flex:1;height:4px;background:var(--bdr2);border-radius:2px;overflow:hidden;"><div style="height:100%;width:25%;background:var(--acc3);border-radius:2px;"></div></div><div style="font-size:10px;font-weight:600;width:54px;text-align:right;color:var(--acc3);">4 entries</div></div>
+              <div style="display:flex;align-items:center;gap:10px;"><div style="font-size:11px;color:var(--tx2);width:140px;flex-shrink:0;">External stakeholders</div><div style="flex:1;height:4px;background:var(--bdr2);border-radius:2px;overflow:hidden;"><div style="height:100%;width:0%;background:var(--amber);border-radius:2px;"></div></div><div style="font-size:10px;font-weight:600;width:54px;text-align:right;color:var(--amber);">No entries</div></div>
+            </div>
+          </div>
+
+          <!-- Opening narrative section -->
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--grad-start),var(--grad-end));display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;flex-shrink:0;">1</div>
+            <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);">Opening narrative</div>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--bdr);border-left:3px solid var(--acc);border-radius:0 var(--rs) var(--rs) 0;padding:14px 16px;">
+            <div style="font-size:13px;font-weight:500;line-height:1.85;color:var(--tx);">This year I ran the financial close process end to end, cut month-end cycle time from 12 days to 7, and led the board presentation on Q3 results without the CFO in the room. I hired two analysts in a quarter when the team had been trying for six months. I caught a forecast error before it reached the CEO and fixed it same day. I am not waiting to be given the Finance Director role. I have been doing most of it.</div>
+          </div>
+
+        </div>
+      </div>
+      <div class="preview-cta-row"><p>Short preview only. The full playbook has six sections: opening narrative, lead points, gaps to own, how to close, what to leave out, and a preparation checklist.</p><button class="btn-ghost" onclick="goTo('screen-sample')">See the full sample playbook</button></div>
+    </div>
+  </section>
+  <!-- WHAT'S INCLUDED -->
+  <section style="padding:80px 24px;background:var(--bg);">
+    <div style="max-width:780px;margin:0 auto;">
+      <div class="sec-label">What is included</div>
+      <h2 class="sec-h" style="white-space:nowrap;">Everything you need. Nothing you do not.</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:22px 22px;">
+          <div style="font-size:15px;font-weight:700;color:var(--tx);margin-bottom:6px;letter-spacing:-.1px;">Up to 25 entries per month</div>
+          <div style="font-size:13px;color:var(--tx2);line-height:1.7;">300 entries per year with monthly rollover. Unused entries carry forward. Enough to build a genuinely rich full-year record without the noise. Each entry is capped at about 80 words, tight enough to stay sharp.</div>
+        </div>
+        <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:22px 22px;">
+          <div style="font-size:15px;font-weight:700;color:var(--tx);margin-bottom:6px;letter-spacing:-.1px;">Gap intelligence throughout the year</div>
+          <div style="font-size:13px;color:var(--tx2);line-height:1.7;">We track which areas of your goal are covered and which are thin. You find out now, not at the appraisal.</div>
+        </div>
+        <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:22px 22px;">
+          <div style="font-size:15px;font-weight:700;color:var(--tx);margin-bottom:6px;letter-spacing:-.1px;">Up to 12 playbooks per year</div>
+          <div style="font-size:13px;color:var(--tx2);line-height:1.7;">One click builds your playbook from your actual record. Built around your specific goal, not a generic template.</div>
+        </div>
+        <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:22px 22px;">
+          <div style="font-size:15px;font-weight:700;color:var(--tx);margin-bottom:6px;letter-spacing:-.1px;">Works for eight career situations</div>
+          <div style="font-size:13px;color:var(--tx2);line-height:1.7;">Promotion, salary negotiation, job interview, appraisal, probation review, internal transfer, asking for a bigger team, and PIP response.</div>
+        </div>
+        <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:22px 22px;">
+          <div style="font-size:15px;font-weight:700;color:var(--tx);margin-bottom:6px;letter-spacing:-.1px;">Coaching voice built on 25+ years in finance</div>
+          <div style="font-size:13px;color:var(--tx2);line-height:1.7;">Every playbook includes coaching notes that tell you what to say first, how to handle weak spots, and what to leave out entirely.</div>
+        </div>
+        <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:22px 22px;">
+          <div style="font-size:15px;font-weight:700;color:var(--tx);margin-bottom:6px;letter-spacing:-.1px;">Private and secure</div>
+          <div style="font-size:13px;color:var(--tx2);line-height:1.7;">Your entries are yours. We do not share or sell your data. Ever.</div>
+        </div>
+        <div style="background:var(--sur);border:1px solid var(--green-bdr);border-radius:var(--r);padding:22px 22px;background:var(--green-bg);">
+          <div style="font-size:15px;font-weight:700;color:var(--green);margin-bottom:6px;letter-spacing:-.1px;">Your data is always yours to take</div>
+          <div style="font-size:13px;color:var(--tx2);line-height:1.7;">Download everything you have logged as a plain text file any time. Take it to a coach, paste it into any tool, or keep it as your own record. One click. No lock-in.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pricing-sec" id="pricing-sec">
+    <div class="pricing-inner">
+      <div class="sec-label" style="text-align:center;">Pricing</div>
+      <h2 class="pricing-h" style="white-space:nowrap;">One price. Right now, two years.</h2>
+      <p class="pricing-sub">We are launching. For the next 38 days, every subscription comes with a free second year. Same price. Twice the time.</p>
+
+      <!-- Countdown inside pricing -->
+      <div id="pricing-countdown-wrap" style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:32px;">
+        <div style="text-align:center;">
+          <div id="countdown-days" style="font-size:40px;font-weight:800;color:var(--tx);letter-spacing:-.5px;line-height:1;">38</div>
+          <div style="font-size:11px;font-weight:600;color:var(--tx4);letter-spacing:1px;text-transform:uppercase;margin-top:3px;">Days left</div>
+        </div>
+        <div style="font-size:32px;font-weight:300;color:var(--bdr2);margin-bottom:14px;">:</div>
+        <div style="text-align:center;">
+          <div id="countdown-hours" style="font-size:40px;font-weight:800;color:var(--tx);letter-spacing:-.5px;line-height:1;">00</div>
+          <div style="font-size:11px;font-weight:600;color:var(--tx4);letter-spacing:1px;text-transform:uppercase;margin-top:3px;">Hours</div>
+        </div>
+        <div style="font-size:32px;font-weight:300;color:var(--bdr2);margin-bottom:14px;">:</div>
+        <div style="text-align:center;">
+          <div id="countdown-mins" style="font-size:40px;font-weight:800;color:var(--tx);letter-spacing:-.5px;line-height:1;">00</div>
+          <div style="font-size:11px;font-weight:600;color:var(--tx4);letter-spacing:1px;text-transform:uppercase;margin-top:3px;">Minutes</div>
+        </div>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-badge">LAUNCH OFFER</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+          <div class="plan-name" style="margin-bottom:0;">Full access</div>
+          <div style="background:linear-gradient(135deg,var(--grad-start),var(--grad-end));color:#fff;font-size:10px;font-weight:800;padding:2px 10px;border-radius:20px;letter-spacing:.5px;">2 YEARS</div>
+        </div>
+        <div class="plan-price"><sup>$</sup>49</div>
+        <div class="plan-period">two full years of access, less than $2.05 per month. One payment. Two years. Renewal is $49 per year after that. Cancel any time.</div>
+        <div style="background:var(--green-bg);border:1px solid var(--green-bdr);border-radius:var(--rs);padding:10px 14px;margin-bottom:20px;font-size:13px;color:var(--green);font-weight:500;">You are getting year two completely free. This offer ends in <strong id="plan-days-left">38 days</strong>.</div>
+        <ul class="plan-feats">
+          <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>25 entries per month, with rollover. Up to 300 per year.</li>
+          <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>12 playbooks per year, one for every month if you need it</li>
+          <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>Gap intelligence, streak tracking, and competency coverage</li>
+          <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>Works across 8 career situations. Goal changes any time.</li>
+          <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>Secure login with Google or email. Private to you only.</li>
+        </ul>
+        <button class="btn-primary" style="width:100%;padding:14px;font-size:15px;" onclick="goTo('screen-login')">Get two years for $49</button>
+        <p style="font-size:12px;color:var(--tx4);text-align:center;margin-top:12px;line-height:1.65;">Your entries are always exportable. One click, plain text, yours to keep.</p>
+      </div>
+
+    </div>
+  </section>
+  <!-- FAQ -->
+  <section style="padding:80px 24px 100px;background:var(--bg);">
+    <div style="max-width:680px;margin:0 auto;">
+      <h2 style="font-size:clamp(26px,3.5vw,40px);font-weight:800;color:var(--tx);text-align:center;letter-spacing:-.4px;margin-bottom:10px;">Questions people ask</h2>
+      <p style="font-size:15px;color:var(--tx3);text-align:center;margin-bottom:52px;line-height:1.65;">Six questions. If yours is not here, more will be added over time.</p>
+      <div id="faq-list">
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">Do I have to pay before I try it?<span class="faq-icon">+</span></button>
+          <div class="faq-a">No. You sign up, pay once, and get two full years of access. No trial period, no mid-journey interruption. Your record and your playbook are yours for the full two years.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">What happens to my entries if I cancel?<span class="faq-icon">+</span></button>
+          <div class="faq-a">If you cancel, you keep full access until the end of your paid period. When that period ends, your data is held for 7 days so you have time to renew if you forgot. After 7 days the account and all entries are permanently deleted. You will receive a reminder before that happens.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">How is this different from keeping notes in Excel or Notion?<span class="faq-icon">+</span></button>
+          <div class="faq-a">Notes in Excel are raw material. YourBragBook turns that raw material into something you can actually use. The gap intelligence tracks what is missing. The report builds your case with coaching on exactly what to say, what order to say it in, and what to leave out. No spreadsheet does that.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">Is my data private?<span class="faq-icon">+</span></button>
+          <div class="faq-a">Yes. Your entries are private to your account. We do not sell or share your data. You can also download all your entries as a plain text file any time. To request deletion of your account and all data, contact us directly and we will action it within 48 hours.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">What does the playbook actually look like?<span class="faq-icon">+</span></button>
+          <div class="faq-a">Six sections: an opening narrative you can say out loud, three to four lead points in the order you should raise them, gaps to own before your manager does, commit language for how to close the conversation, a list of things to leave out entirely, and a preparation checklist. Click "See a sample playbook" at the top of this page to see a full example.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">Can I change my goal during the year?<span class="faq-icon">+</span></button>
+          <div class="faq-a">Yes. You can update your goal at any time. The gap intelligence and report will recalibrate around whatever you are working towards. Your previous entries stay in the record and get reinterpreted through the new goal.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="land-footer">
+    <div class="footer-logo"><span>Your</span>BragBook</div>
+    <div class="footer-copy">2025 YourBragBook. All rights reserved.</div>
+  </footer>
+  <div style="background:var(--bg);border-top:1px solid var(--bdr);padding:12px 48px;text-align:center;">
+    <p style="font-size:11px;color:var(--tx4);line-height:1.7;max-width:780px;margin:0 auto;">YourBragBook is a tool to help you organise and articulate your own record. The playbook it generates is based entirely on what you log. We do not guarantee any career outcome. Results depend on the quality and consistency of your entries. This is not a substitute for professional advice.</p>
+  </div>
+</div>
+
+<!-- SAMPLE REPORT -->
+<div class="screen" id="screen-sample">
+  <nav class="sub-nav">
+    <button class="back-btn" onclick="goTo('screen-land')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Back</button>
+    <span class="sub-nav-title">Sample Playbook</span>
+    <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="goTo('screen-login')">Create yours</button>
+  </nav>
+  <div class="sr-wrap">
+    <!-- HEADER -->
+    <div style="margin-bottom:28px;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--acc3);margin-bottom:8px;">Promotion brief with coaching</div>
+      <div style="font-size:clamp(24px,3.5vw,34px);font-weight:800;color:var(--tx);letter-spacing:-.4px;margin-bottom:12px;">Priya's case for Finance Director</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <div style="background:var(--sur2);border:1px solid var(--bdr);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--tx3);"><strong style="color:var(--tx2);">Period:</strong> Apr 2024 to Mar 2025</div>
+        <div style="background:var(--sur2);border:1px solid var(--bdr);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--tx3);"><strong style="color:var(--tx2);">Entries:</strong> 36 across 12 months</div>
+        <div style="background:var(--acc2);border:1px solid rgba(124,111,247,0.25);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--acc3);font-weight:600;">SAMPLE</div>
+      </div>
+    </div>
+
+    <!-- READINESS RING -->
+    <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:18px 22px;margin-bottom:24px;display:flex;align-items:center;gap:20px;">
+      <div style="position:relative;width:68px;height:68px;flex-shrink:0;">
+        <svg width="68" height="68" viewBox="0 0 68 68" style="transform:rotate(-90deg);">
+          <circle cx="34" cy="34" r="28" fill="none" stroke="var(--bdr2)" stroke-width="6"/>
+          <circle cx="34" cy="34" r="28" fill="none" stroke="var(--acc3)" stroke-width="6" stroke-dasharray="175.9" stroke-dashoffset="35.2" stroke-linecap="round"/>
+        </svg>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--acc3);">80%</div>
+      </div>
+      <div>
+        <div style="font-size:15px;font-weight:600;color:var(--tx);margin-bottom:4px;">Brief readiness: Strong</div>
+        <div style="font-size:13px;color:var(--tx3);line-height:1.65;">Built from 36 entries across 12 months. Leadership and financial results are well covered. External stakeholder work is the one remaining gap to own proactively.</div>
+      </div>
+    </div>
+
+    <!-- COMPETENCY BARS -->
+    <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:18px 22px;margin-bottom:24px;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tx4);margin-bottom:14px;">Evidence across competency areas</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:12px;"><div style="font-size:12px;color:var(--tx2);width:180px;flex-shrink:0;">Financial leadership</div><div style="flex:1;height:5px;background:var(--bdr2);border-radius:3px;overflow:hidden;"><div style="height:100%;width:92%;background:var(--green);border-radius:3px;"></div></div><div style="font-size:11px;font-weight:600;width:60px;text-align:right;color:var(--green);">14 entries</div></div>
+        <div style="display:flex;align-items:center;gap:12px;"><div style="font-size:12px;color:var(--tx2);width:180px;flex-shrink:0;">Results and impact</div><div style="flex:1;height:5px;background:var(--bdr2);border-radius:3px;overflow:hidden;"><div style="height:100%;width:75%;background:var(--green);border-radius:3px;"></div></div><div style="font-size:11px;font-weight:600;width:60px;text-align:right;color:var(--green);">11 entries</div></div>
+        <div style="display:flex;align-items:center;gap:12px;"><div style="font-size:12px;color:var(--tx2);width:180px;flex-shrink:0;">Problem solving</div><div style="flex:1;height:5px;background:var(--bdr2);border-radius:3px;overflow:hidden;"><div style="height:100%;width:45%;background:var(--green);border-radius:3px;"></div></div><div style="font-size:11px;font-weight:600;width:60px;text-align:right;color:var(--green);">7 entries</div></div>
+        <div style="display:flex;align-items:center;gap:12px;"><div style="font-size:12px;color:var(--tx2);width:180px;flex-shrink:0;">Revenue and cost</div><div style="flex:1;height:5px;background:var(--bdr2);border-radius:3px;overflow:hidden;"><div style="height:100%;width:25%;background:var(--acc3);border-radius:3px;"></div></div><div style="font-size:11px;font-weight:600;width:60px;text-align:right;color:var(--acc3);">4 entries</div></div>
+        <div style="display:flex;align-items:center;gap:12px;"><div style="font-size:12px;color:var(--tx2);width:180px;flex-shrink:0;">External stakeholders</div><div style="flex:1;height:5px;background:var(--bdr2);border-radius:3px;overflow:hidden;"><div style="height:100%;width:0%;background:var(--amber);border-radius:3px;"></div></div><div style="font-size:11px;font-weight:600;width:60px;text-align:right;color:var(--amber);">No entries</div></div>
+      </div>
+    </div>
+
+    <!-- SECTION 1: NARRATIVE -->
+    <div style="margin-bottom:28px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+        <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--grad-start),var(--grad-end));display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0;">1</div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);">Opening narrative</div>
+      </div>
+      <div style="background:var(--sur);border:1px solid var(--bdr);border-left:3px solid var(--acc);border-radius:0 var(--r) var(--r) 0;padding:22px 24px;margin-bottom:14px;">
+        <div style="font-size:clamp(16px,2vw,18px);font-weight:500;line-height:1.85;color:var(--tx);">This year I ran the financial close process end to end, cut month-end cycle time from 12 days to 7, and led the board presentation on Q3 results without the CFO in the room. I hired two analysts in a quarter when the team had been trying for six months. I caught a forecast error before it reached the CEO and fixed it same day. I am not waiting to be given the Finance Director role. I have been doing most of it.</div>
+      </div>
+      <div style="background:var(--teal2);border:1px solid rgba(56,217,192,0.2);border-radius:var(--rs);padding:14px 18px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:6px;">Coach note</div>
+        <div style="font-size:13px;color:var(--tx2);line-height:1.75;">Do not read it. Say it. The language is deliberately conversational because it needs to sound like you speaking, not a performance review you memorised. The last sentence is the most important line. It reframes the conversation from a request to a recognition. You are not asking to be promoted. You are pointing out that the promotion is already overdue. Practice saying that last sentence out loud until it feels natural. It will land differently than anything else you say in that room.</div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: LEAD CARDS -->
+    <div style="margin-bottom:24px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+        <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--grad-start),var(--grad-end));display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0;">2</div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);">Lead with these, in this exact order</div>
+      </div>
+
+      <!-- Card 1 -->
+      <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:18px 20px;margin-bottom:12px;">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;">
+          <div style="width:28px;height:28px;border-radius:50%;background:var(--acc2);border:1px solid rgba(124,111,247,0.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--acc3);flex-shrink:0;">1</div>
+          <div>
+            <div style="font-size:14px;font-weight:600;color:var(--tx);line-height:1.45;margin-bottom:5px;">Cut month-end close from 12 days to 7. Held that result for three consecutive months. Zero errors reported across all three.</div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:var(--green);"><span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;"></span><span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;"></span><span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;"></span> Rock solid</div>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--bdr);padding-top:10px;">
+          <button onclick="toggleAcc(this)" style="display:flex;align-items:center;gap:8px;background:none;border:none;color:var(--acc3);font-size:12px;font-weight:500;cursor:pointer;padding:0;font-family:inherit;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>Coaching on how to deliver this</button>
+          <div class="sr-acc-body" style="display:none;padding-top:12px;">
+            <div style="margin-bottom:10px;"><div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx4);margin-bottom:5px;">Why this leads</div><div style="font-size:13px;color:var(--tx2);line-height:1.75;">This is your strongest entry because it has three things most entries do not: a specific number, a time duration, and a quality metric. 12 days to 7 is not an opinion. Three months running is not a one-off. Zero errors is not luck. Lead here because it establishes credibility before anything else is said.</div></div>
+            <div style="margin-bottom:10px;"><div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx4);margin-bottom:5px;">How to say it in the room</div><div style="background:var(--sur2);border-left:2px solid var(--acc3);border-radius:0 var(--rs) var(--rs) 0;padding:10px 14px;font-size:13px;color:var(--tx2);line-height:1.75;">"The thing I am most proud of this year is the close cycle. We were at 12 days when I started owning the process. We are now consistently at 7, three months in a row, with no errors in any of those cycles. That did not happen by accident. I rebuilt how the team works through the close window."</div></div>
+            <div style="background:var(--amber-bg);border:1px solid var(--amber-bdr);border-radius:var(--rs);padding:10px 14px;font-size:12px;color:var(--amber);line-height:1.65;"><strong>Watch for this:</strong> Do not say "we" when you mean "I." You led this. Your team executed it. Be precise about what you personally drove.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: board presentation. OPEN by default as most impressive -->
+      <div style="background:var(--sur);border:1px solid var(--acc);border-radius:var(--r);padding:18px 20px;margin-bottom:12px;box-shadow:0 0 0 1px rgba(124,111,247,0.08);">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;">
+          <div style="width:28px;height:28px;border-radius:50%;background:var(--acc2);border:1px solid rgba(124,111,247,0.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--acc3);flex-shrink:0;">2</div>
+          <div>
+            <div style="font-size:14px;font-weight:600;color:var(--tx);line-height:1.45;margin-bottom:5px;">Led the Q3 board presentation without the CFO present. Handled live questions from two board members on capex assumptions. No follow-up queries after.</div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:var(--green);"><span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;"></span><span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;"></span><span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;"></span> Rock solid</div>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--bdr);padding-top:12px;">
+          <div style="font-size:12px;font-weight:600;color:var(--acc3);margin-bottom:12px;">Coaching on how to deliver this</div>
+          <div style="margin-bottom:12px;"><div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx4);margin-bottom:6px;">Why this matters more than it looks</div><div style="font-size:13px;color:var(--tx2);line-height:1.75;">Board presentations are a Finance Director responsibility, not a Finance Controller one. The fact that you did this without the CFO is not a footnote. <strong style="color:var(--tx);">It is the single clearest evidence in your entire record that you already operate at the next level.</strong> Do not underplay it by saying "I covered for the CFO." Say you led it.</div></div>
+          <div style="margin-bottom:12px;"><div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx4);margin-bottom:6px;">How to say it in the room</div><div style="background:var(--sur2);border-left:2px solid var(--acc3);border-radius:0 var(--rs) var(--rs) 0;padding:12px 16px;font-size:13px;color:var(--tx2);line-height:1.8;">"In September I led the Q3 board presentation. The CFO was travelling. Two board members challenged the capex assumptions in the room. I answered both questions on the spot, no follow-up was needed, and the CFO told me afterwards it was the cleaner of the two board sessions that quarter."</div></div>
+          <div><div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx4);margin-bottom:6px;">The detail that makes this land</div><div style="font-size:13px;color:var(--tx2);line-height:1.75;">The phrase <strong style="color:var(--tx);">"no follow-up was needed"</strong> is doing a lot of work here. It signals that you handled it completely, not that you deflected or deferred. Keep that detail in every time you tell this story.</div></div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:18px 20px;margin-bottom:12px;">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;">
+          <div style="width:28px;height:28px;border-radius:50%;background:var(--acc2);border:1px solid rgba(124,111,247,0.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--acc3);flex-shrink:0;">3</div>
+          <div>
+            <div style="font-size:14px;font-weight:600;color:var(--tx);line-height:1.45;margin-bottom:5px;">Caught a forecast error before it reached the CEO. A revenue line had been transposed. Corrected it the same day. Would have been visible in the board pack.</div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:var(--acc3);"><span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;"></span><span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;"></span><span style="width:8px;height:8px;border-radius:50%;background:var(--bdr2);display:inline-block;"></span> Solid</div>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--bdr);padding-top:10px;">
+          <button onclick="toggleAcc(this)" style="display:flex;align-items:center;gap:8px;background:none;border:none;color:var(--acc3);font-size:12px;font-weight:500;cursor:pointer;padding:0;font-family:inherit;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>Coaching on how to deliver this</button>
+          <div class="sr-acc-body" style="display:none;padding-top:12px;">
+            <div><div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx4);margin-bottom:5px;">How to say it in the room</div><div style="background:var(--sur2);border-left:2px solid var(--acc3);border-radius:0 var(--rs) var(--rs) 0;padding:10px 14px;font-size:13px;color:var(--tx2);line-height:1.75;">"In July I was reviewing the forecast pack before it went upstairs and something felt off in the revenue line. I went back to the source data and found a transposition. Corrected it the same day. If it had gone through, it would have shown up in the board pack and been a difficult conversation. That is the kind of thing I look for as standard."</div></div>
+            <div style="background:var(--amber-bg);border:1px solid var(--amber-bdr);border-radius:var(--rs);padding:10px 14px;margin-top:10px;font-size:12px;color:var(--amber);line-height:1.65;"><strong>The last sentence is everything:</strong> "That is the kind of thing I look for as standard." It tells your manager that this was not luck. It was judgment. And judgment is what Finance Directors are hired for.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- SECTION 3 -->
+    <div style="margin-bottom:24px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;"><div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--grad-start),var(--grad-end));display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0;">3</div><div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);">Gaps to own, raise these yourself</div></div>
+      <div style="background:var(--sur);border:1px solid var(--amber-bdr);border-radius:var(--r);padding:18px 20px;margin-bottom:12px;">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;"><div style="width:28px;height:28px;border-radius:50%;background:var(--amber-bg);border:1px solid var(--amber-bdr);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--amber);flex-shrink:0;">!</div><div style="font-size:14px;font-weight:600;color:var(--tx);line-height:1.45;">External stakeholder management: zero entries across 12 months. This is the only competency area with no evidence at all.</div></div>
+        <div style="background:var(--sur2);border-left:2px solid var(--amber);border-radius:0 var(--rs) var(--rs) 0;padding:12px 16px;margin-bottom:10px;font-size:13px;color:var(--tx2);line-height:1.75;">"External relationships are the area I am most deliberate about building into my next year. This year the right call was to get the internal infrastructure right first. That work is done now. I have already started building with the audit partner and I am making introductions on the banking side."</div>
+        <div style="background:var(--amber-bg);border:1px solid rgba(240,160,48,0.15);border-radius:var(--rs);padding:12px 16px;"><div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--amber);margin-bottom:5px;">Why you must raise this first</div><div style="font-size:12px;color:var(--tx2);line-height:1.75;">Your manager will notice this gap. If they raise it, you are on the back foot. If you raise it yourself, you are in control of the framing. The script above makes the gap sound like a plan, not a weakness.</div></div>
+      </div>
+    </div>
+    <!-- SECTION 4 -->
+    <div style="margin-bottom:24px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;"><div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--grad-start),var(--grad-end));display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0;">4</div><div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);">What to commit to for next year</div></div>
+      <div class="rep-commit"><div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);margin-bottom:10px;">Say this when they ask about your goals</div><div class="rep-commit-text">"Next year I want to own at least two external relationships, whether banking, audit, or a key commercial partner. And I want to lead one full strategic planning cycle from start to finish. Those are the two things that will complete what I built this year and put me squarely in Finance Director territory."</div><div class="rep-commit-note">These goals directly address your two gaps. When you name them, your manager hears that you already know what is missing and you have a plan for it.</div></div>
+    </div>
+    <!-- SECTION 5 -->
+    <div style="margin-bottom:24px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;"><div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--grad-start),var(--grad-end));display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0;">5</div><div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);">Leave these out entirely</div></div>
+      <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:18px 22px;">
+        <div style="font-size:12px;color:var(--tx3);margin-bottom:14px;">These entries are in your record but will weaken your case if you raise them.</div>
+        <div style="padding:10px 0;border-bottom:1px solid var(--bdr);display:flex;gap:10px;align-items:flex-start;"><div style="color:var(--tx4);font-size:14px;font-weight:700;flex-shrink:0;margin-top:1px;">x</div><div><div style="font-size:13px;color:var(--tx2);line-height:1.6;margin-bottom:4px;">The ERP migration support in June. You were a contributor validating data, not the owner.</div><div style="font-size:11px;color:var(--tx3);line-height:1.6;">Bringing this up signals task-level thinking. Finance Directors delegate data validation.</div></div></div>
+        <div style="padding:10px 0;border-bottom:1px solid var(--bdr);display:flex;gap:10px;align-items:flex-start;"><div style="color:var(--tx4);font-size:14px;font-weight:700;flex-shrink:0;margin-top:1px;">x</div><div><div style="font-size:13px;color:var(--tx2);line-height:1.6;margin-bottom:4px;">The three training sessions in August. You have three entries on this.</div><div style="font-size:11px;color:var(--tx3);line-height:1.6;">Training your team is a given at your level. Leave all three out entirely.</div></div></div>
+        <div style="padding:10px 0;display:flex;gap:10px;align-items:flex-start;"><div style="color:var(--tx4);font-size:14px;font-weight:700;flex-shrink:0;margin-top:1px;">x</div><div><div style="font-size:13px;color:var(--tx2);line-height:1.6;margin-bottom:4px;">Monthly variance explanations submitted to leadership across six months.</div><div style="font-size:11px;color:var(--tx3);line-height:1.6;">This is table stakes. Mentioning it in a promotion conversation tells your manager you are still thinking like a Controller.</div></div></div>
+      </div>
+    </div>
+    <!-- SECTION 6 -->
+    <div style="margin-bottom:24px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;"><div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--grad-start),var(--grad-end));display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0;">6</div><div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);">Preparation checklist</div></div>
+      <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:18px 22px;">
+        <div style="font-size:12px;color:var(--tx3);margin-bottom:14px;">Do not go into the room until all of these are done.</div>
+        <div class="rep-chk-row"><div class="rep-checkbox" onclick="toggleCheck(this)"></div><div><div class="rep-ctext" style="font-weight:600;color:var(--tx);">Said the narrative paragraph out loud at least three times</div><div style="font-size:11px;color:var(--tx3);margin-top:2px;">It needs to sound like a thought, not a script.</div></div></div>
+        <div class="rep-chk-row"><div class="rep-checkbox" onclick="toggleCheck(this)"></div><div><div class="rep-ctext" style="font-weight:600;color:var(--tx);">Can deliver the month-end result with exact numbers without notes</div><div style="font-size:11px;color:var(--tx3);margin-top:2px;">12 days to 7. Three months running. Zero errors. Say it until it is automatic.</div></div></div>
+        <div class="rep-chk-row"><div class="rep-checkbox" onclick="toggleCheck(this)"></div><div><div class="rep-ctext" style="font-weight:600;color:var(--tx);">Practiced the board presentation story including the live questions handled</div><div style="font-size:11px;color:var(--tx3);margin-top:2px;">Name the two board members if you can. Specificity is credibility.</div></div></div>
+        <div class="rep-chk-row"><div class="rep-checkbox" onclick="toggleCheck(this)"></div><div><div class="rep-ctext" style="font-weight:600;color:var(--tx);">Practiced the external stakeholder gap script out loud</div><div style="font-size:11px;color:var(--tx3);margin-top:2px;">Your highest risk moment. It must sound confident and planned, not defensive.</div></div></div>
+        <div class="rep-chk-row" style="margin-bottom:0;"><div class="rep-checkbox" onclick="toggleCheck(this)"></div><div><div class="rep-ctext" style="font-weight:600;color:var(--tx);">Has mentally removed the three skip items from the conversation</div><div style="font-size:11px;color:var(--tx3);margin-top:2px;">ERP migration, training sessions, variance explanations. None of these should come up.</div></div></div>
+      </div>
+    </div>
+    <div class="sr-banner" style="margin-bottom:24px;">This is a sample playbook built from fictional entries for Priya, a Finance Controller making a case for Finance Director. Your real playbook is built entirely from what you have logged. The more entries you add, the sharper and more specific it becomes.</div>
+
+    <div class="sr-bottom"><h3>Ready to build yours?</h3><p>Your report will be built from your real entries, not fictional ones. Log your first entry today. The sooner you start, the stronger your case will be when you need it.</p><button class="btn-primary" style="padding:13px 28px;font-size:15px;" onclick="goTo('screen-login')">Create your Brag Book</button></div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div class="screen" id="screen-login">
+  <div class="login-wrap">
+    <div class="login-logo"><span>Your</span>BragBook</div>
+    <div class="login-tagline">Turn your record into a playbook.</div>
+    <div class="login-card">
+      <div class="login-h">Sign in</div>
+      <div class="login-hint">Your data is private. Only you can see it. No password needed.</div>
+      <button class="google-btn" onclick="loginWithGoogle()">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continue with Google
+      </button>
+      <div class="or-divider"><div class="or-line"></div><div class="or-text">or sign in with email link</div><div class="or-line"></div></div>
+      <input class="login-input" type="email" id="login-email" placeholder="Your email address" onkeydown="if(event.key==='Enter')loginWithEmail()">
+      <div class="login-err" id="login-err">Please enter a valid email address.</div>
+      <button class="btn-primary" style="width:100%;padding:13px;" id="login-btn" onclick="loginWithEmail()">Send sign-in link</button>
+      <div class="login-success" id="login-success">Check your inbox. We sent a sign-in link to <strong id="login-sent-to"></strong>.</div>
+    </div>
+    <div class="login-back"><button onclick="goTo('screen-land')">Back to home</button></div>
+    <div class="dev-bypass"><button onclick="devBypass()">Demo: enter app without login</button></div>
+  </div>
+</div>
+
+<!-- GOAL ONBOARDING (shown once after first login) -->
+<div class="screen" id="screen-goal">
+  <div class="login-wrap" style="max-width:480px;">
+    <div class="login-logo"><span>Your</span>BragBook</div>
+    <div class="login-tagline">One question before we start.</div>
+    <div class="login-card">
+      <div class="login-h">What is your goal for the next 12 months?</div>
+      <div class="login-hint">Your playbook will be built around this goal. You can change it any time.</div>
+      <div id="goal-options" style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;">
+        <button class="goal-opt" onclick="selectGoal(this,'promotion')">Get promoted</button>
+        <button class="goal-opt" onclick="selectGoal(this,'salary')">Negotiate a salary increase</button>
+        <button class="goal-opt" onclick="selectGoal(this,'interview')">Prepare for a job interview</button>
+        <button class="goal-opt" onclick="selectGoal(this,'appraisal')">Nail my annual appraisal</button>
+        <button class="goal-opt" onclick="selectGoal(this,'probation')">Pass my probation review</button>
+        <button class="goal-opt" onclick="selectGoal(this,'transfer')">Secure an internal transfer</button>
+        <button class="goal-opt" onclick="selectGoal(this,'team')">Ask for a bigger team or budget</button>
+        <button class="goal-opt" onclick="selectGoal(this,'pip')">Respond to a PIP</button>
+      </div>
+      <button class="btn-primary" id="goal-confirm-btn" style="width:100%;padding:13px;opacity:0.4;" disabled onclick="confirmGoal()">Confirm goal and start logging</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- RESUME UPLOAD (optional, shown after goal selection) -->
+<div class="screen" id="screen-resume">
+  <div class="login-wrap" style="max-width:480px;">
+    <div class="login-logo"><span>Your</span>BragBook</div>
+    <div class="login-tagline">Optional. Takes 30 seconds.</div>
+    <div class="login-card">
+      <div class="login-h">Add your CV or resume</div>
+      <div class="login-hint">Paste your CV text below. We use it as background context so your playbook is sharper from day one. Stored privately and never shared.</div>
+      <textarea id="cv-paste-text" placeholder="Paste your CV text here. Include your current role, company, responsibilities, and career history." style="width:100%;background:var(--sur2);border:1.5px solid var(--bdr);border-radius:var(--rs);padding:12px 14px;font-size:13px;color:var(--tx);outline:none;resize:none;height:180px;line-height:1.6;font-family:'Plus Jakarta Sans',sans-serif;transition:border-color .15s;margin-bottom:6px;" onfocus="this.style.borderColor='var(--acc)'" onblur="this.style.borderColor='var(--bdr)'" oninput="updateCVPasteCount(this)"></textarea>
+      <div style="font-size:11px;color:var(--tx4);margin-bottom:16px;" id="cv-paste-count">0 words</div>
+      <button class="btn-primary" style="width:100%;padding:13px;" onclick="savePastedCV()">Save and continue</button>
+      <div style="text-align:center;margin-top:14px;"><button onclick="skipResume()" style="background:none;border:none;color:var(--tx4);font-size:13px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;">Skip for now</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="screen" id="screen-app">
+  <nav class="app-nav">
+    <div class="app-logo"><span>Your</span>BragBook</div>
+    <div class="app-nav-right">
+      <span class="app-user" id="app-user-email"></span>
+      <button class="signout-btn" onclick="signOut()">Sign out</button>
+    </div>
+  </nav>
+  <div class="app-main">
+    <div class="app-greeting" id="app-greeting">Good morning.</div>
+    <div class="app-hint" id="app-goal-label">One minute before you leave. Write down what happened today while it is still fresh.</div>
+    <div id="cv-indicator" style="display:none;align-items:center;gap:5px;font-size:11px;color:var(--tx4);margin-bottom:14px;margin-top:-8px;"></div>
+
+    <!-- This-month summary card -->
+    <div id="month-summary-card" style="display:none;background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:16px 20px;margin-bottom:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div style="font-size:12px;font-weight:700;color:var(--tx2);" id="month-summary-title">This month</div>
+        <div id="streak-badge" style="display:none;background:var(--acc2);border:1px solid rgba(124,111,247,0.3);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--acc3);">
+          <span id="streak-text">0 week streak</span>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;" id="month-coverage-grid"></div>
+    </div>
+
+    <!-- Gap nudge -->
+    <div id="gap-nudge" style="display:none;background:var(--amber-bg);border:1px solid var(--amber-bdr);border-radius:var(--r);padding:14px 18px;margin-bottom:16px;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--amber);margin-bottom:4px;">Gap alert</div>
+      <div id="gap-nudge-text" style="font-size:13px;color:var(--tx2);line-height:1.65;"></div>
+    </div>
+
+    <!-- Usage bar -->
+    <div id="usage-bar-wrap" style="margin-bottom:20px;"></div>
+    <!-- Entry limit notice -->
+    <div id="entry-limit-notice" style="display:none;background:var(--amber-bg);border:1px solid var(--amber-bdr);border-radius:var(--r);padding:16px 18px;margin-bottom:16px;font-size:14px;color:var(--amber);line-height:1.65;"></div>
+
+    <div class="record-box" id="record-box">
+      <textarea class="record-ta" id="record-ta" placeholder="What happened today? A win, a decision, something that went well. Write it while it is still fresh..." maxlength="500" oninput="updateCount(this)"></textarea>
+      <div class="record-bar">
+        <span class="record-char" id="record-char">~80 words max</span>
+        <div class="record-actions">
+          <button class="btn-ghost" style="padding:7px 16px;font-size:13px;" onclick="clearRecord()">Clear</button>
+          <button class="btn-primary" style="padding:8px 20px;font-size:13px;" onclick="saveEntry()">Save entry</button>
+        </div>
+      </div>
+    </div>
+    <div class="saving-state" id="saving-state"><div class="spinner"></div><span>Saving...</span></div>
+    <div class="confirm-card" id="confirm-card">
+      <div class="cc-lbl">Saved</div>
+      <div class="cc-text" id="cc-text"></div>
+      <div class="cc-date" id="cc-date"></div>
+      <button class="cc-btn" onclick="newEntry()">Add another entry</button>
+    </div>
+    <div id="report-strip" style="display:none;margin-bottom:28px;">
+      <button class="btn-primary" id="report-strip-btn" style="padding:12px 28px;font-size:15px;font-weight:700;" onclick="generateReport()">My playbook</button>
+      <div id="report-strip-sub" style="font-size:12px;color:var(--tx4);margin-top:8px;"></div>
+    </div>
+
+    <!-- FULL RECORD competency bars - above entries so it is visible without scrolling -->
+    <div id="full-record-wrap" style="display:none;margin-bottom:28px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div style="font-size:12px;font-weight:700;color:var(--tx2);">Full record</div>
+        <div style="font-size:11px;color:var(--tx4);" id="full-record-period"></div>
+      </div>
+      <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:18px 20px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tx4);margin-bottom:14px;">Evidence across competency areas</div>
+        <div id="full-record-bars" style="display:flex;flex-direction:column;gap:12px;"></div>
+        <div style="font-size:11px;color:var(--tx4);margin-top:14px;padding-top:14px;border-top:1px solid var(--bdr);">This is what your playbook is built from. Green means evidence exists. Amber means the AI will flag a gap.</div>
+      </div>
+    </div>
+
+    <!-- Entries header with search -->
+    <div class="entries-hdr">
+      <span class="entries-title">Your entries</span>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button onclick="downloadEntries()" style="background:none;border:1px solid var(--bdr);color:var(--tx3);font-size:11px;font-weight:600;padding:4px 12px;border-radius:var(--rp);cursor:pointer;transition:all .15s;font-family:'Plus Jakarta Sans',sans-serif;" onmouseover="this.style.borderColor='var(--acc);this.style.color='var(--acc3)'" onmouseout="this.style.borderColor='var(--bdr)';this.style.color='var(--tx3)'">Download entries</button>
+        <span class="entries-badge" id="entries-badge">0</span>
+      </div>
+    </div>
+    <div style="position:relative;margin-bottom:14px;">
+      <svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--tx4)" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input id="search-input" type="text" placeholder="Search your entries..." oninput="renderEntries()" style="width:100%;background:var(--sur);border:1.5px solid var(--bdr);border-radius:var(--rs);padding:9px 12px 9px 34px;font-size:13px;color:var(--tx);outline:none;transition:border-color .15s;" onfocus="this.style.borderColor='var(--acc)'" onblur="this.style.borderColor='var(--bdr)'">
+    </div>
+    <div id="entries-list"><div class="empty-state"><p>Your entries will appear here. Start by writing something that went well today.</p></div></div>
+  </div>
+</div>
+
+<!-- REPORT -->
+<div class="screen" id="screen-report">
+  <nav class="rep-nav">
+    <div class="rep-nav-left">
+      <button class="back-btn" onclick="goTo('screen-app')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Back</button>
+      <span class="rep-nav-title">Your Playbook</span>
+    </div>
+    <button class="btn-ghost" style="padding:7px 16px;font-size:13px;" onclick="generateReport()">Regenerate</button>
+  </nav>
+  <!-- Version history tabs -->
+  <div id="rep-history-bar" style="display:none;background:var(--sur);border-bottom:1px solid var(--bdr);padding:0 40px;">
+    <div id="rep-history-tabs" style="display:flex;gap:4px;overflow-x:auto;"></div>
+  </div>
+  <div class="rep-body">
+    <div class="rep-loading" id="rep-loading">
+      <div class="spinner" style="width:26px;height:26px;border-width:2.5px;"></div>
+      <p>Building your playbook from <span id="rep-entry-count">your entries</span>.<br>This usually takes 30 to 60 seconds.</p>
+      <div style="width:100%;max-width:320px;">
+        <div style="height:4px;background:var(--bdr2);border-radius:2px;overflow:hidden;margin-bottom:8px;">
+          <div id="rep-progress-bar" style="height:100%;width:0%;background:linear-gradient(135deg,var(--grad-start),var(--grad-end));border-radius:2px;transition:width .5s ease;"></div>
+        </div>
+        <div id="rep-progress-label" style="font-size:12px;color:var(--tx4);">Starting...</div>
+      </div>
+      <div id="rep-usage-note" style="font-size:12px;color:var(--tx4);margin-top:4px;"></div>
+    </div>
+    <div class="rep-error" id="rep-error"><p>Something went wrong. Check your connection and try again.</p><button class="btn-primary" onclick="generateReport()">Try again</button></div>
+    <div class="rep-content" id="rep-content"></div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL='https://haktqxkdfsrprsorhfiz.supabase.co';
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhha3RxeGtkZnNycHJzb3JoZml6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MDM1NTQsImV4cCI6MjA5MTk3OTU1NH0.SHA0PiUy6cUktOepxkN1MwdNbtabyMcTka5Vkm8Stz4';
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+const PLAN={MAX_ENTRIES_YEAR:300,ENTRIES_PER_MONTH:25,MAX_REPORTS_YEAR:12,API_ENTRY_CAP:300};
+
+// Goal labels and competency keywords for gap detection
+const GOALS={
+  promotion:{label:'Get promoted',short:'Promotion'},
+  salary:{label:'Negotiate a salary increase',short:'Salary negotiation'},
+  interview:{label:'Prepare for a job interview',short:'Job interview'},
+  appraisal:{label:'Nail my annual appraisal',short:'Appraisal'},
+  probation:{label:'Pass my probation review',short:'Probation review'},
+  transfer:{label:'Secure an internal transfer',short:'Internal transfer'},
+  team:{label:'Ask for a bigger team or budget',short:'Bigger team'},
+  pip:{label:'Respond to a PIP',short:'PIP response'}
+};
+const COMPETENCIES_BY_GOAL={
+  promotion:[
+    {key:'results',label:'Results above role',keywords:['delivered','completed','achieved','result','outcome','improved','increased','reduced','saved','cut','grew','exceeded','surpassed']},
+    {key:'leadership',label:'Leadership',keywords:['led','managed','coached','mentored','team','hired','onboarded','feedback','delegate','direction','drove','built','developed']},
+    {key:'crossfunctional',label:'Cross-functional work',keywords:['cross','function','collaborated','partnered','worked with','ops','finance','hr','product','marketing','legal','stakeholder','other team','other department']},
+    {key:'problems',label:'Problems you owned',keywords:['fixed','solved','identified','caught','error','issue','resolved','prevented','flagged','found','corrected','stepped in','took over','picked up']},
+    {key:'visibility',label:'Senior visibility',keywords:['board','exec','cfo','ceo','director','vp','head of','presented','recognised','noticed','feedback from','told me','thanked','senior']}
+  ],
+  salary:[
+    {key:'results',label:'Quantified results',keywords:['delivered','achieved','increased','reduced','saved','grew','revenue','cost','profit','percentage','number','figure','million','thousand','target','quota']},
+    {key:'scope',label:'Scope and responsibility growth',keywords:['additional','expanded','took on','added','broader','more','responsibility','remit','scope','beyond','above','extra','grew the role']},
+    {key:'market',label:'Market value evidence',keywords:['offer','market','benchmark','rate','salary','pay','hired','recruited','approached','headhunted','LinkedIn','competitor','industry']},
+    {key:'impact',label:'Impact above the role',keywords:['above','beyond','level','expected','standard','normal','peers','others','compared','additional value','unique','only one','first']},
+    {key:'tenure',label:'Loyalty and consistency',keywords:['years','tenure','stayed','committed','consistent','reliable','delivered','every','quarter','always','track record','never missed']}
+  ],
+  interview:[
+    {key:'wins',label:'Recent wins',keywords:['delivered','completed','finished','achieved','result','outcome','won','closed','launched','shipped','built','created','led']},
+    {key:'leadership',label:'Leadership examples',keywords:['led','managed','team','people','hired','developed','mentored','coached','grew','built','direction','drove']},
+    {key:'problems',label:'Problem solving',keywords:['fixed','solved','identified','caught','issue','resolved','prevented','flagged','found','corrected','challenge','difficult','complex']},
+    {key:'collaboration',label:'Working with others',keywords:['worked with','collaborated','partnered','cross','team','stakeholder','client','customer','relationship','together','joint']},
+    {key:'growth',label:'Learning and growth',keywords:['learned','developed','improved','skill','course','feedback','changed','adapted','grew','new','first time','never done before']}
+  ],
+  appraisal:[
+    {key:'goals',label:'Goals met or exceeded',keywords:['target','goal','objective','kpi','metric','delivered','achieved','exceeded','hit','completed','on time','on budget']},
+    {key:'initiative',label:'Initiative taken',keywords:['suggested','proposed','started','initiated','created','built','without being asked','own initiative','spotted','identified','proactively','volunteered']},
+    {key:'collaboration',label:'Collaboration',keywords:['worked with','helped','supported','partnered','contributed','team','colleague','cross','assisted','enabled','facilitated']},
+    {key:'growth',label:'Growth and learning',keywords:['learned','developed','improved','skill','feedback','changed','adapted','new','course','training','qualification','better at']},
+    {key:'impact',label:'Measurable impact',keywords:['result','outcome','improved','increased','reduced','saved','faster','better','higher','lower','number','figure','data','evidence']}
+  ],
+  probation:[
+    {key:'requirements',label:'Role requirements met',keywords:['delivered','completed','finished','on time','deadline','standard','expected','required','met','done','handed in','submitted']},
+    {key:'learning',label:'Speed of learning',keywords:['learned','picked up','understood','grasped','figured out','now able','can now','know how','familiar','confident','no longer need help']},
+    {key:'relationships',label:'Relationships built',keywords:['met','introduced','connected','relationship','colleague','team','manager','stakeholder','client','lunch','coffee','spoke with','got to know']},
+    {key:'contributions',label:'Contributions made',keywords:['contributed','added','helped','supported','improved','suggested','raised','flagged','spotted','offered','input','idea','feedback']},
+    {key:'feedback',label:'Feedback received and acted on',keywords:['feedback','told','advised','suggested','changed','adjusted','improved','acted on','took on board','implemented','applied']}
+  ],
+  transfer:[
+    {key:'skills',label:'Relevant skills demonstrated',keywords:['skill','experience','background','done before','previously','used to','familiar','competent','capable','able to','know how','expertise']},
+    {key:'relationships',label:'Cross-team relationships',keywords:['relationship','worked with','know','colleague','friend','contact','network','partnered','collaborated','connected','familiar with the team']},
+    {key:'motivation',label:'Motivation and intent',keywords:['want','interested','passionate','excited','drawn to','curious','following','learning about','reading','attending','involved in']},
+    {key:'trackrecord',label:'Track record in current role',keywords:['delivered','achieved','completed','result','outcome','trusted','reliable','consistent','always','never missed','strong']},
+    {key:'knowledge',label:'Knowledge of target area',keywords:['understand','know','aware','familiar','studied','read','attended','involved','exposure','shadowed','observed','worked alongside']}
+  ],
+  team:[
+    {key:'currentperformance',label:'Current team performance',keywords:['team','delivered','achieved','result','outcome','target','hit','performance','output','quality','reliability','consistent']},
+    {key:'businesscase',label:'Business case evidence',keywords:['need','require','demand','capacity','workload','volume','growth','opportunity','risk','gap','shortage','bandwidth','stretched']},
+    {key:'leadership',label:'Leadership capacity',keywords:['led','managed','coached','developed','hired','onboarded','feedback','grew','built','direction','drove','handled','resolved']},
+    {key:'resources',label:'Resource utilisation',keywords:['budget','cost','efficient','value','roi','return','optimised','used well','within budget','under budget','no waste','effective']},
+    {key:'support',label:'Stakeholder support',keywords:['agreed','approved','supported','backed','endorsed','recommended','suggested by','requested by','asked for','board','exec','director','cfo','ceo']}
+  ],
+  pip:[
+    {key:'requirements',label:'Requirements addressed',keywords:['addressed','fixed','resolved','improved','met','completed','delivered','done','corrected','changed','adjusted','no longer']},
+    {key:'improvement',label:'Improvement demonstrated',keywords:['improved','better','progressed','developed','grown','changed','different','no longer','now','compared to before','feedback']},
+    {key:'support',label:'Support sought and used',keywords:['asked','sought','help','support','manager','hr','mentor','coach','training','resource','guidance','feedback','one to one','check in']},
+    {key:'attitude',label:'Attitude and engagement',keywords:['committed','engaged','trying','effort','willing','open','receptive','positive','proactive','attending','on time','present','focused']},
+    {key:'consistency',label:'Consistency over time',keywords:['consistent','every','week','month','always','reliable','no longer','not happened','maintained','sustained','kept up','continued']}
+  ]
+};
+
+function getCompetencies(){
+  return COMPETENCIES_BY_GOAL[userGoal]||COMPETENCIES_BY_GOAL.promotion;
+}
+
+let entries=[], reportCount=0, currentUser=null, userGoal=null;
+let reportHistory=[], activeHistoryIndex=0, selectedGoalKey=null;
+let userResume=null; // stores extracted plain text from uploaded CV
+
+// ── UTILS ────────────────────────────────────────────────────────────
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  if(id==='screen-app')initApp();
+  window.scrollTo(0,0);
+}
+function today(){return new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}
+function mKey(d){const dt=d||new Date();return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0');}
+function mLabel(k){const[y,m]=k.split('-');return MONTHS[parseInt(m)-1]+' '+y;}
+function yearKey(){return new Date().getFullYear()+'';}
+function wKey(d){const dt=d||new Date();const jan1=new Date(dt.getFullYear(),0,1);return dt.getFullYear()+'-W'+Math.ceil(((dt-jan1)/86400000+jan1.getDay()+1)/7);}
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function save(){
+  try{
+    localStorage.setItem('bb_v3',JSON.stringify(entries));
+    localStorage.setItem('bb_reports',JSON.stringify({year:yearKey(),count:reportCount}));
+    localStorage.setItem('bb_goal',userGoal||'');
+    localStorage.setItem('bb_history',JSON.stringify(reportHistory.slice(0,3)));
+    if(userResume)localStorage.setItem('bb_resume',userResume);
+  }catch(e){}
+}
+function load(){
+  try{
+    const d=JSON.parse(localStorage.getItem('bb_v3')||'[]');
+    entries=Array.isArray(d)?d:[];
+    const r=JSON.parse(localStorage.getItem('bb_reports')||'{}');
+    reportCount=(r.year===yearKey())?parseInt(r.count)||0:0;
+    userGoal=localStorage.getItem('bb_goal')||null;
+    const h=JSON.parse(localStorage.getItem('bb_history')||'[]');
+    reportHistory=Array.isArray(h)?h:[];
+    userResume=localStorage.getItem('bb_resume')||null;
+  }catch(e){entries=[];reportCount=0;userGoal=null;reportHistory=[];userResume=null;}
+}
+
+async function api(prompt){
+  const r=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
+  const d=await r.json();
+  if(!r.ok)throw new Error(d.error?.message||'Error');
+  return d.content?.[0]?.text||'';
+}
+
+// ── LIMITS ────────────────────────────────────────────────────────────
+function entriesThisYear(){const cutoff=Date.now()-(365*24*60*60*1000);return entries.filter(e=>e.id>cutoff);}
+function entriesInMonth(mk){return entries.filter(e=>e.mk===mk);}
+function monthlyAllowance(){
+  const now=new Date();
+  let carried=0;
+  for(let m=0;m<now.getMonth();m++){
+    const mk=now.getFullYear()+'-'+String(m+1).padStart(2,'0');
+    const used=entriesInMonth(mk).length;
+    // Only carry forward if the user actually logged something that month
+    // This prevents new users accumulating unused allowances from before they joined
+    if(used>0){
+      const leftover=Math.max(0,PLAN.ENTRIES_PER_MONTH-used);
+      carried+=leftover;
+    }
+  }
+  return PLAN.ENTRIES_PER_MONTH+carried;
+}
+function canAddEntry(){
+  const mk=mKey(),usedM=entriesInMonth(mk).length,usedY=entriesThisYear().length,allowM=monthlyAllowance();
+  return{ok:usedY<PLAN.MAX_ENTRIES_YEAR&&usedM<allowM,usedMonth:usedM,allowanceMonth:allowM,usedYear:usedY,maxYear:PLAN.MAX_ENTRIES_YEAR};
+}
+function canGenerateReport(){return{ok:reportCount<PLAN.MAX_REPORTS_YEAR,used:reportCount,max:PLAN.MAX_REPORTS_YEAR};}
+
+// ── GOAL ONBOARDING ────────────────────────────────────────────────────
+function selectGoal(btn,key){
+  document.querySelectorAll('.goal-opt').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedGoalKey=key;
+  const cb=document.getElementById('goal-confirm-btn');
+  cb.disabled=false;cb.style.opacity='1';
+}
+function updateCVPasteCount(ta){
+  const words=ta.value.trim().split(/\s+/).filter(w=>w.length>0).length;
+  const el=document.getElementById('cv-paste-count');
+  if(el)el.textContent=words+' word'+(words===1?'':'s');
+}
+function savePastedCV(){
+  const ta=document.getElementById('cv-paste-text');
+  if(!ta)return;
+  const text=ta.value.trim();
+  if(!text||text.split(/\s+/).length<20){
+    alert('Please paste at least a few sentences from your CV so we have enough context to work with.');
+    return;
+  }
+  userResume=text;
+  localStorage.setItem('bb_resume_done','1');
+  save();goTo('screen-app');
+}
+function confirmGoal(){
+  if(!selectedGoalKey)return;
+  userGoal=selectedGoalKey;save();goTo('screen-resume');
+}
+
+// ── RESUME ─────────────────────────────────────────────────────────────
+function skipResume(){
+  localStorage.setItem('bb_resume_done','1');
+  save();goTo('screen-app');
+}
+
+// ── STREAK ────────────────────────────────────────────────────────────
+function calcStreak(){
+  if(!entries.length)return 0;
+  const weeks=new Set(entries.map(e=>wKey(new Date(e.id))));
+  const now=new Date();let streak=0;
+  for(let i=0;i<52;i++){
+    const d=new Date(now);d.setDate(d.getDate()-i*7);
+    if(weeks.has(wKey(d)))streak++;
+    else if(i>0)break;
+  }
+  return streak;
+}
+
+// ── GAP DETECTION ─────────────────────────────────────────────────────
+function detectCompetencyCoverage(entryList){
+  const coverage={};
+  getCompetencies().forEach(c=>{
+    const matches=entryList.filter(e=>c.keywords.some(kw=>e.text.toLowerCase().includes(kw)));
+    coverage[c.key]={count:matches.length,label:c.label,lastDate:matches.length?Math.max(...matches.map(e=>e.id)):0};
+  });
+  return coverage;
+}
+function checkGapNudge(){
+  if(entries.length<3)return;
+  const fourWeeksAgo=Date.now()-(28*24*60*60*1000);
+  const coverage=detectCompetencyCoverage(entries);
+  const gaps=getCompetencies().filter(c=>coverage[c.key].count===0||(coverage[c.key].lastDate<fourWeeksAgo&&coverage[c.key].count>0));
+  const nudge=document.getElementById('gap-nudge');
+  const nudgeText=document.getElementById('gap-nudge-text');
+  if(gaps.length){
+    const g=gaps[0];
+    const msg=coverage[g.key].count===0
+      ?`Nothing logged about <strong>${g.label.toLowerCase()}</strong> yet. If that matters for your ${userGoal?GOALS[userGoal].short.toLowerCase():'goal'}, now is the time to start building that evidence.`
+      :`Nothing logged about <strong>${g.label.toLowerCase()}</strong> in over 4 weeks. Keep that area covered so it does not become a gap in your playbook.`;
+    nudgeText.innerHTML=msg;
+    nudge.style.display='block';
+  }else{
+    nudge.style.display='none';
+  }
+}
+
+// ── MONTHLY SUMMARY CARD ───────────────────────────────────────────────
+function renderMonthlySummary(){
+  const mk=mKey();
+  const thisMonthEntries=entriesInMonth(mk);
+  const card=document.getElementById('month-summary-card');
+  if(!entries.length){card.style.display='none';return;}
+  card.style.display='block';
+  document.getElementById('month-summary-title').textContent=mLabel(mk)+': '+thisMonthEntries.length+' entries';
+  // Streak badge
+  const streak=calcStreak();
+  const sb=document.getElementById('streak-badge');
+  if(streak>=2){
+    sb.style.display='block';
+    document.getElementById('streak-text').textContent=streak+' week streak';
+  }else{sb.style.display='none';}
+  // Coverage grid
+  const coverage=detectCompetencyCoverage(entries);
+  const grid=document.getElementById('month-coverage-grid');
+  grid.innerHTML=getCompetencies().map(c=>{
+    const has=coverage[c.key].count>0;
+    return`<div class="cov-tile ${has?'covered':'empty'}"><div class="cov-tile-label">${c.label}</div><div class="cov-tile-count">${has?coverage[c.key].count:'None'}</div></div>`;
+  }).join('');
+}
+
+// ── FULL RECORD BARS ─────────────────────────────────────────────────────
+function renderFullRecord(){
+  const wrap=document.getElementById('full-record-wrap');
+  const bars=document.getElementById('full-record-bars');
+  const period=document.getElementById('full-record-period');
+  if(!wrap||!bars)return;
+  if(!entries.length){wrap.style.display='none';return;}
+  wrap.style.display='block';
+  // Period label
+  const sorted=[...entries].sort((a,b)=>a.id-b.id);
+  const first=new Date(sorted[0].id).toLocaleDateString('en-GB',{month:'short',year:'numeric'});
+  const last=new Date(sorted[sorted.length-1].id).toLocaleDateString('en-GB',{month:'short',year:'numeric'});
+  period.textContent=first===last?first:first+' to '+last;
+  // Coverage across all entries
+  const coverage=detectCompetencyCoverage(entries);
+  const maxCount=Math.max(1,...getCompetencies().map(c=>coverage[c.key].count));
+  bars.innerHTML=getCompetencies().map(c=>{
+    const n=coverage[c.key].count;
+    const pct=Math.round((n/maxCount)*100);
+    const color=n===0?'var(--amber)':pct>=60?'var(--green)':'var(--acc3)';
+    const labelColor=n===0?'var(--amber)':pct>=60?'var(--green)':'var(--acc3)';
+    const barWidth=n===0?0:Math.max(4,pct);
+    return`<div style="display:flex;align-items:center;gap:12px;">
+      <div style="font-size:12px;color:var(--tx2);width:160px;flex-shrink:0;">${c.label}</div>
+      <div style="flex:1;height:5px;background:var(--bdr2);border-radius:3px;overflow:hidden;">
+        <div style="height:100%;width:${barWidth}%;background:${color};border-radius:3px;transition:width .6s ease;"></div>
+      </div>
+      <div style="font-size:11px;font-weight:600;width:58px;text-align:right;color:${labelColor};">${n===0?'No entries':n+' entr'+(n===1?'y':'ies')}</div>
+    </div>`;
+  }).join('');
+}
+
+
+async function loginWithGoogle(){
+  const redirectTo=window.location.href.split('#')[0].split('?')[0];
+  window.location.href=`${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(redirectTo)}`;
+}
+async function loginWithEmail(){
+  const email=document.getElementById('login-email').value.trim();
+  const errEl=document.getElementById('login-err');
+  const successEl=document.getElementById('login-success');
+  const btn=document.getElementById('login-btn');
+  errEl.style.display='none';
+  if(!email||!email.includes('@')||!email.includes('.')){
+    errEl.textContent='Please enter a valid email address.';errEl.style.display='block';return;
+  }
+  btn.disabled=true;btn.textContent='Sending...';
+  try{
+    const res=await fetch(`${SUPABASE_URL}/auth/v1/otp`,{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'apikey':SUPABASE_ANON_KEY,
+        'Authorization':`Bearer ${SUPABASE_ANON_KEY}`
+      },
+      body:JSON.stringify({email,create_user:true,options:{emailRedirectTo:window.location.href.split('#')[0].split('?')[0]}})
+    });
+    // Supabase returns 200 on success, sometimes 204
+    if(res.ok||res.status===204){
+      document.getElementById('login-sent-to').textContent=email;
+      successEl.style.display='block';btn.style.display='none';
+    }else{
+      const body=await res.json().catch(()=>({}));
+      const msg=body.msg||body.message||body.error_description||'Could not send the link. Please try again.';
+      btn.disabled=false;btn.textContent='Send sign-in link';
+      errEl.textContent=msg;errEl.style.display='block';
+    }
+  }catch(e){
+    btn.disabled=false;btn.textContent='Send sign-in link';
+    errEl.textContent='Something went wrong. Check your connection and try again.';errEl.style.display='block';
+  }
+}
+function devBypass(){currentUser={email:'demo@yourbragbook.com'};load();afterLogin();}
+function signOut(){
+  currentUser=null;
+  localStorage.removeItem('sb_access_token');localStorage.removeItem('sb_refresh_token');localStorage.removeItem('sb_session');
+  goTo('screen-land');
+}
+function afterLogin(){
+  load();
+  if(!userGoal)goTo('screen-goal');
+  else if(localStorage.getItem('bb_resume_done')!=='1')goTo('screen-resume');
+  else goTo('screen-app');
+}
+async function handleAuthCallback(){
+  const hash=window.location.hash;
+  if(hash&&hash.includes('access_token')){
+    const params=new URLSearchParams(hash.substring(1));
+    const token=params.get('access_token');
+    if(token){
+      localStorage.setItem('sb_access_token',token);
+      try{
+        const r=await fetch(`${SUPABASE_URL}/auth/v1/user`,{headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':`Bearer ${token}`}});
+        const u=await r.json();
+        if(u&&u.email){currentUser=u;history.replaceState(null,'',window.location.pathname);afterLogin();}
+      }catch(e){}
+    }
+  }
+}
+
+// ── APP ────────────────────────────────────────────────────────────────
+function initApp(){
+  load();
+  const h=new Date().getHours();
+  document.getElementById('app-greeting').textContent=(h<12?'Good morning':h<17?'Good afternoon':'Good evening')+'.';
+  if(currentUser?.email)document.getElementById('app-user-email').textContent=currentUser.email;
+  // Goal label with change option
+  if(userGoal&&GOALS[userGoal]){
+    document.getElementById('app-goal-label').innerHTML='Goal: <strong style="color:var(--tx);">'+GOALS[userGoal].label+'</strong>. One minute before you leave. Write down what moved you closer to it today. <button onclick="changeGoal()" style="background:none;border:none;color:var(--tx4);font-size:11px;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px;margin-left:4px;">Change goal</button>';
+  }
+  // CV indicator with remove option
+  const cvIndicator=document.getElementById('cv-indicator');
+  if(cvIndicator){
+    if(userResume){
+      cvIndicator.style.display='flex';
+      cvIndicator.innerHTML=`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span style="color:var(--green);">CV loaded</span><button onclick="goTo('screen-resume')" style="background:none;border:none;color:var(--tx4);font-size:11px;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px;margin-left:6px;">Update</button><button onclick="removeCV()" style="background:none;border:none;color:var(--tx4);font-size:11px;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px;margin-left:6px;">Remove</button>`;
+    }else{
+      cvIndicator.style.display='flex';
+      cvIndicator.innerHTML=`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--tx4)" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><button onclick="goTo('screen-resume')" style="background:none;border:none;color:var(--tx4);font-size:11px;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px;">Add your CV for better playbooks</button>`;
+    }
+  }
+  newEntry();renderEntries();updateReportStrip();updateUsageBar();renderMonthlySummary();checkGapNudge();renderFullRecord();
+}
+function updateCount(ta){
+  const words=ta.value.trim().split(/\s+/).filter(w=>w.length>0).length;
+  const el=document.getElementById('record-char');
+  if(words===0){el.textContent='~80 words max';el.style.color='var(--tx4)';}
+  else if(words<=60){el.textContent=words+' words';el.style.color='var(--tx3)';}
+  else if(words<=75){el.textContent=words+' words, almost there';el.style.color='var(--acc3)';}
+  else{el.textContent=words+' words, keep it tight';el.style.color='var(--amber)';}
+}
+function clearRecord(){const ta=document.getElementById('record-ta');ta.value='';ta.focus();const el=document.getElementById('record-char');el.textContent='~80 words max';el.style.color='var(--tx4)';}
+function newEntry(){
+  const l=canAddEntry();
+  const box=document.getElementById('record-box');
+  const limitNotice=document.getElementById('entry-limit-notice');
+  if(!l.ok){
+    box.style.display='none';
+    limitNotice.style.display='block';
+    const isYearFull=l.usedYear>=l.maxYear;
+    limitNotice.innerHTML=isYearFull
+      ?`<strong>Annual limit reached.</strong> You have used all ${PLAN.MAX_ENTRIES_YEAR} entries for this year. Your allowance renews in January.`
+      :`<strong>Monthly limit reached.</strong> You have used your ${l.usedMonth} of ${l.allowanceMonth} entries for this month. More entries unlock on the 1st.`;
+    return;
+  }
+  limitNotice.style.display='none';
+  box.style.display='block';
+  document.getElementById('saving-state').style.display='none';
+  document.getElementById('confirm-card').classList.remove('on');
+  clearRecord();
+}
+async function saveEntry(){
+  const l=canAddEntry();if(!l.ok){newEntry();return;}
+  const ta=document.getElementById('record-ta');const raw=ta.value.trim();if(!raw){ta.focus();return;}
+  document.getElementById('record-box').style.display='none';
+  document.getElementById('saving-state').style.display='flex';
+  const entry={id:Date.now(),text:raw,date:today(),mk:mKey()};
+  entries.unshift(entry);save();
+  document.getElementById('saving-state').style.display='none';
+  document.getElementById('cc-text').textContent=raw;
+  document.getElementById('cc-date').textContent=entry.date;
+  document.getElementById('confirm-card').classList.add('on');
+  renderEntries();updateReportStrip();updateUsageBar();renderMonthlySummary();checkGapNudge();renderFullRecord();
+}
+function deleteEntry(id){if(!confirm('Remove this entry?'))return;entries=entries.filter(e=>e.id!==id);save();renderEntries();updateReportStrip();updateUsageBar();renderMonthlySummary();checkGapNudge();renderFullRecord();}
+function renderEntries(){
+  const list=document.getElementById('entries-list');
+  const q=(document.getElementById('search-input')?.value||'').toLowerCase().trim();
+  document.getElementById('entries-badge').textContent=entries.length;
+  let filtered=q?entries.filter(e=>e.text.toLowerCase().includes(q)):entries;
+  if(!filtered.length){
+    list.innerHTML=q?'<div class="empty-state"><p>No entries match that search.</p></div>':'<div class="empty-state"><p>Your entries will appear here. Start by writing something that went well today.</p></div>';
+    return;
+  }
+  const byM={};filtered.forEach(e=>{if(!byM[e.mk])byM[e.mk]=[];byM[e.mk].push(e);});
+  const months=Object.keys(byM).sort().reverse();
+  list.innerHTML=months.map(mk=>{
+    const items=byM[mk].map(e=>{
+      const txt=q?e.text.replace(new RegExp(`(${q})`,'gi'),'<mark style="background:rgba(124,111,247,0.25);border-radius:2px;padding:0 2px;">$1</mark>'):escHtml(e.text);
+      return`<div class="entry-item"><div class="ei-text">${txt}</div><div class="ei-date">${e.date}</div><button class="ei-del" onclick="deleteEntry(${e.id})">x</button></div>`;
+    }).join('');
+    return`<div class="entry-group"><div class="eg-month">${mLabel(mk)}</div>${items}</div>`;
+  }).join('');
+}
+function updateReportStrip(){
+  const strip=document.getElementById('report-strip');const n=entries.length;
+  strip.style.display=n>0?'block':'none';
+  if(n>0){
+    const r=canGenerateReport();
+    const hasMin=n>=5;
+    document.getElementById('report-strip-sub').textContent=`${r.used} of ${r.max} playbooks used this year.`;
+    const btn=document.getElementById('report-strip-btn');
+    if(btn){
+      btn.disabled=!r.ok||!hasMin;
+      btn.textContent=!r.ok?'Playbook limit reached':!hasMin?`Add ${5-n} more ${5-n===1?'entry':'entries'} to unlock`:'My playbook';
+    }
+  }
+}
+function updateUsageBar(){
+  const l=canAddEntry();
+  const el=document.getElementById('usage-bar-wrap');if(!el)return;
+  const pct=Math.round((l.usedYear/l.maxYear)*100);
+  el.innerHTML=`
+    <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+      <span style="font-size:11px;color:var(--tx3);">Entries this year</span>
+      <span style="font-size:11px;color:var(--tx3);font-weight:600;">${l.usedYear} / ${l.maxYear}</span>
+    </div>
+    <div style="height:4px;background:var(--bdr2);border-radius:2px;overflow:hidden;">
+      <div style="height:100%;width:${pct}%;background:${pct>=100?'var(--amber)':pct>=80?'var(--acc3)':'var(--green)'};border-radius:2px;transition:width .3s;"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:5px;">
+      <span style="font-size:11px;color:var(--tx4);">This month: ${l.usedMonth} / ${l.allowanceMonth} (with rollover)</span>
+      <span style="font-size:11px;color:var(--tx4);">Reports: ${reportCount} / ${PLAN.MAX_REPORTS_YEAR}</span>
+    </div>`;
+}
+
+// ── COPY BUTTON ────────────────────────────────────────────────────────
+function copyText(btn,text){
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.classList.add('copied');
+    btn.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Copied';
+    setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy';},2000);
+  }).catch(()=>{});
+}
+function mkCopyBtn(text){
+  return`<button class="copy-btn" onclick="copyText(this,${JSON.stringify(text)})"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy</button>`;
+}
+
+// ── REPORT VERSION HISTORY ─────────────────────────────────────────────
+function renderHistoryTabs(){
+  const bar=document.getElementById('rep-history-bar');
+  const tabs=document.getElementById('rep-history-tabs');
+  if(reportHistory.length<2){bar.style.display='none';return;}
+  bar.style.display='block';
+  tabs.innerHTML=reportHistory.map((r,i)=>`<button class="rep-hist-tab ${i===activeHistoryIndex?'active':''}" onclick="showHistoryVersion(${i})">${r.date}${i===0?' (latest)':''}</button>`).join('');
+}
+function showHistoryVersion(i){
+  activeHistoryIndex=i;
+  renderHistoryTabs();
+  renderReport(reportHistory[i].data);
+}
+
+// ── REPORT ─────────────────────────────────────────────────────────────
+const BASE_PROMPT=`You are a senior career coach building a Playbook for a professional. They have logged their wins and achievements over time.
+
+FIRST: Before doing anything else, if a CV has been provided, read it alongside the entries and identify any contradictions. A contradiction is any mismatch between what the CV says and what the entries say — role, seniority, location, company, career direction, or stated goal. Examples: CV says CFO but entries say they want to become a CFO. CV says based in London but entries mention wanting to move to London. CV shows they left a company but entries reference it as current. Any contradiction found MUST appear in the gaps section. This is not optional.
+
+Build a full Playbook using only what they actually wrote. Do not invent details not mentioned in their entries.
+
+Rules:
+- First person where they will speak. Second person in coaching notes.
+- No em dashes anywhere. Use commas or full stops instead.
+- No corporate jargon. No banned words: demonstrates, showcases, leveraged, impactful, meaningfully, proactively, effectively, successfully.
+- Plain, direct, powerful. Grade 5 language.
+- Sound like a sharp professional, not HR copy.
+
+Return ONLY valid JSON, no markdown:
+{"summary":"One sentence summary of their overall record strength.","readiness":"72","opening_narrative":"2 to 3 sentences they say out loud. First person. Built from their strongest entries.","narrative_note":"One coaching note on how to deliver this.","lead_points":[{"point":"Their strongest result stated as they would say it.","script":"The exact words they say in the room for this point.","confidence":"Rock solid","note":"How to present this. What to watch for."},{"point":"Second strongest.","script":"Exact words.","confidence":"Solid","note":"How to present this."},{"point":"Third point.","script":"Exact words.","confidence":"Needs rehearsal","note":"How to present this."}],"gaps":[{"gap":"The most important gap in one sentence.","script":"Exact words to address it proactively.","note":"Why raising it yourself puts you in control."}],"commit_language":"One sentence. What they say to close the conversation.","commit_note":"Why ending with this works.","leave_out":["Thing to leave out 1 and why in one sentence.","Thing to leave out 2 and why."],"checklist":["Specific prep item 1.","Specific prep item 2.","Specific prep item 3.","Specific prep item 4.","Specific prep item 5."]}`;
+
+async function generateReport(){
+  const r=canGenerateReport();
+  if(!r.ok){alert(`You have used all ${r.max} playbooks for this year. Your allowance renews in January.`);return;}
+  if(entries.length<5){alert('Add at least 5 entries before generating your playbook. The more you log, the sharper it gets.');return;}
+  goTo('screen-report');
+  document.getElementById('rep-loading').style.display='flex';
+  document.getElementById('rep-error').style.display='none';
+  document.getElementById('rep-content').style.display='none';
+  document.getElementById('rep-history-bar').style.display='none';
+
+  // Show usage count
+  const usageNote=document.getElementById('rep-usage-note');
+  if(usageNote){
+    const after=reportCount+1;
+    const remaining=PLAN.MAX_REPORTS_YEAR-after;
+    usageNote.textContent=`This will be playbook ${after} of ${PLAN.MAX_REPORTS_YEAR} for this year. ${remaining>0?remaining+' remaining after this.':'This is your last one for this year.'}`;
+  }
+
+  // Animate progress bar over ~50 seconds
+  const bar=document.getElementById('rep-progress-bar');
+  const label=document.getElementById('rep-progress-label');
+  const steps=[
+    {pct:8,text:'Reading your entries...',delay:1000},
+    {pct:20,text:'Analysing your record...',delay:4000},
+    {pct:38,text:'Identifying your strongest points...',delay:8000},
+    {pct:55,text:'Building your narrative...',delay:14000},
+    {pct:70,text:'Finding gaps in your record...',delay:22000},
+    {pct:82,text:'Writing your scripts...',delay:32000},
+    {pct:90,text:'Almost there...',delay:42000},
+    {pct:95,text:'Finishing up...',delay:50000}
+  ];
+  const timers=[];
+  steps.forEach(s=>{
+    timers.push(setTimeout(()=>{
+      if(bar)bar.style.width=s.pct+'%';
+      if(label)label.textContent=s.text;
+    },s.delay));
+  });
+
+  const entriesToSend=entries.slice(0,PLAN.API_ENTRY_CAP);
+  console.log('CV loaded:', userResume?'YES ('+userResume.substring(0,100)+'...)':'NO');
+  document.getElementById('rep-entry-count').textContent=entriesToSend.length+(entriesToSend.length===1?' entry':' entries');
+  const competencies=getCompetencies();
+  const competencyContext=`\n\nFor this user's goal, the five competency areas to assess evidence against are:\n${competencies.map((c,i)=>`${i+1}. ${c.label}`).join('\n')}\nWeight your lead points, gaps, and confidence ratings against these five areas specifically.`;
+  const goalContext=userGoal&&GOALS[userGoal]?`\n\nThe user's specific goal: ${GOALS[userGoal].label}. Every coaching note, every confidence rating, and every gap identified should be framed around this specific goal. Generic advice is not acceptable.`:'';
+  const resumeContext=userResume?`\n\nCV CONTEXT (read this carefully before building the playbook):
+${userResume.substring(0,3000)}
+
+Using the CV above, do all of the following before writing the playbook:
+1. Identify their current role and level. Name it explicitly in the notes where relevant.
+2. Identify the gap between where they are now and their stated goal. This gap should shape what you call out as strong evidence and what you flag as missing.
+3. Check whether their entries show they are already operating at the level their goal requires. If yes, say so directly. If not, name what is still missing.
+4. Calibrate confidence ratings against their actual experience. A result that would be impressive for a junior professional may be expected at a senior level. Adjust accordingly.
+5. If their CV shows they have been in the same role for more than 3 years without a promotion, flag this in the gaps section. A long tenure needs to be addressed in the conversation, not ignored.
+Do not quote the CV back to them. Use it only to make the playbook sharper and more specific to their actual situation.
+6. Read the CV and the entries together carefully. If you find any contradiction between what the CV says and what the entries say — role, seniority, location, company, career direction, or anything else — flag it explicitly in the gaps section. Do not gloss over contradictions. Surface them directly so the user can address them. Common examples: the CV shows they already hold the role they say they want; the CV shows a different location to what the entries mention; the CV shows they left a company the entries still reference as current. Any contradiction you find must be named clearly.`
+:`\n\nNo CV was uploaded. Build the playbook using only the entries provided. Do not invent or assume any background context about their role, level, or industry. Where the entries lack context, note that more specific entries or a CV upload would sharpen this section.`;
+  const list=entriesToSend.map((e,i)=>`${i+1}. [${e.date}] ${e.text}`).join('\n');
+  try{
+    const res=await api(BASE_PROMPT+goalContext+competencyContext+resumeContext+'\n\nEntries:\n'+list);
+    timers.forEach(t=>clearTimeout(t));
+    if(bar){bar.style.width='100%';}
+    if(label){label.textContent='Done.';}
+    let p;
+    try{let c=res.trim().replace(/```json/g,'').replace(/```/g,'').trim();const m=c.match(/\{[\s\S]*\}/);if(m)c=m[0];p=JSON.parse(c);}
+    catch(e){throw new Error('parse');}
+    reportCount++;
+    // Save to history (keep last 3)
+    reportHistory.unshift({date:today(),data:p});
+    if(reportHistory.length>3)reportHistory=reportHistory.slice(0,3);
+    activeHistoryIndex=0;
+    save();
+    renderReport(p);
+    renderHistoryTabs();
+  }catch(e){
+    timers.forEach(t=>clearTimeout(t));
+    document.getElementById('rep-loading').style.display='none';
+    document.getElementById('rep-error').style.display='block';
+  }
+}
+
+function confColor(c){return c==='Rock solid'?'var(--green)':c==='Solid'?'var(--acc3)':'var(--amber)';}
+
+function secLbl(num,text){
+  return`<div class="rep-sec-lbl"><div class="rep-sec-lbl-num">${num}</div><span class="rep-sec-lbl-text">${text}</span></div>`;
+}
+function capReadiness(raw,entryCount){
+  const score=parseInt(raw)||50;
+  let max=100;
+  if(entryCount<=10)max=30;
+  else if(entryCount<=20)max=50;
+  else if(entryCount<=35)max=65;
+  else if(entryCount<=50)max=80;
+  else if(entryCount<=75)max=90;
+  return Math.min(score,max);
+}
+function renderReport(p){
+  document.getElementById('rep-loading').style.display='none';
+  const goalLabel=userGoal&&GOALS[userGoal]?`<div style="display:inline-flex;align-items:center;gap:6px;background:var(--acc2);border:1px solid rgba(124,111,247,0.25);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--acc3);font-weight:600;margin-bottom:16px;">Goal: ${GOALS[userGoal].short}</div>`:'';
+  const noCVNotice=!userResume?`<div style="background:var(--amber-bg);border:1px solid var(--amber-bdr);border-radius:var(--rs);padding:12px 16px;margin-bottom:16px;font-size:13px;color:var(--amber);line-height:1.65;">No CV was uploaded. This playbook is built from your entries only, with no background context on your role or level. Upload your CV to get a sharper, more specific playbook.</div>`:'';
+  const disclaimer=`<div style="margin-top:28px;padding-top:16px;border-top:1px solid var(--bdr);font-size:11px;color:var(--tx4);line-height:1.7;">This playbook is based entirely on what you logged. YourBragBook does not guarantee any career outcome. Results depend on the quality and consistency of your entries. Use this as a starting point to build and refine your own case.</div>`;
+  const entryCount=entries.length;
+  const readiness=capReadiness(p.readiness,entryCount);
+  const html=`
+    ${goalLabel}
+    ${noCVNotice}
+    <div class="rep-topbar"><div class="rep-summary-txt">${p.summary||'Your record is building.'}</div><div style="text-align:right;flex-shrink:0;"><div class="rep-pct-num">${readiness}%</div><div class="rep-pct-lbl">readiness</div></div></div>
+    <div class="rep-section">
+      ${secLbl('1','Opening narrative')}
+      <div class="rep-narrative-block">${p.opening_narrative||''}</div>
+      ${mkCopyBtn(p.opening_narrative||'')}
+      ${p.narrative_note?`<div class="rep-coach" style="margin-top:10px;"><span class="rep-coach-lbl">Coach note</span>${p.narrative_note}</div>`:''}
+    </div>
+    <div class="rep-section">
+      ${secLbl('2','Lead with these')}
+      ${(p.lead_points||[]).map(lp=>`
+        <div class="rep-point-card">
+          <div class="rep-conf" style="color:${confColor(lp.confidence)};"><span style="width:7px;height:7px;border-radius:50%;background:${confColor(lp.confidence)};display:inline-block;"></span> ${lp.confidence}</div>
+          <div class="rep-point-title">${lp.point}</div>
+          ${lp.script?`<div style="background:var(--sur2);border-left:2px solid var(--acc3);border-radius:0 var(--rs) var(--rs) 0;padding:10px 14px;margin-top:10px;font-size:13px;color:var(--tx2);line-height:1.75;">"${lp.script}"</div>${mkCopyBtn('"'+lp.script+'"')}`:''}
+          ${lp.note?`<div class="rep-point-note">${lp.note}</div>`:''}
+        </div>`).join('')}
+    </div>
+    ${(p.gaps||[]).length?`<div class="rep-section">${secLbl('3','Gaps to own')}${p.gaps.map(g=>`<div class="rep-gap-card"><div class="rep-gap-title">${g.gap}</div><div class="rep-gap-script">"${g.script}"</div>${mkCopyBtn('"'+g.script+'"')}${g.note?`<div class="rep-gap-note" style="margin-top:8px;">${g.note}</div>`:''}</div>`).join('')}</div>`:''}
+    ${p.commit_language?`<div class="rep-section">${secLbl('4','How to close')}<div class="rep-commit-block"><div class="rep-commit-text">"${p.commit_language}"</div>${mkCopyBtn('"'+p.commit_language+'"')}${p.commit_note?`<div class="rep-commit-note" style="margin-top:8px;">${p.commit_note}</div>`:''}</div></div>`:''}
+    ${(p.leave_out||[]).length?`<div class="rep-section">${secLbl('5','Leave out entirely')}<div class="rep-plain-card">${p.leave_out.map(item=>`<div class="rep-leave-row"><div class="rep-leave-x">X</div><div style="font-size:13px;color:var(--tx2);line-height:1.55;">${item}</div></div>`).join('')}</div></div>`:''}
+    ${(p.checklist||[]).length?`<div class="rep-section">${secLbl('6','Preparation checklist')}<div class="rep-plain-card">${p.checklist.map(item=>`<div class="rep-chk-row2"><div class="rep-checkbox2" onclick="toggleCheck2(this)"></div><div class="rep-ctext">${item}</div></div>`).join('')}</div></div>`:''}
+    ${disclaimer}
+    <div style="padding-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn-ghost" style="padding:9px 20px;font-size:13px;" onclick="window.print()">Print clean version</button>
+      <button class="btn-ghost" style="padding:9px 20px;font-size:13px;" onclick="goTo('screen-app')">Back to entries</button>
+    </div>
+  `;
+  const el=document.getElementById('rep-content');el.innerHTML=html;el.style.display='block';
+}
+
+function changeGoal(){
+  // Reset goal selection so user can pick again
+  selectedGoalKey=null;
+  // Pre-select their current goal on the screen
+  document.querySelectorAll('.goal-opt').forEach(b=>{
+    b.classList.remove('selected');
+    if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+userGoal+"'"))b.classList.add('selected');
+  });
+  const cb=document.getElementById('goal-confirm-btn');
+  if(cb){cb.disabled=false;cb.style.opacity='1';}
+  selectedGoalKey=userGoal;
+  goTo('screen-goal');
+}
+function removeCV(){
+  if(!confirm('Remove your CV? This means your next playbook will have no background context on your role or level.'))return;
+  userResume=null;
+  localStorage.removeItem('bb_resume');
+  save();
+  initApp();
+}
+function downloadEntries(){
+  if(!entries.length){alert('No entries to download yet.');return;}
+  const byM={};
+  entries.forEach(e=>{if(!byM[e.mk])byM[e.mk]=[];byM[e.mk].push(e);});
+  const months=Object.keys(byM).sort();
+  let text='YourBragBook — My Entries\n';
+  text+='Exported: '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+'\n';
+  text+='Total entries: '+entries.length+'\n';
+  text+='='.repeat(40)+'\n\n';
+  months.forEach(mk=>{
+    text+=mLabel(mk).toUpperCase()+'\n'+'-'.repeat(20)+'\n';
+    byM[mk].slice().reverse().forEach(e=>{
+      text+=e.date+'\n'+e.text+'\n\n';
+    });
+  });
+  const blob=new Blob([text],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='mybragbook-entries-'+new Date().toISOString().slice(0,10)+'.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+function toggleFaq(btn){
+  const item=btn.parentElement;const ans=btn.nextElementSibling;
+  const isOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(el=>{el.classList.remove('open');el.querySelector('.faq-a').style.display='none';});
+  if(!isOpen){item.classList.add('open');ans.style.display='block';}
+}
+function toggleCheck(el){el.classList.toggle('checked');}
+function toggleCheck2(el){el.classList.toggle('checked');}
+function toggleAcc(btn){
+  const body=btn.nextElementSibling;const isOpen=body.style.display==='block';
+  body.style.display=isOpen?'none':'block';
+  const svg=btn.querySelector('svg');if(svg)svg.style.transform=isOpen?'':'rotate(180deg)';
+}
+// ── SITUATION TICKER ───────────────────────────────────────────────────
+(function(){
+  const words=['Promotion','Salary negotiation','Job interview','Annual appraisal','Probation review','Internal transfer','Bigger team or budget','PIP response'];
+  const track=document.getElementById('sit-track');
+  if(!track)return;
+  const outer=track.parentElement;
+  let html='';
+  for(let r=0;r<4;r++) words.forEach(w=>{html+=`<span style="display:inline-block;padding:0 28px;font-size:12px;font-weight:600;letter-spacing:.4px;color:#3A3F5C;transition:color .2s;">${w}</span>`;});
+  track.innerHTML=html;
+  const items=Array.from(track.querySelectorAll('span'));
+  const segLen=items.length/4;
+  let pos=0,lastLit=-1;
+  function loop(){
+    pos-=1.8;
+    const segW=items.slice(0,segLen).reduce((a,el)=>a+el.offsetWidth,0);
+    if(pos<=-segW)pos+=segW;
+    track.style.transform=`translateX(${pos}px)`;
+    const cx=outer.getBoundingClientRect().left+outer.offsetWidth/2;
+    let closest=-1,minDist=Infinity;
+    items.forEach((el,i)=>{
+      const r=el.getBoundingClientRect();
+      const d=Math.abs((r.left+r.width/2)-cx);
+      if(d<minDist){minDist=d;closest=i;}
+    });
+    if(closest!==lastLit){
+      if(lastLit>=0)items[lastLit].style.color='#3A3F5C';
+      if(closest>=0)items[closest].style.color='#E8EAF5';
+      lastLit=closest;
+    }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+
+// ── LAUNCH COUNTDOWN ───────────────────────────────────────────────────
+// Set your launch date here. Offer runs for 38 days from this date.
+const LAUNCH_DATE=new Date('2026-05-10T00:00:00');
+const OFFER_END=new Date(LAUNCH_DATE.getTime()+(38*24*60*60*1000));
+
+function updateCountdown(){
+  const now=new Date();
+  const diff=OFFER_END-now;
+  const banner=document.getElementById('launch-banner');
+  const wrap=document.getElementById('pricing-countdown-wrap');
+  if(diff<=0){
+    // Offer expired
+    if(banner)banner.style.display='none';
+    if(wrap)wrap.style.display='none';
+    const planDays=document.getElementById('plan-days-left');
+    if(planDays)planDays.closest('div').style.display='none';
+    // Update pricing heading back to standard
+    return;
+  }
+  const days=Math.floor(diff/(1000*60*60*24));
+  const hours=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+  const mins=Math.floor((diff%(1000*60*60))/(1000*60));
+  // Banner
+  const bc=document.getElementById('banner-countdown');
+  if(bc)bc.textContent=days+' day'+(days===1?'':' s')+' left';
+  // Pricing countdown
+  const cd=document.getElementById('countdown-days');
+  const ch=document.getElementById('countdown-hours');
+  const cm=document.getElementById('countdown-mins');
+  if(cd)cd.textContent=String(days).padStart(2,'0');
+  if(ch)ch.textContent=String(hours).padStart(2,'0');
+  if(cm)cm.textContent=String(mins).padStart(2,'0');
+  // Plan card inline text
+  const pd=document.getElementById('plan-days-left');
+  if(pd)pd.textContent=days+' day'+(days===1?'':' s');
+}
+updateCountdown();
+setInterval(updateCountdown,60000);
+
+window.addEventListener('load',handleAuthCallback);
+</script>
+</body>
+</html>
