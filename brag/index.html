@@ -1983,9 +1983,23 @@ function isPaywalled(){
   return false;
 }
 
-function isEntryBlocked(){
-  if(settings.isPaid)return false;
-  return freeEntryLimitReached();
+function showPaywall(){
+  const heading=document.getElementById('paywall-heading');
+  const message=document.getElementById('paywall-message');
+  if(settings.isPaid&&isSubscriptionExpired()){
+    if(heading)heading.textContent='Your subscription has ended';
+    if(message)message.textContent='Your 12-month subscription is complete. Renew now to keep your full record and continue generating playbooks.';
+  } else if(isTrialExpired()){
+    if(heading)heading.textContent='Your free trial has ended';
+    if(message)message.textContent='Your 14-day free trial is over. To keep generating playbooks and access your entries, continue with full access for $29/year.';
+  } else if(hasUsedFreePlaybook()){
+    if(heading)heading.textContent='You have used your free playbook';
+    if(message)message.textContent='Your free trial includes one playbook. To generate more and keep building your record, continue with full access for $29/year.';
+  } else {
+    if(heading)heading.textContent='You have used your free entries';
+    if(message)message.textContent='Your free trial includes 25 entries. To keep logging and build a stronger case, continue with full access for $29/year.';
+  }
+  goTo('screen-paywall');
 }
 async function handleAuthCallback(){
   const hash=window.location.hash;
@@ -2171,8 +2185,7 @@ function tagCompetency(text){
 }
 
 async function saveEntry(){
-  if(!settings.isPaid&&isTrialExpired()){goTo('screen-paywall');return;}
-  if(settings.isPaid&&isSubscriptionExpired()){goTo('screen-paywall');return;}
+  if(!settings.isPaid&&isTrialExpired()||settings.isPaid&&isSubscriptionExpired()){showPaywall();return;}
   const l=canAddEntry();if(!l.ok){newEntry();return;}
   const ta=document.getElementById('record-ta');const raw=ta.value.trim();if(!raw){ta.focus();return;}
   document.getElementById('record-box').style.display='none';
@@ -2368,20 +2381,7 @@ async function generateReport(){
   if(isPaywalled()){
     const heading=document.getElementById('paywall-heading');
     const message=document.getElementById('paywall-message');
-    if(settings.isPaid&&isSubscriptionExpired()){
-      if(heading)heading.textContent='Your subscription has ended';
-      if(message)message.textContent='Your 12-month subscription is complete. Renew now to keep your full record and continue generating playbooks.';
-    } else if(isTrialExpired()){
-      if(heading)heading.textContent='Your free trial has ended';
-      if(message)message.textContent='Your 14-day free trial is over. To keep generating playbooks and access your entries, continue with full access for $29/year.';
-    } else if(hasUsedFreePlaybook()){
-      if(heading)heading.textContent='You have used your free playbook';
-      if(message)message.textContent='Your free trial includes one playbook. To generate more and keep building your record, continue with full access for $29/year.';
-    } else {
-      if(heading)heading.textContent='You have used your free entries';
-      if(message)message.textContent='Your free trial includes 25 entries. To keep logging and build a stronger case, continue with full access for $29/year.';
-    }
-    goTo('screen-paywall');
+    showPaywall();
     return;
   }
   // Refresh settings from Supabase so bonus_reports and report_count are always current
@@ -3071,8 +3071,7 @@ async function removeCV(){
   initApp();
 }
 function downloadEntries(){
-  if(!settings.isPaid&&isTrialExpired()){goTo('screen-paywall');return;}
-  if(settings.isPaid&&isSubscriptionExpired()){goTo('screen-paywall');return;}
+  if(!settings.isPaid&&isTrialExpired()||settings.isPaid&&isSubscriptionExpired()){showPaywall();return;}
   if(!entries.length){alert('No entries to download yet.');return;}
   const byM={};
   entries.forEach(e=>{if(!byM[e.mk])byM[e.mk]=[];byM[e.mk].push(e);});
