@@ -1256,7 +1256,7 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
   <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 24px;text-align:center;">
     <div style="max-width:400px;">
       <div style="font-size:40px;margin-bottom:16px;">🔒</div>
-      <h2 id="paywall-heading" style="font-size:22px;font-weight:800;color:var(--tx);margin-bottom:12px;line-height:1.3;">Your free trial has ended</h2>
+      <h2 id="paywall-heading" style="font-size:22px;font-weight:800;color:var(--tx);margin-bottom:12px;line-height:1.3;">Access required</h2>
       <p id="paywall-message" style="font-size:14px;color:var(--tx3);line-height:1.75;margin-bottom:28px;">You have used your free playbook. To generate more playbooks and keep access to your entries, continue with a full year for $29.</p>
       <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:20px;margin-bottom:20px;text-align:left;">
         <div style="font-size:13px;font-weight:700;color:var(--tx);margin-bottom:12px;">What you get for $29/year</div>
@@ -1465,10 +1465,11 @@ function subscriptionDaysRemaining(){
   if(!settings||!settings.signupDate||!settings.isPaid)return null;
   const signup=new Date(settings.signupDate);
   const now=new Date();
-  const msPerYear=365.25*24*60*60*1000;
-  const yearsElapsed=Math.floor((now-signup)/msPerYear);
+  // Find the next anniversary after now
   const nextRenewal=new Date(signup);
-  nextRenewal.setFullYear(signup.getFullYear()+yearsElapsed+1);
+  nextRenewal.setFullYear(signup.getFullYear()+1);
+  // If next renewal is in the past, the subscription has expired
+  if(nextRenewal<=now)return Math.ceil((nextRenewal-now)/(24*60*60*1000));
   return Math.ceil((nextRenewal-now)/(24*60*60*1000));
 }
 
