@@ -1444,8 +1444,39 @@ function goTo(id){
 function today(){return new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}
 function mKey(d){const dt=d||new Date();return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0');}
 function mLabel(k){const[y,m]=k.split('-');return MONTHS[parseInt(m)-1]+' '+y;}
-function yearKey(){return new Date().getFullYear()+'';}
-function wKey(d){const dt=d||new Date();const jan1=new Date(dt.getFullYear(),0,1);return dt.getFullYear()+'-W'+Math.ceil(((dt-jan1)/86400000+jan1.getDay()+1)/7);}
+function yearKey(){
+  // Base year key on subscription anniversary from signup date, not calendar year
+  // This ensures paid users get a full 12 months from their signup date
+  if(settings&&settings.signupDate){
+    const signup=new Date(settings.signupDate);
+    const now=new Date();
+    // Calculate how many full years since signup
+    const yearsElapsed=Math.floor((now-signup)/(365.25*24*60*60*1000));
+    // The current subscription year started on this anniversary
+    const yearStart=new Date(signup);
+    yearStart.setFullYear(signup.getFullYear()+yearsElapsed);
+    return yearStart.getFullYear()+'-'+String(yearStart.getMonth()+1).padStart(2,'0')+'-'+String(yearStart.getDate()).padStart(2,'0');
+  }
+  // Fallback to calendar year if no signup date
+  return new Date().getFullYear()+'';
+}
+
+function subscriptionDaysRemaining(){
+  if(!settings||!settings.signupDate||!settings.isPaid)return null;
+  const signup=new Date(settings.signupDate);
+  const now=new Date();
+  const msPerYear=365.25*24*60*60*1000;
+  const yearsElapsed=Math.floor((now-signup)/msPerYear);
+  const nextRenewal=new Date(signup);
+  nextRenewal.setFullYear(signup.getFullYear()+yearsElapsed+1);
+  return Math.ceil((nextRenewal-now)/(24*60*60*1000));
+}
+
+function isSubscriptionExpired(){
+  if(!settings||!settings.isPaid)return false;
+  const daysLeft=subscriptionDaysRemaining();
+  return daysLeft!==null&&daysLeft<=0;
+}function wKey(d){const dt=d||new Date();const jan1=new Date(dt.getFullYear(),0,1);return dt.getFullYear()+'-W'+Math.ceil(((dt-jan1)/86400000+jan1.getDay()+1)/7);}
 function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 // ── SUPABASE HELPERS ─────────────────────────────────────────────────
@@ -1763,14 +1794,34 @@ function renderMonthlySummary(){
 
 // ── FULL RECORD BARS ─────────────────────────────────────────────────────
 function renderTrialBanner(){
-  if(settings.isPaid){
-    const b=document.getElementById('trial-banner');
-    if(b)b.style.display='none';
-    return;
-  }
   const b=document.getElementById('trial-banner');
   const t=document.getElementById('trial-banner-text');
   if(!b||!t)return;
+
+  // Paid user - check subscription renewal warning
+  if(settings.isPaid){
+    if(isSubscriptionExpired()){
+      b.style.display='flex';
+      b.style.background='var(--amber-bg)';
+      b.style.borderColor='var(--amber-bdr)';
+      t.style.color='var(--amber)';
+      t.textContent='Your subscription has ended. Renew to keep full access.';
+    } else {
+      const daysLeft=subscriptionDaysRemaining();
+      if(daysLeft!==null&&daysLeft<=14){
+        b.style.display='flex';
+        b.style.background='var(--acc2)';
+        b.style.borderColor='rgba(124,111,247,0.25)';
+        t.style.color='var(--acc3)';
+        t.textContent=`Your subscription renews in ${daysLeft} ${daysLeft===1?'day':'days'}. Renew now to avoid any interruption.`;
+      } else {
+        b.style.display='none';
+      }
+    }
+    return;
+  }
+
+  // Free user - check trial limits
   const entryCount=settings.entryCount!==undefined&&settings.entryCount!==null?settings.entryCount:entries.length;
   if(isTrialExpired()){
     b.style.display='flex';
@@ -1779,7 +1830,6 @@ function renderTrialBanner(){
     t.style.color='var(--amber)';
     t.textContent='Your free trial has ended. Upgrade to keep your entries and generate playbooks.';
   } else if(freeEntryLimitReached()){
-    // Entry limit notice handles this - hide trial banner to avoid duplicate
     b.style.display='none';
   } else if(settings.signupDate){
     const signup=new Date(settings.signupDate);
@@ -1794,6 +1844,7 @@ function renderTrialBanner(){
     }
   }
 }
+
 
 function renderFullRecord(){
   const wrap=document.getElementById('full-record-wrap');
@@ -1900,7 +1951,11 @@ function hasUsedFreePlaybook(){
 }
 
 function isPaywalled(){
-  if(settings.isPaid)return false;
+  // Paid users - check subscription expiry
+  if(settings.isPaid){
+    return isSubscriptionExpired();
+  }
+  // Free users - check trial limits
   if(isTrialExpired())return true;
   if(hasUsedFreePlaybook())return true;
   return false;
@@ -2094,6 +2149,8 @@ function tagCompetency(text){
 }
 
 async function saveEntry(){
+  if(!settings.isPaid&&isTrialExpired()){goTo('screen-paywall');return;}
+  if(settings.isPaid&&isSubscriptionExpired()){goTo('screen-paywall');return;}
   const l=canAddEntry();if(!l.ok){newEntry();return;}
   const ta=document.getElementById('record-ta');const raw=ta.value.trim();if(!raw){ta.focus();return;}
   document.getElementById('record-box').style.display='none';
@@ -2237,11 +2294,11 @@ function renderHistoryTabs(){
 function showHistoryVersion(i){
   activeHistoryIndex=i;
   renderHistoryTabs();
-  renderReport(reportHistory[i].data, reportHistory[i].goal);
+  renderReport(reportHistory[i].data, reportHistory[i].goal, reportHistory[i].goalKey);
 }
 function loadHistoryPlaybook(i){
   activeHistoryIndex=parseInt(i);
-  renderReport(reportHistory[activeHistoryIndex].data, reportHistory[activeHistoryIndex].goal);
+  renderReport(reportHistory[activeHistoryIndex].data, reportHistory[activeHistoryIndex].goal, reportHistory[activeHistoryIndex].goalKey);
 }
 function viewPlaybooks(){
   goTo('screen-report');
@@ -2252,7 +2309,7 @@ function viewPlaybooks(){
     renderHistoryTabs();
     document.getElementById('rep-history-bar').style.display='flex';
     document.getElementById('rep-content').style.display='block';
-    renderReport(reportHistory[0].data, reportHistory[0].goal);
+    renderReport(reportHistory[0].data, reportHistory[0].goal, reportHistory[0].goalKey);
   }
 }
 
@@ -2289,7 +2346,10 @@ async function generateReport(){
   if(isPaywalled()){
     const heading=document.getElementById('paywall-heading');
     const message=document.getElementById('paywall-message');
-    if(isTrialExpired()){
+    if(settings.isPaid&&isSubscriptionExpired()){
+      if(heading)heading.textContent='Your subscription has ended';
+      if(message)message.textContent='Your 12-month subscription is complete. Renew now to keep your full record and continue generating playbooks.';
+    } else if(isTrialExpired()){
       if(heading)heading.textContent='Your free trial has ended';
       if(message)message.textContent='Your 14-day free trial is over. To keep generating playbooks and access your entries, continue with full access for $29/year.';
     } else if(hasUsedFreePlaybook()){
@@ -2609,7 +2669,7 @@ Do not quote the CV back to them. Use it only to make the playbook sharper and m
       throw new Error('parse');
     }
     reportCount++;
-    reportHistory.unshift({date:today(),goal:userGoal&&GOALS[userGoal]?GOALS[userGoal].label:'Playbook',data:p});
+    reportHistory.unshift({date:today(),goal:userGoal&&GOALS[userGoal]?GOALS[userGoal].label:'Playbook',goalKey:userGoal,data:p});
     if(reportHistory.length>12){
       reportHistory=reportHistory.slice(0,12);
       alert('Your oldest playbook has been replaced. You can store up to 12 playbooks at any time.');
@@ -2768,11 +2828,11 @@ const seniorFramework={
   ]
 };
 
-function renderReport(p,goalOverride){
+function renderReport(p,goalOverride,goalKey){
   document.getElementById('rep-loading').style.display='none';
   const goalName=goalOverride||(userGoal&&GOALS[userGoal]?GOALS[userGoal].label:'');
-  // Resolve goal key for seniorFramework - goalOverride may be a label string not a key
-  const activeGoalKey=Object.keys(GOALS).find(k=>GOALS[k].label===goalName)||userGoal;
+  // Use explicit goalKey if provided, otherwise resolve from label, otherwise use current userGoal
+  const activeGoalKey=goalKey||(Object.keys(GOALS).find(k=>GOALS[k].label===goalName))||userGoal;
   const goalShort=activeGoalKey&&GOALS[activeGoalKey]?GOALS[activeGoalKey].short:goalName;
   const noCVNotice=!userResume?`<div style="background:var(--amber-bg);border:1px solid var(--amber-bdr);border-radius:var(--rs);padding:12px 16px;margin-bottom:16px;font-size:13px;color:var(--amber);line-height:1.65;">No CV was uploaded. This playbook is built from your entries only. Upload your CV for a sharper, more specific playbook.</div>`:'';
   const entryCount=entries.length;
@@ -2989,6 +3049,8 @@ async function removeCV(){
   initApp();
 }
 function downloadEntries(){
+  if(!settings.isPaid&&isTrialExpired()){goTo('screen-paywall');return;}
+  if(settings.isPaid&&isSubscriptionExpired()){goTo('screen-paywall');return;}
   if(!entries.length){alert('No entries to download yet.');return;}
   const byM={};
   entries.forEach(e=>{if(!byM[e.mk])byM[e.mk]=[];byM[e.mk].push(e);});
