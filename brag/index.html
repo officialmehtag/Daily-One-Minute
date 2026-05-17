@@ -65,6 +65,7 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
 .result-body strong{display:block;font-size:15px;color:var(--tx);font-weight:600;margin-bottom:3px;}
 .result-body span{font-size:13px;color:var(--tx2);line-height:1.6;}
 .when-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;}
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:40px;}
 .hiw-sec{padding:80px 24px;background:var(--bg);}
 .hiw-inner{max-width:780px;margin:0 auto;}
 .hiw-panels{display:flex;align-items:stretch;gap:0;}
@@ -354,6 +355,7 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
   .hiw-arrow{transform:rotate(90deg);padding:6px 0!important;justify-content:center;background:transparent!important;}
   /* When the moment comes - stack on mobile, prevent overflow */
   .when-grid{grid-template-columns:1fr!important;gap:24px!important;}
+  .why-grid{grid-template-columns:1fr!important;}
   .when-grid>div{min-width:0;max-width:100%;overflow:hidden;}
   .when-grid [style*="grid-template-columns:1fr 1fr;gap:8px"]{grid-template-columns:1fr 1fr!important;}
   .when-grid span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -462,13 +464,23 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
     <p class="hero-sub" style="text-align:center;">A curated collection of your professional achievements, accolades, and performance metrics.</p>
     <p class="hero-note" style="text-align:center;">Capture your details as they happen.</p>
   </section>
+  <!-- WHAT IS IT -->
+  <section style="padding:80px 24px;background:var(--bg);">
+    <div class="hiw-inner">
+      <div class="sec-label">What is it</div>
+      <h2 class="sec-h" style="margin-bottom:24px;">A private record of everything you did at work.</h2>
+      <p style="font-size:17px;color:var(--tx2);line-height:1.85;margin-bottom:20px;max-width:520px;">You write one entry a day. One sentence. What went well, what you delivered, what the number was.</p>
+      <p style="font-size:17px;color:var(--tx2);line-height:1.85;max-width:520px;">When you have a big conversation coming up, we turn your entries into a playbook. What to say. What to skip. How to walk in ready.</p>
+    </div>
+  </section>
+
   <!-- WHY IT'S NEEDED -->
   <section style="padding:80px 24px;background:var(--bg2);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);">
-    <div style="max-width:900px;margin:0 auto;">
+    <div class="hiw-inner">
       <div class="sec-label">Why it's needed</div>
       <h2 class="sec-h" style="margin-bottom:48px;max-width:600px;">The playbook is not the product. The habit is.</h2>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:40px;">
+      <div class="why-grid">
         <div class="step-card">
           <h3>Our memory is not reliable.</h3>
           <p>We do great work every month. Six months later, we cannot remember the details. Write it down today.</p>
