@@ -1237,7 +1237,7 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
     <div class="entries-hdr" onclick="toggleEntriesList()" style="cursor:pointer;">
       <span class="entries-title">Your entries <span id="entries-badge" style="background:var(--sur2);border:1px solid var(--bdr);border-radius:20px;padding:1px 8px;font-size:11px;font-weight:600;color:var(--tx3);margin-left:4px;">0</span></span>
       <div style="display:flex;align-items:center;gap:8px;">
-        <button onclick="event.stopPropagation();downloadEntries()" style="background:none;border:1px solid var(--bdr);color:var(--tx3);font-size:11px;font-weight:600;padding:4px 12px;border-radius:var(--rp);cursor:pointer;transition:all .15s;font-family:'Plus Jakarta Sans',sans-serif;" onmouseover="this.style.borderColor='var(--acc)';this.style.color='var(--acc3)'" onmouseout="this.style.borderColor='var(--bdr)';this.style.color='var(--tx3)'">Download</button>
+        <button id="download-entries-btn" onclick="event.stopPropagation();downloadEntries()" style="background:none;border:1px solid var(--bdr);color:var(--tx3);font-size:11px;font-weight:600;padding:4px 12px;border-radius:var(--rp);cursor:pointer;transition:all .15s;font-family:'Plus Jakarta Sans',sans-serif;" onmouseover="this.style.borderColor='var(--acc)';this.style.color='var(--acc3)'" onmouseout="this.style.borderColor='var(--bdr)';this.style.color='var(--tx3)'">Download</button>
         <svg id="entries-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--tx4)" stroke-width="2" stroke-linecap="round" style="transition:transform .2s;transform:rotate(0deg);"><path d="M6 9l6 6 6-6"/></svg>
       </div>
     </div>
@@ -1793,6 +1793,23 @@ function renderMonthlySummary(){
 }
 
 // ── FULL RECORD BARS ─────────────────────────────────────────────────────
+function setAccessButtons(blocked){
+  const saveBtn=document.getElementById('save-entry-btn');
+  const downloadBtn=document.getElementById('download-entries-btn');
+  if(saveBtn){
+    saveBtn.disabled=blocked;
+    saveBtn.style.opacity=blocked?'0.4':'1';
+    saveBtn.style.cursor=blocked?'not-allowed':'pointer';
+  }
+  if(downloadBtn){
+    downloadBtn.disabled=blocked;
+    downloadBtn.style.opacity=blocked?'0.4':'1';
+    downloadBtn.style.cursor=blocked?'not-allowed':'pointer';
+    downloadBtn.onmouseover=blocked?null:function(){this.style.borderColor='var(--acc)';this.style.color='var(--acc3)';};
+    downloadBtn.onmouseout=blocked?null:function(){this.style.borderColor='var(--bdr)';this.style.color='var(--tx3)';};
+  }
+}
+
 function renderTrialBanner(){
   const b=document.getElementById('trial-banner');
   const t=document.getElementById('trial-banner-text');
@@ -1806,6 +1823,7 @@ function renderTrialBanner(){
       b.style.borderColor='var(--amber-bdr)';
       t.style.color='var(--amber)';
       t.textContent='Your subscription has ended. Renew to keep full access.';
+      setAccessButtons(true);
     } else {
       const daysLeft=subscriptionDaysRemaining();
       if(daysLeft!==null&&daysLeft<=14){
@@ -1817,6 +1835,7 @@ function renderTrialBanner(){
       } else {
         b.style.display='none';
       }
+      setAccessButtons(false);
     }
     return;
   }
@@ -1829,8 +1848,10 @@ function renderTrialBanner(){
     b.style.borderColor='var(--amber-bdr)';
     t.style.color='var(--amber)';
     t.textContent='Your free trial has ended. Upgrade to keep your entries and generate playbooks.';
+    setAccessButtons(true);
   } else if(freeEntryLimitReached()){
     b.style.display='none';
+    setAccessButtons(false);
   } else if(settings.signupDate){
     const signup=new Date(settings.signupDate);
     const now=new Date();
