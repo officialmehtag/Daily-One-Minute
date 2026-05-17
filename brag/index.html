@@ -1089,13 +1089,20 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
       <div id="cv-indicator" style="display:none;align-items:center;gap:5px;font-size:11px;color:var(--tx4);"></div>
     </div>
 
-    <div id="report-strip" style="display:none;margin-bottom:0;padding-bottom:48px;">
+    <div id="report-strip" style="display:none;margin-bottom:0;padding-bottom:16px;">
       <div style="display:flex;gap:10px;flex-wrap:nowrap;align-items:center;">
         <button class="btn-primary" id="report-strip-btn" style="padding:12px 28px;font-size:15px;font-weight:700;white-space:nowrap;" onclick="generateReport()">Generate playbook</button>
         <button class="btn-ghost" id="view-playbooks-btn" style="padding:11px 20px;font-size:14px;display:none;white-space:nowrap;" onclick="viewPlaybooks()">My playbooks</button>
       </div>
       <div id="report-strip-limit" style="display:none;font-size:12px;color:var(--amber);margin-top:6px;">Playbook limit reached for this year.</div>
       <div id="report-strip-sub" style="font-size:12px;color:var(--tx3);margin-top:4px;"></div>
+    </div>
+
+    <!-- Next divider before Your record -->
+    <div id="app-divider-1" style="display:none;align-items:center;gap:12px;margin:24px 0;">
+      <div style="flex:1;height:1px;background:rgba(255,255,255,0.5);"></div>
+      <div style="font-size:10px;font-weight:600;letter-spacing:2px;color:rgba(255,255,255,0.5);text-transform:uppercase;">Next</div>
+      <div style="flex:1;height:1px;background:rgba(255,255,255,0.5);"></div>
     </div>
 
     <!-- FULL RECORD competency bars with toggle -->
@@ -1114,6 +1121,13 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
         </div>
         <div id="full-record-bars" style="display:flex;flex-direction:column;gap:4px;"></div>
       </div>
+    </div>
+
+    <!-- Next divider before My entries -->
+    <div style="display:flex;align-items:center;gap:12px;margin:24px 0 16px;">
+      <div style="flex:1;height:1px;background:rgba(255,255,255,0.5);"></div>
+      <div style="font-size:10px;font-weight:600;letter-spacing:2px;color:rgba(255,255,255,0.5);text-transform:uppercase;">Next</div>
+      <div style="flex:1;height:1px;background:rgba(255,255,255,0.5);"></div>
     </div>
 
     <!-- Entries header with search — collapsible -->
@@ -2031,7 +2045,9 @@ function renderEntries(){
 }
 function updateReportStrip(){
   const strip=document.getElementById('report-strip');const n=entries.length;
+  const div1=document.getElementById('app-divider-1');
   strip.style.display=n>0?'block':'none';
+  if(div1)div1.style.display=n>0?'flex':'none';
   if(n>0){
     const r=canGenerateReport();
     const hasMin=n>=5;
