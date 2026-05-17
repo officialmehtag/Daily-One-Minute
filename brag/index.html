@@ -323,6 +323,7 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
 @media(min-width:769px){
   .record-box{margin-bottom:16px;}
 }
+@media(max-width:768px){
   /* Nav */
   .nav-logo{font-size:13px;}
   .nav-sample-btn{display:none!important;}
@@ -356,6 +357,8 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
   /* When the moment comes - stack on mobile, prevent overflow */
   .when-grid{grid-template-columns:1fr!important;gap:24px!important;}
   .why-grid{grid-template-columns:1fr!important;}
+  .what-grid{grid-template-columns:1fr!important;}
+  .what-grid>div:last-child{border-left:none!important;padding-left:0!important;border-top:1px solid var(--bdr);padding-top:16px;}
   .when-grid>div{min-width:0;max-width:100%;overflow:hidden;}
   .when-grid [style*="grid-template-columns:1fr 1fr;gap:8px"]{grid-template-columns:1fr 1fr!important;}
   .when-grid span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -468,9 +471,15 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
   <section style="padding:80px 24px;background:var(--bg);">
     <div class="hiw-inner">
       <div class="sec-label">What is it</div>
-      <h2 class="sec-h" style="margin-bottom:24px;">A private record of everything you did at work.</h2>
-      <p style="font-size:17px;color:var(--tx2);line-height:1.85;margin-bottom:20px;max-width:520px;">You write one entry a day. One sentence. What went well, what you delivered, what the number was.</p>
-      <p style="font-size:17px;color:var(--tx2);line-height:1.85;max-width:520px;">When you have a big conversation coming up, we turn your entries into a playbook. What to say. What to skip. How to walk in ready.</p>
+      <div class="what-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;margin-top:16px;">
+        <div>
+          <h2 class="sec-h" style="margin:0;line-height:1.3;">A private record of everything you did at work.</h2>
+        </div>
+        <div style="border-left:1px solid var(--bdr);padding-left:32px;display:flex;flex-direction:column;gap:16px;">
+          <p style="font-size:15px;color:var(--tx2);margin:0;line-height:1.75;">You write one entry a day. One sentence. What went well, what you delivered, what the number was.</p>
+          <p style="font-size:15px;color:var(--tx2);margin:0;line-height:1.75;">When you have a big conversation coming up, we turn your entries into a playbook. What to say. What to skip. How to walk in ready.</p>
+        </div>
+      </div>
     </div>
   </section>
 
