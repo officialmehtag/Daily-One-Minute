@@ -1958,7 +1958,7 @@ function isTrialExpired(){
   if(settings.isPaid)return false;
   const signup=new Date(settings.signupDate);
   const now=new Date();
-  const daysDiff=Math.floor((now-signup)/(1000*60*60*1000*24));
+  const daysDiff=Math.floor((now-signup)/(1000*60*60*24));
   return daysDiff>=14;
 }
 
