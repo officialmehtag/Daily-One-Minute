@@ -64,7 +64,8 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
 .result-icon{width:36px;height:36px;border-radius:9px;background:var(--acc2);border:1px solid rgba(124,111,247,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .result-body strong{display:block;font-size:15px;color:var(--tx);font-weight:600;margin-bottom:3px;}
 .result-body span{font-size:13px;color:var(--tx2);line-height:1.6;}
-.what-grid-right{border-left:1px solid var(--bdr);padding-left:32px;}
+.what-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;}
+.what-grid-right{border-left:1px solid var(--bdr);padding-left:32px;display:flex;flex-direction:column;gap:16px;}
 .when-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;}
 .why-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:40px;}
 .hiw-sec{padding:80px 24px;background:var(--bg);}
@@ -472,11 +473,11 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
   <section style="padding:80px 24px;background:var(--bg);">
     <div class="hiw-inner">
       <div class="sec-label">What is it</div>
-      <div class="what-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;margin-top:16px;">
+      <div class="what-grid" style="margin-top:16px;">
         <div>
           <h2 class="sec-h" style="margin:0;line-height:1.3;">A private record of everything you did at work.</h2>
         </div>
-        <div class="what-grid-right" style="display:flex;flex-direction:column;gap:16px;">
+        <div class="what-grid-right">
           <p style="font-size:15px;color:var(--tx2);margin:0;line-height:1.75;text-align:justify;">You write one entry a day. One sentence. What went well, what you delivered, what the number was.</p>
           <p style="font-size:15px;color:var(--tx2);margin:0;line-height:1.75;text-align:justify;">When you have a big conversation coming up, we turn your entries into a playbook. What to say. What to skip. How to walk in ready.</p>
         </div>
@@ -509,7 +510,6 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
         </div>
       </div>
 
-      <p style="font-size:15px;color:var(--tx3);line-height:1.85;max-width:600px;">Most people only think about their record when a conversation is already scheduled. By then, the details are gone. The wins from eight months ago feel distant. This tool is built for the other 364 days.</p>
     </div>
   </section>
 
