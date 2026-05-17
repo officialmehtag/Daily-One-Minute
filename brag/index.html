@@ -1515,7 +1515,7 @@ async function load(){
     }
     reportHistory=Array.isArray(settings.report_history)?settings.report_history:[];
     // Read entry_count from Supabase - only updated on save, never overwritten on load
-    settings.entryCount=parseInt(settings.entry_count)||entries.length;
+    settings.entryCount=settings.entry_count!==undefined&&settings.entry_count!==null?parseInt(settings.entry_count):entries.length;
   }catch(e){
     console.error('Load error:',e);
     entries=[];reportCount=0;userGoal=null;reportHistory=[];userResume=null;bonusReports=0;
@@ -1587,7 +1587,7 @@ function entriesThisYear(){const cutoff=Date.now()-(365*24*60*60*1000);return en
 function entriesInMonth(mk){return entries.filter(e=>e.mk===mk);}
 function canAddEntry(){
   const limit=settings.isPaid?PLAN.MAX_ENTRIES_YEAR:25;
-  const usedY=settings.entryCount!==undefined?settings.entryCount:entriesThisYear().length;
+  const usedY=settings.entryCount!==undefined&&settings.entryCount!==null?settings.entryCount:entriesThisYear().length;
   return{ok:usedY<limit,usedYear:usedY,maxYear:limit,isPaid:settings.isPaid};
 }
 function canGenerateReport(){
@@ -1771,7 +1771,7 @@ function renderTrialBanner(){
   const b=document.getElementById('trial-banner');
   const t=document.getElementById('trial-banner-text');
   if(!b||!t)return;
-  const entryCount=settings.entryCount||entries.length;
+  const entryCount=settings.entryCount!==undefined&&settings.entryCount!==null?settings.entryCount:entries.length;
   if(isTrialExpired()){
     b.style.display='flex';
     b.style.background='var(--amber-bg)';
@@ -1892,7 +1892,7 @@ function isTrialExpired(){
 
 function freeEntryLimitReached(){
   if(settings.isPaid)return false;
-  return(settings.entryCount||entries.length)>=25;
+  return(settings.entryCount!==undefined&&settings.entryCount!==null?settings.entryCount:entries.length)>=25;
 }
 
 function hasUsedFreePlaybook(){
