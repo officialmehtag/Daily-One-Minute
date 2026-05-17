@@ -1994,6 +1994,7 @@ async function initApp(skipLoad){
     await load();
     if(main)main.style.opacity='1';
   }
+  renderTrialBanner();
   const h=new Date().getHours();
   document.getElementById('app-greeting').textContent=(h<12?'Good morning':h<17?'Good afternoon':'Good evening')+'.';
   if(currentUser?.email)document.getElementById('app-user-email').textContent=currentUser.email;
