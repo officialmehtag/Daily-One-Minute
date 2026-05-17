@@ -64,6 +64,7 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
 .result-icon{width:36px;height:36px;border-radius:9px;background:var(--acc2);border:1px solid rgba(124,111,247,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .result-body strong{display:block;font-size:15px;color:var(--tx);font-weight:600;margin-bottom:3px;}
 .result-body span{font-size:13px;color:var(--tx2);line-height:1.6;}
+.what-grid-right{border-left:1px solid var(--bdr);padding-left:32px;}
 .when-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;}
 .why-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:40px;}
 .hiw-sec{padding:80px 24px;background:var(--bg);}
@@ -358,7 +359,7 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
   .when-grid{grid-template-columns:1fr!important;gap:24px!important;}
   .why-grid{grid-template-columns:1fr!important;}
   .what-grid{grid-template-columns:1fr!important;}
-  .what-grid>div:last-child{border-left:none!important;padding-left:0!important;border-top:1px solid var(--bdr);padding-top:16px;}
+  .what-grid-right{border-left:none!important;padding-left:0!important;border-top:1px solid var(--bdr);padding-top:16px;}
   .when-grid>div{min-width:0;max-width:100%;overflow:hidden;}
   .when-grid [style*="grid-template-columns:1fr 1fr;gap:8px"]{grid-template-columns:1fr 1fr!important;}
   .when-grid span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -475,9 +476,9 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
         <div>
           <h2 class="sec-h" style="margin:0;line-height:1.3;">A private record of everything you did at work.</h2>
         </div>
-        <div style="border-left:1px solid var(--bdr);padding-left:32px;display:flex;flex-direction:column;gap:16px;">
-          <p style="font-size:15px;color:var(--tx2);margin:0;line-height:1.75;">You write one entry a day. One sentence. What went well, what you delivered, what the number was.</p>
-          <p style="font-size:15px;color:var(--tx2);margin:0;line-height:1.75;">When you have a big conversation coming up, we turn your entries into a playbook. What to say. What to skip. How to walk in ready.</p>
+        <div class="what-grid-right" style="display:flex;flex-direction:column;gap:16px;">
+          <p style="font-size:15px;color:var(--tx2);margin:0;line-height:1.75;text-align:justify;">You write one entry a day. One sentence. What went well, what you delivered, what the number was.</p>
+          <p style="font-size:15px;color:var(--tx2);margin:0;line-height:1.75;text-align:justify;">When you have a big conversation coming up, we turn your entries into a playbook. What to say. What to skip. How to walk in ready.</p>
         </div>
       </div>
     </div>
@@ -487,7 +488,7 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
   <section style="padding:80px 24px;background:var(--bg2);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);">
     <div class="hiw-inner">
       <div class="sec-label">Why it's needed</div>
-      <h2 class="sec-h" style="margin-bottom:48px;max-width:600px;">The playbook is not the product. The habit is.</h2>
+      <h2 class="sec-h" style="margin-bottom:48px;max-width:600px;">The playbook is not the product.<br>The habit is.</h2>
 
       <div class="why-grid">
         <div class="step-card">
@@ -516,7 +517,7 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
   <section class="hiw-sec">
     <div class="hiw-inner">
       <div class="sec-label">How it works</div>
-      <p style="font-size:15px;color:var(--tx2);line-height:1.75;margin-top:12px;margin-bottom:32px;max-width:600px;text-align:justify;">You write what happened today. One line is enough. At the end of the day, write what went well. Rough notes. Real words. Exactly how you would say it to a colleague. That is it. We do the rest.</p>
+      <p style="font-size:15px;color:var(--tx2);line-height:1.75;margin-top:12px;margin-bottom:32px;max-width:600px;text-align:center;">You write what happened today. One line is enough. At the end of the day, write what went well. Rough notes. Real words. Exactly how you would say it to a colleague. That is it. We do the rest.</p>
       <div class="hiw-panels">
 
         <!-- Panel 1 -->
