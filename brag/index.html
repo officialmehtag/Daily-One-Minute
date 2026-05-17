@@ -1676,11 +1676,8 @@ function renderTrialBanner(){
     t.style.color='var(--amber)';
     t.textContent='Your free trial has ended. Upgrade to keep your entries and generate playbooks.';
   } else if(freeEntryLimitReached()){
-    b.style.display='flex';
-    b.style.background='var(--amber-bg)';
-    b.style.borderColor='var(--amber-bdr)';
-    t.style.color='var(--amber)';
-    t.textContent='You have used all 25 free entries. Upgrade to keep logging.';
+    // Entry limit notice handles this — hide trial banner to avoid duplicate
+    b.style.display='none';
   } else if(settings.signupDate){
     const signup=new Date(settings.signupDate);
     const now=new Date();
