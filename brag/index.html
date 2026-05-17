@@ -346,6 +346,7 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
 
   /* Steps */
   .hiw-sec{padding:40px 16px;}
+  [style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important;}
   .hiw-panels{flex-direction:column!important;}
   .hiw-panel-first{border-radius:12px 12px 0 0!important;}
   .hiw-panel-mid{border-left:1px solid var(--bdr)!important;border-right:1px solid var(--bdr)!important;border-top:none!important;border-bottom:none!important;}
@@ -461,6 +462,22 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
     <p class="hero-sub" style="text-align:center;">A curated collection of your professional achievements, accolades, and performance metrics.</p>
     <p class="hero-note" style="text-align:center;">Capture your details as they happen.</p>
   </section>
+  <!-- WHY IT'S NEEDED -->
+  <section style="padding:80px 24px;background:var(--bg2);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);">
+    <div style="max-width:900px;margin:0 auto;">
+      <div class="sec-label">Why it's needed</div>
+      <h2 class="sec-h" style="margin-bottom:16px;max-width:600px;">The playbook is not the product. The habit is.</h2>
+      <p style="font-size:15px;color:var(--tx2);line-height:1.85;max-width:600px;margin:0 0 48px;">Most people only think about their record when a conversation is already scheduled. By then, the details are gone. The numbers are fuzzy. The wins from eight months ago feel distant. This tool is built for the other 364 days.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div class="step-card"><h3>Your memory is not reliable.</h3><p>You do brilliant work every week. Six months later you cannot remember half of it. The details that make a result credible - the exact number, who was in the room, what you were up against - disappear fast. Writing it down the same day takes sixty seconds and changes everything.</p></div>
+        <div class="step-card"><h3>The record itself is the asset.</h3><p>Even if you never generate a playbook, your logged entries are gold. Every specific number. Every named outcome. Every moment where you made a difference. That record is yours. It tells the truth about your year in a way your memory never could.</p></div>
+        <div class="step-card"><h3>Preparation is not the problem. Evidence is.</h3><p>Most people go into career conversations knowing what they want to say but not what they can prove. The habit of logging daily turns every conversation into one where you already have the evidence. You are not preparing the night before. You are ready all year.</p></div>
+        <div class="step-card"><h3>One minute a day. Sixty seconds of honesty.</h3><p>You do not need to write a paragraph. One sentence about what happened today is enough. The discipline is not in the writing. It is in doing it before the day disappears. Sixty seconds today is worth sixty minutes of scrambling when it matters.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
   <section class="hiw-sec">
     <div class="hiw-inner">
       <div class="sec-label">How it works</div>
@@ -522,30 +539,6 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
           </div><div id="hiw-ready" style="font-size:12px;font-weight:700;color:var(--green);margin-top:10px;opacity:0;transition:opacity 0.5s ease;">Your case is ready.</div>
         </div>
 
-      </div>
-    </div>
-  </section>
-
-  <!-- WHY IT'S NEEDED -->
-  <section style="padding:80px 24px;background:var(--bg2);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);">
-    <div style="max-width:900px;margin:0 auto;">
-      <div class="sec-label" style="text-align:center;">Why it's needed</div>
-      <h2 class="sec-h" style="text-align:center;margin-bottom:16px;">The playbook is not the product. The habit is.</h2>
-      <p style="font-size:15px;color:var(--tx2);line-height:1.85;text-align:center;max-width:640px;margin:0 auto 56px;">Most people only think about their record when a conversation is already scheduled. By then, the details are gone. The numbers are fuzzy. The wins from eight months ago feel distant. This tool is built for the other 364 days.</p>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;">
-        <div class="step-card">
-          <h3>Your memory is not reliable.</h3>
-          <p>You do brilliant work every week. Six months later you cannot remember half of it. The details that make a result credible - the exact number, who was in the room, what you were up against - disappear fast. Writing it down the same day takes sixty seconds and changes everything.</p>
-        </div>
-        <div class="step-card">
-          <h3>The record itself is the asset.</h3>
-          <p>Even if you never generate a playbook, your logged entries are gold. Every specific number. Every named outcome. Every moment where you made a difference. That record is yours. It tells the truth about your year in a way your memory never could.</p>
-        </div>
-        <div class="step-card">
-          <h3>Preparation is not the problem. Evidence is.</h3>
-          <p>Most people go into career conversations knowing what they want to say but not what they can prove. The habit of logging daily turns every conversation into one where you already have the evidence. You are not preparing the night before. You are ready all year.</p>
-        </div>
       </div>
     </div>
   </section>
@@ -745,7 +738,7 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
     <div class="pricing-inner">
       <div class="sec-label" style="text-align:center;">Pricing</div>
       <h2 class="pricing-h" style="white-space:nowrap;">One price. One year.</h2>
-      <p class="pricing-sub">Try free - 25 entries and one playbook, no card needed. Pay $29 to unlock everything for a full year.</p>
+      <p class="pricing-sub">Try free - 25 entries and one playbook, or up to 14 days, whichever comes first. No card needed.</p>
 
       <div class="plan-card">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
@@ -754,7 +747,7 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
         <div class="plan-price"><sup>$</sup>29</div>
         <div class="plan-period">per year. Billed annually. Cancel any time.</div>
         <ul class="plan-feats">
-          <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>Try free - 25 entries and one playbook. No card required.</li>
+          <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>Try free - 25 entries and one playbook, or 14 days, whichever comes first. No card required.</li>
           <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>Up to 300 entries per year. Log as many as you want each month.</li>
           <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>12 playbooks per year, one for every month.</li>
           <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>See exactly where your evidence is strong and where the gaps are.</li>
@@ -775,7 +768,7 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
       <div id="faq-list">
         <div class="faq-item">
           <button class="faq-q" onclick="toggleFaq(this)">Do I have to pay before I try it?<span class="faq-icon">+</span></button>
-          <div class="faq-a">You get 25 free entries and one full playbook - no card required. That is enough to see exactly what the product does. If you want to keep going, pay $29 for a full year of access with 300 entries and 12 playbooks.</div>
+          <div class="faq-a">You get 25 free entries and one full playbook, or up to 14 days from when you sign up - whichever comes first. No card required. That is enough to see exactly what the product does. If you want to keep going, pay $29 for a full year of access with 300 entries and 12 playbooks.</div>
         </div>
         <div class="faq-item">
           <button class="faq-q" onclick="toggleFaq(this)">What happens to my entries if I cancel?<span class="faq-icon">+</span></button>
