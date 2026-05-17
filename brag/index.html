@@ -635,7 +635,7 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
             <div style="font-size:15px;font-weight:700;color:var(--tx);letter-spacing:-.1px;">Daily entry logging</div>
             <svg class="inc-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--tx4)" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;transition:transform .2s;"><path d="M6 9l6 6 6-6"/></svg>
           </div>
-          <div class="inc-body" style="display:none;font-size:13px;color:var(--tx2);line-height:1.7;margin-top:10px;">Up to 300 entries per year with no monthly limit. Log as many as you want in any given month.</div>
+          <div class="inc-body" style="display:none;font-size:13px;color:var(--tx2);line-height:1.7;margin-top:10px;">Up to 300 entries per year with no monthly limit. Free users get 25 entries to try the product.</div>
         </div>
 
         <div class="inc-tile" onclick="toggleInc(this)" style="background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:18px 18px;cursor:pointer;user-select:none;">
@@ -721,7 +721,7 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
     <div class="pricing-inner">
       <div class="sec-label" style="text-align:center;">Pricing</div>
       <h2 class="pricing-h" style="white-space:nowrap;">One price. One year.</h2>
-      <p class="pricing-sub">Try free for 14 days. No card needed. Pay only if you want to continue.</p>
+      <p class="pricing-sub">Try free — 25 entries and one playbook, no card needed. Pay $29 to unlock everything for a full year.</p>
 
       <div class="plan-card">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
@@ -730,7 +730,7 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
         <div class="plan-price"><sup>$</sup>29</div>
         <div class="plan-period">per year. Billed annually. Cancel any time.</div>
         <ul class="plan-feats">
-          <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>14-day free trial. One full playbook included. No card required.</li>
+          <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>Try free — 25 entries and one playbook. No card required.</li>
           <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>Up to 300 entries per year. Log as many as you want each month.</li>
           <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>12 playbooks per year, one for every month.</li>
           <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>See exactly where your evidence is strong and where the gaps are.</li>
@@ -751,7 +751,7 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
       <div id="faq-list">
         <div class="faq-item">
           <button class="faq-q" onclick="toggleFaq(this)">Do I have to pay before I try it?<span class="faq-icon">+</span></button>
-          <div class="faq-a">Yes. You get 14 days free with no card required. During that time you can log entries, view and download them, and generate one full playbook. After 14 days you pay $29 for a full year of access. If you decide not to continue, your data is held for 7 days and then permanently deleted.</div>
+          <div class="faq-a">You get 25 free entries and one full playbook — no card required. That is enough to see exactly what the product does. If you want to keep going, pay $29 for a full year of access with 300 entries and 12 playbooks.</div>
         </div>
         <div class="faq-item">
           <button class="faq-q" onclick="toggleFaq(this)">What happens to my entries if I cancel?<span class="faq-icon">+</span></button>
@@ -1483,10 +1483,9 @@ async function api(prompt, onChunk){
 function entriesThisYear(){const cutoff=Date.now()-(365*24*60*60*1000);return entries.filter(e=>e.id>cutoff);}
 function entriesInMonth(mk){return entries.filter(e=>e.mk===mk);}
 function canAddEntry(){
-  // Use entry_count from settings — synced from real entries on load
-  // Can be temporarily overridden in Supabase for testing — resets on next load
+  const limit=settings.isPaid?PLAN.MAX_ENTRIES_YEAR:25;
   const usedY=settings.entryCount!==undefined?settings.entryCount:entriesThisYear().length;
-  return{ok:usedY<PLAN.MAX_ENTRIES_YEAR,usedYear:usedY,maxYear:PLAN.MAX_ENTRIES_YEAR};
+  return{ok:usedY<limit,usedYear:usedY,maxYear:limit,isPaid:settings.isPaid};
 }
 function canGenerateReport(){
   const allowed=PLAN.MAX_REPORTS_YEAR+bonusReports;
@@ -1669,19 +1668,27 @@ function renderTrialBanner(){
   const b=document.getElementById('trial-banner');
   const t=document.getElementById('trial-banner-text');
   if(!b||!t)return;
+  const entryCount=settings.entryCount||entries.length;
   if(isTrialExpired()){
     b.style.display='flex';
     b.style.background='var(--amber-bg)';
     b.style.borderColor='var(--amber-bdr)';
     t.style.color='var(--amber)';
-    t.textContent='Your 14-day free trial has ended. Upgrade to keep your entries and generate playbooks.';
+    t.textContent='Your free trial has ended. Upgrade to keep your entries and generate playbooks.';
+  } else if(freeEntryLimitReached()){
+    b.style.display='flex';
+    b.style.background='var(--amber-bg)';
+    b.style.borderColor='var(--amber-bdr)';
+    t.style.color='var(--amber)';
+    t.textContent='You have used all 25 free entries. Upgrade to keep logging.';
   } else if(settings.signupDate){
     const signup=new Date(settings.signupDate);
     const now=new Date();
     const daysLeft=14-Math.floor((now-signup)/(1000*60*60*24));
-    if(daysLeft<=7){
+    const entriesLeft=25-entryCount;
+    if(daysLeft<=7||entriesLeft<=5){
       b.style.display='flex';
-      t.textContent=`${daysLeft} day${daysLeft===1?'':'s'} left in your free trial. One playbook included.`;
+      t.textContent=`Free trial: ${entriesLeft} ${entriesLeft===1?'entry':'entries'} and ${daysLeft} ${daysLeft===1?'day':'days'} remaining.`;
     } else {
       b.style.display='none';
     }
@@ -1779,8 +1786,13 @@ function isTrialExpired(){
   if(settings.isPaid)return false;
   const signup=new Date(settings.signupDate);
   const now=new Date();
-  const daysDiff=Math.floor((now-signup)/(1000*60*60*24));
+  const daysDiff=Math.floor((now-signup)/(1000*60*60*1000*24));
   return daysDiff>=14;
+}
+
+function freeEntryLimitReached(){
+  if(settings.isPaid)return false;
+  return(settings.entryCount||entries.length)>=25;
 }
 
 function hasUsedFreePlaybook(){
@@ -1792,6 +1804,11 @@ function isPaywalled(){
   if(isTrialExpired())return true;
   if(hasUsedFreePlaybook())return true;
   return false;
+}
+
+function isEntryBlocked(){
+  if(settings.isPaid)return false;
+  return freeEntryLimitReached();
 }
 async function handleAuthCallback(){
   const hash=window.location.hash;
@@ -1916,7 +1933,6 @@ function newEntry(){
   // Entry box always visible
   box.style.display='block';
   if(!l.ok){
-    // Show inline notice below box — do not hide the box
     limitNotice.style.display='block';
     limitNotice.style.background='var(--amber-bg)';
     limitNotice.style.border='1px solid var(--amber-bdr)';
@@ -1925,8 +1941,11 @@ function newEntry(){
     limitNotice.style.fontSize='13px';
     limitNotice.style.color='var(--amber)';
     limitNotice.style.lineHeight='1.65';
-    limitNotice.innerHTML=`You have used all ${PLAN.MAX_ENTRIES_YEAR} entries for this year. You can wait for your subscription to renew, or <button onclick="handlePayment()" style="background:none;border:none;color:var(--acc3);font-size:13px;font-weight:600;cursor:pointer;padding:0;font-family:'Plus Jakarta Sans',sans-serif;text-decoration:underline;text-underline-offset:3px;">renew now</button> to continue straight away.`;
-    // Disable the save button but keep box visible
+    if(!l.isPaid){
+      limitNotice.innerHTML=`You have used all 25 free entries. To keep logging and build a stronger case, continue with full access for $29/year. <button onclick="handlePayment()" style="background:none;border:none;color:var(--acc3);font-size:13px;font-weight:600;cursor:pointer;padding:0;font-family:'Plus Jakarta Sans',sans-serif;text-decoration:underline;text-underline-offset:3px;">Get full access</button>`;
+    } else {
+      limitNotice.innerHTML=`You have used all ${PLAN.MAX_ENTRIES_YEAR} entries for this year. You can wait for your subscription to renew, or <button onclick="handlePayment()" style="background:none;border:none;color:var(--acc3);font-size:13px;font-weight:600;cursor:pointer;padding:0;font-family:'Plus Jakarta Sans',sans-serif;text-decoration:underline;text-underline-offset:3px;">renew now</button> to continue straight away.`;
+    }
     const saveBtn=document.getElementById('save-entry-btn');
     if(saveBtn){saveBtn.disabled=true;saveBtn.style.opacity='0.4';}
     return;
@@ -2171,10 +2190,13 @@ async function generateReport(){
     const message=document.getElementById('paywall-message');
     if(isTrialExpired()){
       if(heading)heading.textContent='Your free trial has ended';
-      if(message)message.textContent='Your 14-day free trial is over. To keep generating playbooks and access your entries, continue with a full year for $29.';
-    } else {
+      if(message)message.textContent='Your 14-day free trial is over. To keep generating playbooks and access your entries, continue with full access for $29/year.';
+    } else if(hasUsedFreePlaybook()){
       if(heading)heading.textContent='You have used your free playbook';
-      if(message)message.textContent='Your free trial includes one playbook. To generate more and keep building your record, continue with a full year for $29.';
+      if(message)message.textContent='Your free trial includes one playbook. To generate more and keep building your record, continue with full access for $29/year.';
+    } else {
+      if(heading)heading.textContent='You have used your free entries';
+      if(message)message.textContent='Your free trial includes 25 entries. To keep logging and build a stronger case, continue with full access for $29/year.';
     }
     goTo('screen-paywall');
     return;
@@ -2193,7 +2215,7 @@ async function generateReport(){
     reportHistory=Array.isArray(s.report_history)?s.report_history:[];
   }
   const r=canGenerateReport();
-  if(!r.ok){alert(`You have used all ${r.max} playbooks for this year. Your allowance renews in January.`);return;}
+  if(!r.ok){alert(`You have used all ${r.max} playbooks for this year. You can renew your subscription to continue.`);return;}
   if(entries.length<5){alert('Add at least 5 entries before generating your playbook. The more you log, the sharper it gets.');return;}
   goTo('screen-report');
   document.getElementById('rep-loading').style.display='flex';
