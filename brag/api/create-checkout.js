@@ -39,6 +39,22 @@ export default async function handler(req, res) {
   if (gateway === 'razorpay') {
     try {
       const auth = Buffer.from(`${process.env.RAZORPAY_KEY_ID}:${process.env.RAZORPAY_KEY_SECRET}`).toString('base64');
+      
+      // Step 1: Create or fetch customer
+      const customerResponse = await fetch('https://api.razorpay.com/v1/customers', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Basic ${auth}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: email,
+          fail_existing: 0  // Return existing customer if email already exists
+        })
+      });
+      const customer = await customerResponse.json();
+
+      // Step 2: Create subscription linked to customer
       const response = await fetch('https://api.razorpay.com/v1/subscriptions', {
         method: 'POST',
         headers: {
@@ -49,6 +65,7 @@ export default async function handler(req, res) {
           plan_id: process.env.RAZORPAY_PLAN_ID,
           total_count: 12,
           quantity: 1,
+          customer_id: customer.id,
           notes: { email: email }
         })
       });
@@ -59,7 +76,7 @@ export default async function handler(req, res) {
           keyId: process.env.RAZORPAY_KEY_ID
         });
       }
-      return res.status(500).json({ error: 'Failed to create Razorpay subscription' });
+      return res.status(500).json({ error: 'Failed to create Razorpay subscription', detail: subscription });
     } catch (e) {
       return res.status(500).json({ error: e.message });
     }
