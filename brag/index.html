@@ -1146,6 +1146,7 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
     <div class="app-nav-right">
       <span class="app-user" id="app-user-email"></span>
       <button id="nav-upgrade-btn" onclick="handlePayment()" style="display:none;background:linear-gradient(135deg,var(--grad-start),var(--grad-end));color:#fff;border:none;padding:5px 14px;border-radius:var(--rp);font-size:12px;font-weight:600;cursor:pointer;transition:opacity .15s;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Upgrade $29</button>
+      <button id="nav-manage-btn" onclick="openBBManageModal()" style="display:none;background:none;border:1px solid var(--bdr);color:var(--tx3);padding:5px 14px;border-radius:var(--rp);font-size:12px;cursor:pointer;transition:all .15s;" onmouseover="this.style.color='var(--tx2)'" onmouseout="this.style.color='var(--tx3)'">Manage plan</button>
       <button class="signout-btn" onclick="signOut()">Sign out</button>
     </div>
   </nav>
@@ -2103,6 +2104,8 @@ async function initApp(skipLoad){
   // Show upgrade button in nav for free users only
   const navUpgradeBtn=document.getElementById('nav-upgrade-btn');
   if(navUpgradeBtn)navUpgradeBtn.style.display=settings.isPaid?'none':'block';
+  const navManageBtn=document.getElementById('nav-manage-btn');
+  if(navManageBtn)navManageBtn.style.display=settings.isPaid?'block':'none';
   // Goal label with change option
   if(userGoal&&GOALS[userGoal]){
     document.getElementById('app-goal-label').innerHTML='Goal: <strong style="color:var(--tx);">'+GOALS[userGoal].label+'</strong>&nbsp;&nbsp;<button onclick="changeGoal()" style="background:none;border:none;color:var(--tx4);font-size:11px;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px;">Change goal</button>';
@@ -3495,5 +3498,97 @@ window.addEventListener('load',async()=>{
   await handleAuthCallback();
 });
 </script>
+
+<!-- MANAGE SUBSCRIPTION MODAL -->
+<div id="bb-manage-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;padding:1.25rem;">
+  <div style="width:100%;max-width:400px;background:var(--card);border:1px solid var(--bdr);border-radius:16px;padding:2rem;position:relative;">
+    <button onclick="closeBBManageModal()" style="position:absolute;top:14px;right:16px;width:24px;height:24px;border-radius:50%;background:var(--bdr);border:none;cursor:pointer;font-size:12px;color:var(--tx3);font-family:inherit;">&#10005;</button>
+
+    <!-- Step 1: Overview -->
+    <div id="bb-manage-step-1">
+      <div style="font-size:2rem;margin-bottom:1rem;">&#9881;&#65039;</div>
+      <h2 style="font-size:1.2rem;font-weight:700;margin-bottom:0.4rem;color:var(--tx);">Your subscription</h2>
+      <p style="font-size:13px;color:var(--tx2);margin-bottom:1.25rem;">Your current plan details.</p>
+      <div style="background:var(--bg2);border:1px solid var(--bdr);border-radius:10px;padding:0.75rem 1rem;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;">Email</span>
+        <span style="font-size:13px;font-weight:600;color:var(--tx);" id="bb-manage-email">&#8212;</span>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--bdr);border-radius:10px;padding:0.75rem 1rem;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;">Status</span>
+        <span style="font-size:13px;font-weight:600;color:var(--green);">Active</span>
+      </div>
+      <div style="height:1px;background:var(--bdr);margin-bottom:1.25rem;"></div>
+      <button onclick="showBBManageStep(2)" style="width:100%;padding:13px;background:rgba(224,90,74,0.08);color:#e05a4a;border:1px solid rgba(224,90,74,0.25);border-radius:100px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:10px;">Cancel subscription</button>
+      <button onclick="closeBBManageModal()" style="width:100%;padding:11px;background:none;border:1px solid var(--bdr);border-radius:100px;font-family:inherit;font-size:13px;color:var(--tx2);cursor:pointer;">Go back</button>
+    </div>
+
+    <!-- Step 2: Confirm cancel -->
+    <div id="bb-manage-step-2" style="display:none;">
+      <div style="font-size:2rem;margin-bottom:1rem;">&#9888;&#65039;</div>
+      <h2 style="font-size:1.2rem;font-weight:700;margin-bottom:0.4rem;color:var(--tx);">Are you sure?</h2>
+      <p style="font-size:13px;color:var(--tx2);margin-bottom:1.25rem;">This will cancel your recurring payment at the end of your current billing period.</p>
+      <div style="background:rgba(224,90,74,0.06);border:1px solid rgba(224,90,74,0.2);border-radius:10px;padding:1rem;margin-bottom:1.25rem;">
+        <p style="font-size:13px;color:rgba(255,255,255,0.7);line-height:1.7;">You will keep full access until your subscription period ends. After that, your account will revert to free.</p>
+      </div>
+      <button id="bb-confirm-cancel-btn" onclick="bbConfirmCancel()" style="width:100%;padding:13px;background:#e05a4a;color:#fff;border:none;border-radius:100px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;">Yes, cancel my subscription</button>
+      <button onclick="showBBManageStep(1)" style="width:100%;padding:11px;background:none;border:1px solid var(--bdr);border-radius:100px;font-family:inherit;font-size:13px;color:var(--tx2);cursor:pointer;">Keep my subscription</button>
+    </div>
+
+    <!-- Step 3: Cancelled -->
+    <div id="bb-manage-step-3" style="display:none;text-align:center;">
+      <div style="font-size:2.5rem;margin-bottom:1rem;">&#10003;</div>
+      <h2 style="font-size:1.2rem;font-weight:700;margin-bottom:0.5rem;color:var(--tx);">Subscription cancelled</h2>
+      <p style="font-size:13px;color:var(--tx2);line-height:1.7;margin-bottom:1.25rem;">Your recurring payment has been stopped. No future charges will be made.</p>
+      <p style="font-size:13px;color:var(--tx2);line-height:1.7;margin-bottom:1.25rem;">You can continue using your features until your current period ends.</p>
+      <button onclick="closeBBManageModal()" style="width:100%;padding:13px;background:none;border:1px solid var(--bdr);border-radius:100px;font-family:inherit;font-size:13px;color:var(--tx2);cursor:pointer;">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openBBManageModal(){
+  const modal=document.getElementById('bb-manage-modal');
+  modal.style.display='flex';
+  document.getElementById('bb-manage-email').textContent=currentUser?.email||'—';
+  showBBManageStep(1);
+}
+function closeBBManageModal(){
+  document.getElementById('bb-manage-modal').style.display='none';
+}
+function showBBManageStep(n){
+  [1,2,3].forEach(i=>{
+    const el=document.getElementById('bb-manage-step-'+i);
+    if(el)el.style.display=i===n?'block':'none';
+  });
+}
+async function bbConfirmCancel(){
+  const btn=document.getElementById('bb-confirm-cancel-btn');
+  btn.textContent='Cancelling…';
+  btn.disabled=true;
+  try{
+    const res=await fetch('/api/cancel-subscription',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email:currentUser?.email})
+    });
+    const data=await res.json();
+    if(data.success){
+      if(data.gateway==='stripe'&&data.portal_url){
+        // Stripe — redirect to customer portal to complete cancellation
+        window.location.href=data.portal_url;
+      } else {
+        // Razorpay — cancelled directly, show confirmation
+        showBBManageStep(3);
+      }
+    } else {
+      btn.textContent='Yes, cancel my subscription';btn.disabled=false;
+      showToast(data.error||'Could not cancel. Please email us.');
+    }
+  }catch(e){
+    btn.textContent='Yes, cancel my subscription';btn.disabled=false;showToast('Something went wrong. Please try again.');
+  }
+}
+</script>
+
 </body>
 </html>
