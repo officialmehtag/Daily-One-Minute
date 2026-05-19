@@ -1869,6 +1869,8 @@ function renderTrialBanner(){
       b.style.display='none';
     }
   }
+  // Always update prices after banner renders
+  if(typeof updateAllPrices==='function')updateAllPrices();
 }
 
 
@@ -3311,10 +3313,9 @@ function toggleUse(card){
 }
 async function handlePayment(){
   try{
-    // Detect country
-    const geoRes=await fetch('https://ipapi.co/json/');
-    const geo=await geoRes.json();
-    const isIndia=geo.country_code==='IN';
+    // Detect country from timezone
+    const tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'';
+    const isIndia=tz==='Asia/Calcutta'||tz==='Asia/Kolkata';
     const gateway=isIndia?'razorpay':'stripe';
 
     // Create checkout session
@@ -3498,19 +3499,19 @@ window.addEventListener('afterprint',()=>{
 // Initialise auth on page load
 window.addEventListener('load',async()=>{
   await handleAuthCallback();
-  // Detect region and update all prices
-  try{
-    const geoRes=await fetch('https://ipapi.co/json/');
-    const geo=await geoRes.json();
-    window._isIndia=geo.country_code==='IN';
-  }catch(e){
-    window._isIndia=false;
-  }
-  updateAllPrices();
 });
 
-function getPrice(){return window._isIndia?'₹2,999':'$29';}
-function getPriceYear(){return window._isIndia?'₹2,999/year':'$29/year';}
+function getPrice(){
+  // Check sessionStorage for cached region (set on previous visit or earlier this session)
+  const cached=sessionStorage.getItem('bb_region');
+  if(cached)return cached==='IN'?'₹2,999':'$29';
+  return window._isIndia?'₹2,999':'$29';
+}
+function getPriceYear(){
+  const cached=sessionStorage.getItem('bb_region');
+  if(cached)return cached==='IN'?'₹2,999/year':'$29/year';
+  return window._isIndia?'₹2,999/year':'$29/year';
+}
 
 function updateAllPrices(){
   const p=getPrice();
