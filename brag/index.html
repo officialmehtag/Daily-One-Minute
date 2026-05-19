@@ -1538,17 +1538,19 @@ async function load(){
     userResume=settings.resume_text||null;
     if(userResume)localStorage.setItem('bb_resume_done','1');
     bonusReports=parseInt(settings.bonus_reports)||0;
-    // Read entry_count and report_history BEFORE any saveSettings call
+    // Read entry_count BEFORE any saveSettings call
     settings.entryCount=settings.entry_count!==undefined&&settings.entry_count!==null?parseInt(settings.entry_count):entries.length;
-    reportHistory=Array.isArray(settings.report_history)?settings.report_history:[];
     const yr=yearKey();
     if(settings.report_year===yr){
       reportCount=parseInt(settings.report_count)||0;
     }else{
       reportCount=0;bonusReports=0;
-      // Do not call saveSettings here — it overwrites report_history and entry_count
-      // saveSettings will be called naturally on next user action
     }
+    // Load report history from bb_reports table (separate from settings)
+    const reportsData=await fetch(`${SUPABASE_URL}/rest/v1/bb_reports?user_id=eq.${uid}&order=created_at.desc&limit=12`,{
+      headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':`Bearer ${getToken()}`,'Content-Type':'application/json'}
+    }).then(r=>r.ok?r.json():[]).catch(()=>[]);
+    reportHistory=reportsData.map(r=>({id:r.id,date:r.date,goal:r.goal,goalKey:r.goal_key,data:r.data}));
   }catch(e){
     console.error('Load error:',e);
     entries=[];reportCount=0;userGoal=null;reportHistory=[];userResume=null;bonusReports=0;
@@ -1565,7 +1567,6 @@ async function saveSettings(){
     resume_text:userResume||null,
     report_count:reportCount,
     report_year:yearKey(),
-    report_history:reportHistory.slice(0,12),
     bonus_reports:bonusReports,
     signup_date:settings.signupDate||null,
     is_paid:settings.isPaid||false,
@@ -2405,6 +2406,13 @@ async function generateReport(){
       reportCount=0;bonusReports=0;
     }
     reportHistory=Array.isArray(s.report_history)?s.report_history:[];
+    // Also reload from bb_reports
+    const freshReports=await fetch(`${SUPABASE_URL}/rest/v1/bb_reports?user_id=eq.${getUserId()}&order=created_at.desc&limit=12`,{
+      headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':`Bearer ${getToken()}`,'Content-Type':'application/json'}
+    }).then(r=>r.ok?r.json():[]).catch(()=>[]);
+    if(freshReports.length>0){
+      reportHistory=freshReports.map(r=>({id:r.id,date:r.date,goal:r.goal,goalKey:r.goal_key,data:r.data}));
+    }
   }
   const r=canGenerateReport();
   if(!r.ok){alert(`You have used all ${r.max} playbooks for this year. You can renew your subscription to continue.`);return;}
@@ -2700,10 +2708,20 @@ Do not quote the CV back to them. Use it only to make the playbook sharper and m
       throw new Error('parse');
     }
     reportCount++;
-    reportHistory.unshift({date:today(),goal:userGoal&&GOALS[userGoal]?GOALS[userGoal].label:'Playbook',goalKey:userGoal,data:p});
+    // Save playbook to bb_reports table — completely separate from settings
+    const newReport={
+      user_id:getUserId(),
+      email:currentUser?.email||null,
+      date:today(),
+      goal:userGoal&&GOALS[userGoal]?GOALS[userGoal].label:'Playbook',
+      goal_key:userGoal,
+      data:p
+    };
+    const savedReport=await sbInsert('bb_reports',newReport);
+    const reportId=savedReport&&savedReport[0]?savedReport[0].id:null;
+    reportHistory.unshift({id:reportId,date:today(),goal:userGoal&&GOALS[userGoal]?GOALS[userGoal].label:'Playbook',goalKey:userGoal,data:p});
     if(reportHistory.length>12){
       reportHistory=reportHistory.slice(0,12);
-      alert('Your oldest playbook has been replaced. You can store up to 12 playbooks at any time.');
     }
     activeHistoryIndex=0;
     await saveSettings();
