@@ -1145,7 +1145,7 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
     <div class="app-logo" onclick="goTo('screen-land')" style="cursor:pointer;"><span>Daily</span>OneMinute</div>
     <div class="app-nav-right">
       <span class="app-user" id="app-user-email"></span>
-      <button id="nav-upgrade-btn" onclick="handlePayment()" style="display:none;background:linear-gradient(135deg,var(--grad-start),var(--grad-end));color:#fff;border:none;padding:5px 14px;border-radius:var(--rp);font-size:12px;font-weight:600;cursor:pointer;transition:opacity .15s;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Upgrade $29</button>
+      <button id="nav-upgrade-btn" onclick="handlePayment()" style="display:none;background:linear-gradient(135deg,var(--grad-start),var(--grad-end));color:#fff;border:none;padding:5px 14px;border-radius:var(--rp);font-size:12px;font-weight:600;cursor:pointer;transition:opacity .15s;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Upgrade</button>
       <button id="nav-manage-btn" onclick="openBBManageModal()" style="display:none;background:none;border:1px solid var(--bdr);color:var(--tx3);padding:5px 14px;border-radius:var(--rp);font-size:12px;cursor:pointer;transition:all .15s;" onmouseover="this.style.color='var(--tx2)'" onmouseout="this.style.color='var(--tx3)'">Manage plan</button>
       <button class="signout-btn" onclick="signOut()">Sign out</button>
     </div>
@@ -1159,7 +1159,7 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
     <!-- Trial banner -->
     <div id="trial-banner" style="display:none;background:var(--acc2);border:1px solid rgba(124,111,247,0.25);border-radius:var(--r);padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
       <div style="font-size:13px;color:var(--acc3);line-height:1.6;" id="trial-banner-text"></div>
-      <button class="btn-primary" style="padding:8px 16px;font-size:12px;white-space:nowrap;flex-shrink:0;" onclick="handlePayment()">Upgrade $29</button>
+      <button class="btn-primary" style="padding:8px 16px;font-size:12px;white-space:nowrap;flex-shrink:0;" onclick="handlePayment()" id="paywall-upgrade-btn">Upgrade</button>
     </div>
 
     <div class="record-box" id="record-box">
@@ -2106,6 +2106,12 @@ async function initApp(skipLoad){
   if(navUpgradeBtn)navUpgradeBtn.style.display=settings.isPaid?'none':'block';
   const navManageBtn=document.getElementById('nav-manage-btn');
   if(navManageBtn)navManageBtn.style.display=settings.isPaid?'block':'none';
+  // Set correct upgrade price based on region
+  const upgradeLabel=typeof userRegion!=='undefined'&&userRegion==='IN'?'Upgrade ₹2,999':'Upgrade $29';
+  const navUpgBtn=document.getElementById('nav-upgrade-btn');
+  if(navUpgBtn)navUpgBtn.textContent=upgradeLabel;
+  const pwUpgBtn=document.getElementById('paywall-upgrade-btn');
+  if(pwUpgBtn)pwUpgBtn.textContent=upgradeLabel;
   // Goal label with change option
   if(userGoal&&GOALS[userGoal]){
     document.getElementById('app-goal-label').innerHTML='Goal: <strong style="color:var(--tx);">'+GOALS[userGoal].label+'</strong>&nbsp;&nbsp;<button onclick="changeGoal()" style="background:none;border:none;color:var(--tx4);font-size:11px;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px;">Change goal</button>';
@@ -3496,6 +3502,17 @@ window.addEventListener('afterprint',()=>{
 // Initialise auth on page load
 window.addEventListener('load',async()=>{
   await handleAuthCallback();
+  // Set upgrade button price based on region
+  try{
+    const geoRes=await fetch('https://ipapi.co/json/');
+    const geo=await geoRes.json();
+    const isIndia=geo.country_code==='IN';
+    const label=isIndia?'Upgrade ₹2,999':'Upgrade $29';
+    const navUpgBtn=document.getElementById('nav-upgrade-btn');
+    if(navUpgBtn)navUpgBtn.textContent=label;
+    const pwUpgBtn=document.getElementById('paywall-upgrade-btn');
+    if(pwUpgBtn)pwUpgBtn.textContent=label;
+  }catch(e){}
 });
 </script>
 
