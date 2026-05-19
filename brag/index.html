@@ -813,7 +813,7 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
           <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>Works across 8 career situations. Goal changes any time.</li>
           <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>Your entries are always exportable. One click, plain text.</li>
         </ul>
-        <button class="btn-primary" style="width:100%;padding:14px;font-size:15px;" onclick="handlePayment()" id="land-get-started-btn">Get started for $29</button>
+        <button class="btn-primary" style="width:100%;padding:14px;font-size:15px;" onclick="handlePayment()" id="land-get-started-btn">Get started</button>
       </div>
 
     </div>
@@ -1259,9 +1259,9 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
     <div style="max-width:400px;">
       <div style="font-size:40px;margin-bottom:16px;">🔒</div>
       <h2 id="paywall-heading" style="font-size:22px;font-weight:800;color:var(--tx);margin-bottom:12px;line-height:1.3;">Access required</h2>
-      <p id="paywall-message" style="font-size:14px;color:var(--tx3);line-height:1.75;margin-bottom:28px;">You have used your free playbook. To generate more playbooks and keep access to your entries, continue with a full year for $29.</p>
+      <p id="paywall-message" style="font-size:14px;color:var(--tx3);line-height:1.75;margin-bottom:28px;">You have used your free playbook. To generate more playbooks and keep access to your entries, continue with a full year — see price below.</p>
       <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:20px;margin-bottom:20px;text-align:left;">
-        <div id="paywall-price-label" style="font-size:13px;font-weight:700;color:var(--tx);margin-bottom:12px;">What you get for $29/year</div>
+        <div id="paywall-price-label" style="font-size:13px;font-weight:700;color:var(--tx);margin-bottom:12px;">What you get</div>
         <div style="display:flex;flex-direction:column;gap:8px;">
           <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--tx2);"><svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg>12 playbooks per year</div>
           <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--tx2);"><svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg>Up to 300 entries per year</div>
@@ -1269,7 +1269,7 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
           <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--tx2);"><svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg>Your entries stay safe</div>
         </div>
       </div>
-      <button class="btn-primary" style="width:100%;padding:14px;font-size:15px;margin-bottom:12px;" onclick="handlePayment()" id="paywall-continue-btn">Continue for $29/year</button>
+      <button class="btn-primary" style="width:100%;padding:14px;font-size:15px;margin-bottom:12px;" onclick="handlePayment()" id="paywall-continue-btn">Continue — get full access</button>
       <button class="btn-ghost" style="width:100%;padding:12px;font-size:14px;" onclick="goTo('screen-app')">Back to my entries</button>
     </div>
   </div>
@@ -2108,11 +2108,6 @@ async function initApp(skipLoad){
   const navManageBtn=document.getElementById('nav-manage-btn');
   if(navManageBtn)navManageBtn.style.display=settings.isPaid?'block':'none';
   // Set correct upgrade price based on region
-  const upgradeLabel=typeof userRegion!=='undefined'&&userRegion==='IN'?'Upgrade ₹2,999':'Upgrade $29';
-  const navUpgBtn=document.getElementById('nav-upgrade-btn');
-  if(navUpgBtn)navUpgBtn.textContent=upgradeLabel;
-  const pwUpgBtn=document.getElementById('paywall-upgrade-btn');
-  if(pwUpgBtn)pwUpgBtn.textContent=upgradeLabel;
   // Goal label with change option
   if(userGoal&&GOALS[userGoal]){
     document.getElementById('app-goal-label').innerHTML='Goal: <strong style="color:var(--tx);">'+GOALS[userGoal].label+'</strong>&nbsp;&nbsp;<button onclick="changeGoal()" style="background:none;border:none;color:var(--tx4);font-size:11px;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px;">Change goal</button>';
@@ -2158,7 +2153,7 @@ function newEntry(){
     limitNotice.style.color='var(--amber)';
     limitNotice.style.lineHeight='1.65';
     if(!l.isPaid){
-      limitNotice.innerHTML=`You have used all 25 free entries. To keep logging and build a stronger case, continue with full access for $29/year. <button onclick="handlePayment()" style="background:none;border:none;color:var(--acc3);font-size:13px;font-weight:600;cursor:pointer;padding:0;font-family:'Plus Jakarta Sans',sans-serif;text-decoration:underline;text-underline-offset:3px;">Get full access</button>`;
+      limitNotice.innerHTML=`You have used all 25 free entries. To keep logging and build a stronger case, continue with full access for ${getPriceYear()}. <button onclick="handlePayment()" style="background:none;border:none;color:var(--acc3);font-size:13px;font-weight:600;cursor:pointer;padding:0;font-family:'Plus Jakarta Sans',sans-serif;text-decoration:underline;text-underline-offset:3px;">Get full access</button>`;
     } else {
       limitNotice.innerHTML=`You have used all ${PLAN.MAX_ENTRIES_YEAR} entries for this year. You can wait for your subscription to renew, or <button onclick="handlePayment()" style="background:none;border:none;color:var(--acc3);font-size:13px;font-weight:600;cursor:pointer;padding:0;font-family:'Plus Jakarta Sans',sans-serif;text-decoration:underline;text-underline-offset:3px;">renew now</button> to continue straight away.`;
     }
@@ -3535,6 +3530,12 @@ function updateAllPrices(){
   // Paywall continue button
   const pwContinueBtn=document.getElementById('paywall-continue-btn');
   if(pwContinueBtn)pwContinueBtn.textContent='Continue for '+py;
+  // Landing get started button
+  const landBtn2=document.getElementById('land-get-started-btn');
+  if(landBtn2)landBtn2.textContent='Get started for '+p;
+  // Paywall price label
+  const pwPriceLabel=document.getElementById('paywall-price-label');
+  if(pwPriceLabel)pwPriceLabel.textContent='What you get for '+py;
   // Paywall message
   const pwMsg=document.getElementById('paywall-message');
   if(pwMsg&&pwMsg.dataset.type){
