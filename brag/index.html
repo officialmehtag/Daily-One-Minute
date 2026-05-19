@@ -3498,6 +3498,16 @@ window.addEventListener('afterprint',()=>{
 
 // Initialise auth on page load
 window.addEventListener('load',async()=>{
+  // Detect region from timezone immediately — synchronous, no API needed
+  try{
+    const tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'';
+    const isIndia=tz==='Asia/Calcutta'||tz==='Asia/Kolkata';
+    window._isIndia=isIndia;
+    sessionStorage.setItem('bb_region',isIndia?'IN':'INTL');
+  }catch(e){
+    window._isIndia=false;
+  }
+  updateAllPrices();
   await handleAuthCallback();
 });
 
