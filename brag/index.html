@@ -3336,9 +3336,8 @@ async function handlePayment(){
         prefill:{email:currentUser?.email||''},
         theme:{color:'#7C6FF7'},
         handler:function(response){
-          // Webhook will update Supabase — show success message
-          showToast('Payment successful. Your account will be activated in a moment.');
-          setTimeout(()=>location.reload(),3000);
+          showToast('Payment successful. Activating your account...');
+          setTimeout(()=>location.reload(),4000);
         },
         modal:{ondismiss:function(){}}
       };
