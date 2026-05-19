@@ -51,10 +51,14 @@ export default async function handler(req, res) {
   if (event.event === 'subscription.activated' || event.event === 'payment.captured') {
     const email = event.payload?.payment?.entity?.email
       || event.payload?.subscription?.entity?.notes?.email;
+    const subscriptionId = event.payload?.subscription?.entity?.id
+      || event.payload?.payment?.entity?.subscription_id;
     if (email) {
       await updateSupabase(email, {
         is_paid: true,
-        signup_date: new Date().toISOString()
+        signup_date: new Date().toISOString(),
+        payment_gateway: 'razorpay',
+        gateway_subscription_id: subscriptionId || null
       });
     }
   }
@@ -62,7 +66,10 @@ export default async function handler(req, res) {
   if (event.event === 'subscription.cancelled' || event.event === 'subscription.completed') {
     const email = event.payload?.subscription?.entity?.notes?.email;
     if (email) {
-      await updateSupabase(email, { is_paid: false });
+      await updateSupabase(email, {
+        is_paid: false,
+        gateway_subscription_id: null
+      });
     }
   }
 
