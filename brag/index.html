@@ -441,6 +441,7 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
   img,svg{max-width:100%;}
 }
 </style>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
 
@@ -813,7 +814,6 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
           <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>Your entries are always exportable. One click, plain text.</li>
         </ul>
         <button class="btn-primary" style="width:100%;padding:14px;font-size:15px;" onclick="handlePayment()">Get started for $29</button>
-        <p style="font-size:13px;color:var(--tx3);text-align:center;margin-top:12px;line-height:1.65;">If you want to pay through UPI, <a href="RAZORPAY_LINK_HERE" target="_blank" style="color:var(--acc3);text-decoration:underline;text-underline-offset:3px;">click here</a>.</p>
       </div>
 
     </div>
@@ -2002,6 +2002,14 @@ function showPaywall(){
   goTo('screen-paywall');
 }
 async function handleAuthCallback(){
+  // Check for payment success redirect from Stripe
+  const urlParams=new URLSearchParams(window.location.search);
+  if(urlParams.get('payment')==='success'){
+    // Clean URL
+    window.history.replaceState({},'',window.location.pathname);
+    // Show success message after login
+    setTimeout(()=>showToast('Payment successful. Your full access is now active.'),1500);
+  }
   const hash=window.location.hash;
   const search=window.location.search;
 
@@ -3275,15 +3283,51 @@ function toggleUse(card){
 }
 async function handlePayment(){
   try{
-    const r=await fetch('https://ipapi.co/json/');
-    const d=await r.json();
-    if(d.country_code==='IN'){
-      window.open('RAZORPAY_LINK_HERE','_blank');
+    // Detect country
+    const geoRes=await fetch('https://ipapi.co/json/');
+    const geo=await geoRes.json();
+    const isIndia=geo.country_code==='IN';
+    const gateway=isIndia?'razorpay':'stripe';
+
+    // Create checkout session
+    const res=await fetch('/api/create-checkout',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({gateway,email:currentUser?.email||''})
+    });
+    const data=await res.json();
+
+    if(gateway==='stripe'){
+      if(data.url){
+        window.location.href=data.url;
+      }else{
+        alert('Could not start payment. Please try again.');
+      }
     }else{
-      window.open('STRIPE_LINK_HERE','_blank');
+      // Razorpay checkout
+      if(!data.subscriptionId){
+        alert('Could not start payment. Please try again.');
+        return;
+      }
+      const options={
+        key:data.keyId,
+        subscription_id:data.subscriptionId,
+        name:'YourBragBook',
+        description:'Annual Subscription',
+        prefill:{email:currentUser?.email||''},
+        theme:{color:'#7C6FF7'},
+        handler:function(response){
+          // Webhook will update Supabase — show success message
+          showToast('Payment successful. Your account will be activated in a moment.');
+          setTimeout(()=>location.reload(),3000);
+        },
+        modal:{ondismiss:function(){}}
+      };
+      const rzp=new window.Razorpay(options);
+      rzp.open();
     }
   }catch(e){
-    window.open('STRIPE_LINK_HERE','_blank');
+    alert('Something went wrong. Please try again.');
   }
 }
 // Gap intelligence hero strip animation
