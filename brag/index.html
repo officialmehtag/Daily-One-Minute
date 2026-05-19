@@ -1538,16 +1538,17 @@ async function load(){
     userResume=settings.resume_text||null;
     if(userResume)localStorage.setItem('bb_resume_done','1');
     bonusReports=parseInt(settings.bonus_reports)||0;
-    // Read entry_count BEFORE any saveSettings call so it is never overwritten with 0
+    // Read entry_count and report_history BEFORE any saveSettings call
     settings.entryCount=settings.entry_count!==undefined&&settings.entry_count!==null?parseInt(settings.entry_count):entries.length;
+    reportHistory=Array.isArray(settings.report_history)?settings.report_history:[];
     const yr=yearKey();
     if(settings.report_year===yr){
       reportCount=parseInt(settings.report_count)||0;
     }else{
       reportCount=0;bonusReports=0;
-      await saveSettings();
+      // Do not call saveSettings here — it overwrites report_history and entry_count
+      // saveSettings will be called naturally on next user action
     }
-    reportHistory=Array.isArray(settings.report_history)?settings.report_history:[];
   }catch(e){
     console.error('Load error:',e);
     entries=[];reportCount=0;userGoal=null;reportHistory=[];userResume=null;bonusReports=0;
