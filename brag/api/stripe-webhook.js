@@ -55,10 +55,15 @@ export default async function handler(req, res) {
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
     const email = session.customer_details?.email || session.customer_email;
+    const customerId = session.customer;
+    const subscriptionId = session.subscription;
     if (email) {
       await updateSupabase(email, {
         is_paid: true,
-        signup_date: new Date().toISOString()
+        signup_date: new Date().toISOString(),
+        payment_gateway: 'stripe',
+        gateway_subscription_id: subscriptionId || null,
+        stripe_customer_id: customerId || null
       });
     }
   }
@@ -66,15 +71,15 @@ export default async function handler(req, res) {
   if (event.type === 'customer.subscription.deleted') {
     const subscription = event.data.object;
     const customerId = subscription.customer;
-    // Fetch customer email from Stripe
     const customerRes = await fetch(`https://api.stripe.com/v1/customers/${customerId}`, {
-      headers: {
-        'Authorization': `Bearer ${process.env.STRIPE_SECRET_KEY}`
-      }
+      headers: { 'Authorization': `Bearer ${process.env.STRIPE_SECRET_KEY}` }
     });
     const customer = await customerRes.json();
     if (customer.email) {
-      await updateSupabase(customer.email, { is_paid: false });
+      await updateSupabase(customer.email, {
+        is_paid: false,
+        gateway_subscription_id: null
+      });
     }
   }
 
