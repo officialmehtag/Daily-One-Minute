@@ -1852,7 +1852,7 @@ function renderTrialBanner(){
     setAccessButtons(true);
   } else if(freeEntryLimitReached()){
     b.style.display='none';
-    setAccessButtons(false);
+    setAccessButtons(true);
   } else if(settings.signupDate){
     const signup=new Date(settings.signupDate);
     const now=new Date();
