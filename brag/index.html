@@ -1145,6 +1145,7 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
     <div class="app-logo" onclick="goTo('screen-land')" style="cursor:pointer;"><span>Daily</span>OneMinute</div>
     <div class="app-nav-right">
       <span class="app-user" id="app-user-email"></span>
+      <button id="nav-upgrade-btn" onclick="handlePayment()" style="display:none;background:linear-gradient(135deg,var(--grad-start),var(--grad-end));color:#fff;border:none;padding:5px 14px;border-radius:var(--rp);font-size:12px;font-weight:600;cursor:pointer;transition:opacity .15s;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Upgrade $29</button>
       <button class="signout-btn" onclick="signOut()">Sign out</button>
     </div>
   </nav>
@@ -2099,6 +2100,9 @@ async function initApp(skipLoad){
   const h=new Date().getHours();
   document.getElementById('app-greeting').textContent=(h<12?'Good morning':h<17?'Good afternoon':'Good evening')+'.';
   if(currentUser?.email)document.getElementById('app-user-email').textContent=currentUser.email;
+  // Show upgrade button in nav for free users only
+  const navUpgradeBtn=document.getElementById('nav-upgrade-btn');
+  if(navUpgradeBtn)navUpgradeBtn.style.display=settings.isPaid?'none':'block';
   // Goal label with change option
   if(userGoal&&GOALS[userGoal]){
     document.getElementById('app-goal-label').innerHTML='Goal: <strong style="color:var(--tx);">'+GOALS[userGoal].label+'</strong>&nbsp;&nbsp;<button onclick="changeGoal()" style="background:none;border:none;color:var(--tx4);font-size:11px;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px;">Change goal</button>';
