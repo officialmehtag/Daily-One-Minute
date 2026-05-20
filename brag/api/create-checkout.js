@@ -23,7 +23,9 @@ export default async function handler(req, res) {
           'customer_email': email,
           'success_url': 'https://brag.dailyoneminute.com?payment=success',
           'cancel_url': 'https://brag.dailyoneminute.com?payment=cancelled',
-          'allow_promotion_codes': 'true'
+          'allow_promotion_codes': 'true',
+          'metadata[product]': 'brag',
+          'subscription_data[metadata][product]': 'brag'
         })
       });
       const session = await response.json();
