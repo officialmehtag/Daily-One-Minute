@@ -3316,9 +3316,15 @@ function toggleUse(card){
 }
 async function handlePayment(){
   try{
-    // Detect country from timezone
-    const tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'';
-    const isIndia=tz==='Asia/Calcutta'||tz==='Asia/Kolkata';
+    // Detect country — use cached region first, fall back to timezone
+    const cachedRegion=sessionStorage.getItem('bb_region');
+    let isIndia;
+    if(cachedRegion){
+      isIndia=cachedRegion==='IN';
+    } else {
+      const tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'';
+      isIndia=tz==='Asia/Calcutta'||tz==='Asia/Kolkata';
+    }
     const gateway=isIndia?'razorpay':'stripe';
 
     // Create checkout session
