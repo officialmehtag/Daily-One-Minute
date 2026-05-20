@@ -1259,9 +1259,9 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
     <div style="max-width:400px;">
       <div style="font-size:40px;margin-bottom:16px;">🔒</div>
       <h2 id="paywall-heading" style="font-size:22px;font-weight:800;color:var(--tx);margin-bottom:12px;line-height:1.3;">Access required</h2>
-      <p id="paywall-message" style="font-size:14px;color:var(--tx3);line-height:1.75;margin-bottom:28px;">You have used your free playbook. To generate more playbooks and keep access to your entries, continue with a full year — see price below.</p>
+      <p id="paywall-message" style="font-size:14px;color:var(--tx3);line-height:1.75;margin-bottom:28px;">You have used your free playbook. To generate more playbooks and keep access to your entries, continue with full access.</p>
       <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:20px;margin-bottom:20px;text-align:left;">
-        <div id="paywall-price-label" style="font-size:13px;font-weight:700;color:var(--tx);margin-bottom:12px;">What you get</div>
+        <div id="paywall-price-label" style="font-size:13px;font-weight:700;color:var(--tx);margin-bottom:12px;">What you get with full access</div>
         <div style="display:flex;flex-direction:column;gap:8px;">
           <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--tx2);"><svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg>12 playbooks per year</div>
           <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--tx2);"><svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg>Up to 300 entries per year</div>
@@ -1998,13 +1998,13 @@ function showPaywall(){
     if(message)message.textContent='Your 12-month subscription is complete. Renew now to keep your full record and continue generating playbooks.';
   } else if(isTrialExpired()){
     if(heading)heading.textContent='Your free trial has ended';
-    if(message){message.textContent='Your 14-day free trial is over. To keep generating playbooks and access your entries, continue with full access for '+getPriceYear()+'.';message.dataset.type='trial';}
+    if(message){message.textContent='Your 14-day free trial is over. To keep generating playbooks and access your entries, continue with full access.';message.dataset.type='trial';}
   } else if(hasUsedFreePlaybook()){
     if(heading)heading.textContent='You have used your free playbook';
-    if(message){message.textContent='Your free trial includes one playbook. To generate more and keep building your record, continue with full access for '+getPriceYear()+'.';message.dataset.type='playbook';}
+    if(message){message.textContent='Your free trial includes one playbook. To generate more and keep building your record, continue with full access.';message.dataset.type='playbook';}
   } else {
     if(heading)heading.textContent='You have used your free entries';
-    if(message){message.textContent='Your free trial includes 25 entries. To keep logging and build a stronger case, continue with full access for '+getPriceYear()+'.';message.dataset.type='entries';}
+    if(message){message.textContent='Your free trial includes 25 entries. To keep logging and build a stronger case, continue with full access.';message.dataset.type='entries';}
   }
   goTo('screen-paywall');
 }
@@ -2155,7 +2155,7 @@ function newEntry(){
     limitNotice.style.color='var(--amber)';
     limitNotice.style.lineHeight='1.65';
     if(!l.isPaid){
-      limitNotice.innerHTML=`You have used all 25 free entries. To keep logging and build a stronger case, continue with full access for ${getPriceYear()}. <button onclick="handlePayment()" style="background:none;border:none;color:var(--acc3);font-size:13px;font-weight:600;cursor:pointer;padding:0;font-family:'Plus Jakarta Sans',sans-serif;text-decoration:underline;text-underline-offset:3px;">Get full access</button>`;
+      limitNotice.innerHTML=`You have used all 25 free entries. To keep logging and build a stronger case, continue with full access. <button onclick="handlePayment()" style="background:none;border:none;color:var(--acc3);font-size:13px;font-weight:600;cursor:pointer;padding:0;font-family:'Plus Jakarta Sans',sans-serif;text-decoration:underline;text-underline-offset:3px;">Get full access</button>`;
     } else {
       limitNotice.innerHTML=`You have used all ${PLAN.MAX_ENTRIES_YEAR} entries for this year. You can wait for your subscription to renew, or <button onclick="handlePayment()" style="background:none;border:none;color:var(--acc3);font-size:13px;font-weight:600;cursor:pointer;padding:0;font-family:'Plus Jakarta Sans',sans-serif;text-decoration:underline;text-underline-offset:3px;">renew now</button> to continue straight away.`;
     }
@@ -3528,25 +3528,25 @@ function updateAllPrices(){
   const py=getPriceYear();
   // Nav upgrade button
   const navUpgBtn=document.getElementById('nav-upgrade-btn');
-  if(navUpgBtn)navUpgBtn.textContent='Upgrade '+p;
+  if(navUpgBtn)navUpgBtn.textContent='Upgrade';
   // Paywall upgrade button
   const pwUpgBtn=document.getElementById('paywall-upgrade-btn');
   if(pwUpgBtn)pwUpgBtn.textContent='Upgrade '+p;
   // Landing page get started button
   const landBtn=document.getElementById('land-get-started-btn');
-  if(landBtn)landBtn.textContent='Get started for '+p;
+  if(landBtn)landBtn.textContent='Get started';
   // Paywall heading price
   const pwPrice=document.getElementById('paywall-price-label');
   if(pwPrice)pwPrice.textContent='What you get for '+py;
   // Paywall continue button
   const pwContinueBtn=document.getElementById('paywall-continue-btn');
-  if(pwContinueBtn)pwContinueBtn.textContent='Continue for '+py;
+  if(pwContinueBtn)pwContinueBtn.textContent='Continue — get full access';
   // Landing get started button
   const landBtn2=document.getElementById('land-get-started-btn');
-  if(landBtn2)landBtn2.textContent='Get started for '+p;
+  if(landBtn2)landBtn2.textContent='Get started';
   // Paywall price label
   const pwPriceLabel=document.getElementById('paywall-price-label');
-  if(pwPriceLabel)pwPriceLabel.textContent='What you get for '+py;
+  if(pwPriceLabel)pwPriceLabel.textContent='What you get with full access';
   // Paywall message
   const pwMsg=document.getElementById('paywall-message');
   if(pwMsg&&pwMsg.dataset.type){
