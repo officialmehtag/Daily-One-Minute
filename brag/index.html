@@ -1868,6 +1868,8 @@ function renderTrialBanner(){
     } else {
       b.style.display='none';
     }
+    // Within trial — all buttons active including download
+    setAccessButtons(false);
   }
   // Always update prices after banner renders
   if(typeof updateAllPrices==='function')updateAllPrices();
