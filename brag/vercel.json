@@ -32,6 +32,16 @@
       "config": { "maxDuration": 30 }
     },
     {
+      "src": "api/privacy.js",
+      "use": "@vercel/node",
+      "config": { "maxDuration": 10 }
+    },
+    {
+      "src": "api/terms.js",
+      "use": "@vercel/node",
+      "config": { "maxDuration": 10 }
+    },
+    {
       "src": "*.html",
       "use": "@vercel/static"
     }
@@ -43,8 +53,8 @@
     { "src": "/api/create-checkout", "dest": "/api/create-checkout.js" },
     { "src": "/api/cancel-subscription", "dest": "/api/cancel-subscription.js" },
     { "src": "/api/create-portal-session", "dest": "/api/create-portal-session.js" },
-    { "src": "/privacy.html", "dest": "/privacy.html" },
-    { "src": "/terms.html", "dest": "/terms.html" },
+    { "src": "/privacy", "dest": "/api/privacy.js" },
+    { "src": "/terms", "dest": "/api/terms.js" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
