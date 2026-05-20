@@ -167,6 +167,7 @@ ${authenticated ? `
           <th id="th-entries"><div class="th-inner" onclick="sortBy('entry_count')"><span>Entries</span><span class="th-icon" id="icon-entries">⌄</span></div></th>
           <th id="th-playbooks"><div class="th-inner" onclick="sortBy('report_count')"><span>Playbooks</span><span class="th-icon" id="icon-playbooks">⌄</span></div></th>
           <th id="th-status"><div class="th-inner" onclick="toggleDrop('status')"><span>Status</span><span class="th-icon">⌄</span></div><div class="filter-drop" id="drop-status"><div id="opts-status"></div></div></th>
+          <th id="th-lastlogin"><div class="th-inner" onclick="sortBy('last_login')"><span>Last login</span><span class="th-icon" id="icon-lastlogin">⌄</span></div></th>
           <th><div class="th-inner"><span>Action</span></div></th>
         </tr>
       </thead>
@@ -272,11 +273,11 @@ function sortBy(col) {
   if (sortCol === col) sortDir *= -1;
   else { sortCol = col; sortDir = -1; }
   // Reset all icons
-  ['signup','renewal','entries','playbooks'].forEach(k => {
+  ['signup','renewal','entries','playbooks','lastlogin'].forEach(k => {
     const el = document.getElementById('icon-' + k);
     if (el) el.textContent = '⌄';
   });
-  const iconMap = {signup_date:'signup',renewal:'renewal',entry_count:'entries',report_count:'playbooks'};
+  const iconMap = {signup_date:'signup',renewal:'renewal',entry_count:'entries',report_count:'playbooks',last_login:'lastlogin'};
   const iconEl = document.getElementById('icon-' + iconMap[col]);
   if (iconEl) iconEl.textContent = sortDir === 1 ? '↑' : '↓';
   applyAll();
@@ -300,6 +301,7 @@ function applyAll() {
   filtered.sort((a, b) => {
     let av, bv;
     if (sortCol === 'signup_date') { av = new Date(a.signup_date||0); bv = new Date(b.signup_date||0); }
+    else if (sortCol === 'last_login') { av = new Date(a.last_login||0); bv = new Date(b.last_login||0); }
     else if (sortCol === 'renewal') { av = new Date(renewalTs(a)); bv = new Date(renewalTs(b)); }
     else { av = parseInt(a[sortCol])||0; bv = parseInt(b[sortCol])||0; }
     return av < bv ? -sortDir : av > bv ? sortDir : 0;
@@ -330,7 +332,7 @@ function inferAmount(gw) {
 function renderTable(users) {
   const tbody = document.getElementById('users-table');
   if (!users.length) {
-    tbody.innerHTML = '<tr><td colspan="10" class="empty-row">No users match the current filters.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="11" class="empty-row">No users match the current filters.</td></tr>';
     return;
   }
   tbody.innerHTML = users.map(u => {
@@ -347,6 +349,7 @@ function renderTable(users) {
       <td>\${u.entry_count||0}</td>
       <td>\${u.report_count||0}</td>
       <td><span class="badge \${isPaid?'badge-paid':'badge-free'}">\${isPaid?'Paid':'Free'}</span></td>
+      <td style="color:var(--tx3);">\${u.last_login ? new Date(u.last_login).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})+' '+new Date(u.last_login).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',timeZone:'Asia/Kolkata'}) : '—'}</td>
       <td><button class="toggle-btn \${isPaid?'deact':'act'}" onclick="togglePaid('\${u.user_id}',\${!isPaid})">\${isPaid?'Deactivate':'Activate'}</button></td>
     </tr>\`;
   }).join('');
@@ -372,7 +375,7 @@ function clearAllFilters() {
 }
 
 function downloadCSV() {
-  const headers = ['Email','Country','Signed up','Renewal date','Gateway','Amount','Entries','Playbooks','Status'];
+  const headers = ['Email','Country','Signed up','Renewal date','Gateway','Amount','Entries','Playbooks','Status','Last login'];
   const rows = filtered.map(u => [
     u.email||'',
     u.country||'',
@@ -382,7 +385,8 @@ function downloadCSV() {
     u.is_paid ? inferAmount(u.payment_gateway) : '',
     u.entry_count||0,
     u.report_count||0,
-    u.is_paid?'Paid':'Free'
+    u.is_paid?'Paid':'Free',
+    u.last_login ? new Date(u.last_login).toLocaleString('en-IN',{timeZone:'Asia/Kolkata'}) : ''
   ]);
   const csv = [headers,...rows].map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\\n');
   const blob = new Blob([csv],{type:'text/csv'});
@@ -403,13 +407,17 @@ loadUsers();
 ` : `
 <div class="login-wrap">
   <div class="login-title">Admin</div>
-  <input class="input" type="password" id="pwd" placeholder="Password" onkeydown="if(event.key==='Enter')login()">
-  <button class="btn-primary" onclick="login()">Sign in</button>
+  <form id="login-form" action="" method="get" onsubmit="return login()">
+    <input type="text" name="username" value="admin" autocomplete="username" style="display:none;">
+    <input class="input" type="password" id="pwd" name="p" placeholder="Password" autocomplete="current-password">
+    <button type="submit" class="btn-primary">Sign in</button>
+  </form>
 </div>
 <script>
 function login(){
   const pwd=document.getElementById('pwd').value;
-  if(pwd) window.location.href='/admin?p='+encodeURIComponent(pwd);
+  if(pwd){ window.location.href='/admin?p='+encodeURIComponent(pwd); }
+  return false;
 }
 </script>
 `}
