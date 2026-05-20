@@ -83,7 +83,6 @@ a{color:var(--acc);}
       <li><a href="#limitation">9. Limitation of liability</a></li>
       <li><a href="#changes">10. Changes to these terms</a></li>
       <li><a href="#contact">11. Contact</a></li>
-      <li><a href="#data-protection">12. Data protection and international users</a></li>
     </ul>
   </div>
 
@@ -98,7 +97,7 @@ a{color:var(--acc);}
   <div class="section" id="account">
     <h2 class="section-title">2. Your account</h2>
     <p>You must provide a valid email address to create an account. You are responsible for keeping your account secure. Do not share your account with others.</p>
-    <p>You must be at least 18 years old to use this service.</p>
+    <p>You must be at least 18 years old to use this service. If you are under 18, you may only use the service with the involvement of a parent or legal guardian.</p>
     <p>We reserve the right to suspend or terminate accounts that violate these terms.</p>
   </div>
 
@@ -106,8 +105,8 @@ a{color:var(--acc);}
 
   <div class="section" id="trial">
     <h2 class="section-title">3. Free trial</h2>
-    <p>New users get a free trial that includes 25 entries and one playbook, or up to 14 days from the date of sign-up — whichever comes first. No card is required to start the trial.</p>
-    <p>When the trial ends, you will need a paid subscription to continue logging entries and generating playbooks. Your existing entries remain visible but further actions require a subscription.</p>
+    <p>New users may get access to a free trial before purchasing. The terms of the free trial — including the number of entries, playbooks, and duration — are determined by us and may change at any time at our sole discretion. No card is required to start a trial where one is offered.</p>
+    <p>When the trial ends, you will need a paid subscription to continue using the service. Your existing entries remain visible but further actions require a subscription.</p>
   </div>
 
   <div class="divider"></div>
@@ -115,15 +114,8 @@ a{color:var(--acc);}
   <div class="section" id="subscription">
     <h2 class="section-title">4. Subscription and payment</h2>
     <p>YourBragBook is offered on an annual subscription basis. Payment is processed by Stripe (for international users) or Razorpay (for users in India). We never store your card details.</p>
-    <p>Your subscription renews automatically each year unless cancelled before the renewal date. You will receive a reminder before renewal.</p>
-    <p>A paid subscription gives you:</p>
-    <ul>
-      <li>Up to 300 entries per year.</li>
-      <li>Up to 12 playbooks per year.</li>
-      <li>Access across all 8 career goals.</li>
-      <li>Full entry export at any time.</li>
-    </ul>
-    <p>To cancel your subscription, use the Manage plan option inside the app. Cancellation stops future renewals. You keep access until the end of your current paid period.</p>
+    <p>Your subscription renews automatically each year unless cancelled before the renewal date.</p>
+    <p>The features included in a paid subscription are as described on the service at the time of purchase and may change at our discretion. To cancel your subscription, use the Manage plan option inside the app. Cancellation stops future renewals. You keep access until the end of your current paid period.</p>
   </div>
 
   <div class="divider"></div>
@@ -157,7 +149,7 @@ a{color:var(--acc);}
       <li>Use automated tools to extract data from the service.</li>
       <li>Submit false or misleading information.</li>
     </ul>
-    <p>Violation of these rules may result in immediate account termination without refund.</p>
+    <p>Violation of these rules may result in immediate account termination without refund. In serious cases — including but not limited to reverse engineering or copying any part of the service — we reserve the right to pursue legal action.</p>
   </div>
 
   <div class="divider"></div>
@@ -189,16 +181,6 @@ a{color:var(--acc);}
   <div class="divider"></div>
 
 
-  <div class="divider"></div>
-
-  <div class="section" id="data-protection">
-    <h2 class="section-title">12. Data protection and international users</h2>
-    <p>We are committed to protecting your personal data regardless of where you are located. Our Privacy Policy explains in detail how we collect, use, and protect your data.</p>
-    <p><strong style="color:var(--tx);">EEA users (GDPR):</strong> You have rights including access, rectification, erasure, portability, and the right to lodge a complaint with your local data protection authority. We process your data on the lawful basis of contract.</p>
-    <p><strong style="color:var(--tx);">California users (CCPA):</strong> We do not sell your personal information. You have the right to know, delete, and opt out of sale of your personal data.</p>
-    <p><strong style="color:var(--tx);">Indian users (IT Act 2000):</strong> Our Grievance Officer can be reached at <a href="mailto:hello@gauravmehta.me">hello@gauravmehta.me</a>. Complaints will be resolved within 30 days.</p>
-    <p>By using the service from outside India, you consent to your data being processed in India and the United States where our infrastructure providers operate.</p>
-  </div>
   <div class="section" id="contact">
     <h2 class="section-title">11. Contact</h2>
     <p>For any questions about these terms, email us at <a href="mailto:hello@gauravmehta.me">hello@gauravmehta.me</a>. We respond within 48 hours.</p>
