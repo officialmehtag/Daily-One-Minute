@@ -803,13 +803,14 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
           <div class="plan-name" style="margin-bottom:0;">Full access</div>
         </div>
-        <div class="plan-price"><sup>$</sup>29</div>
-        <div class="plan-period">per year. Billed annually. Cancel any time.</div>
+        <div class="plan-price" id="landing-price-display"><sup id="landing-currency-symbol">$</sup><span id="landing-price-amount">29</span><span id="landing-per-year" style="font-size:14px;font-weight:400;color:var(--tx3);margin-left:6px;vertical-align:middle;">/ per year</span></div>
+        <div class="plan-period" id="landing-price-period">Billed annually. Cancel any time.</div>
+        <div style="height:16px;"></div>
         <ul class="plan-feats">
           <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>Try free - 25 entries and one playbook, or 14 days, whichever comes first. No card required.</li>
-          <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>Up to 300 entries per year. Log as many as you want each month.</li>
+          <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>Up to 300 entries per year. Log as many as you want.</li>
           <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>12 playbooks per year, one for every month.</li>
-          <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>See exactly where your evidence is strong and where the gaps are.</li>
+          <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>See where your evidence is strong and where the gaps are.</li>
           <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>Works across 8 career situations. Goal changes any time.</li>
           <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>Your entries are always exportable. One click, plain text.</li>
         </ul>
@@ -3546,6 +3547,14 @@ function updateAllPrices(){
   // Landing get started button
   const landBtn2=document.getElementById('land-get-started-btn');
   if(landBtn2)landBtn2.textContent='Get started';
+  // Landing price display
+  const currencySymbol=document.getElementById('landing-currency-symbol');
+  const priceAmount=document.getElementById('landing-price-amount');
+  const pricePeriod=document.getElementById('landing-price-period');
+  const isIndia=sessionStorage.getItem('bb_region')==='IN'||window._isIndia;
+  if(currencySymbol)currencySymbol.textContent=isIndia?'₹':'$';
+  if(priceAmount)priceAmount.textContent=isIndia?'2,999':'29';
+  if(pricePeriod)pricePeriod.textContent='Billed annually. Cancel any time.';
   // Paywall price label
   const pwPriceLabel=document.getElementById('paywall-price-label');
   if(pwPriceLabel)pwPriceLabel.textContent='What you get with full access';
