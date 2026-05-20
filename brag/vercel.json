@@ -32,15 +32,7 @@
       "config": { "maxDuration": 30 }
     },
     {
-      "src": "index.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "privacy.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "terms.html",
+      "src": "*.html",
       "use": "@vercel/static"
     }
   ],
