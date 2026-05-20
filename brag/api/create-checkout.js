@@ -68,7 +68,7 @@ export default async function handler(req, res) {
           total_count: 12,
           quantity: 1,
           customer_id: customer.id,
-          notes: { email: email }
+          notes: { email: email, product: 'brag' }
         })
       });
       const subscription = await response.json();
