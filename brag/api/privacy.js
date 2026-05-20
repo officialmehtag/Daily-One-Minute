@@ -120,10 +120,10 @@ a{color:var(--acc);}
     <h2 class="section-title">Your rights</h2>
     <p>You have the right to:</p>
     <ul>
-      <li>Access the data we hold about you.</li>
-      <li>Correct any inaccurate data.</li>
-      <li>Request deletion of your account and all associated data.</li>
-      <li>Export your entries at any time using the Download button in the app.</li>
+      <li><strong style="color:var(--tx);">Access</strong> — request a copy of the data we hold about you.</li>
+      <li><strong style="color:var(--tx);">Correct</strong> — update or correct your entries directly in the app.</li>
+      <li><strong style="color:var(--tx);">Delete</strong> — request deletion of your account and all associated data.</li>
+      <li><strong style="color:var(--tx);">Export</strong> — download your entries at any time using the Download button in the app.</li>
     </ul>
     <p>To exercise any of these rights, email us at <a href="mailto:hello@gauravmehta.me">hello@gauravmehta.me</a>. We will respond within 48 hours.</p>
   </div>
@@ -144,31 +144,7 @@ a{color:var(--acc);}
   </div>
 
 
-  <div class="divider"></div>
 
-  <div class="section">
-    <h2 class="section-title">Lawful basis for processing (GDPR)</h2>
-    <p>If you are located in the European Economic Area (EEA), we process your personal data on the following lawful bases:</p>
-    <ul>
-      <li><strong style="color:var(--tx);">Contract</strong> — processing your entries and generating your playbook is necessary to provide the service you have signed up for.</li>
-      <li><strong style="color:var(--tx);">Legitimate interests</strong> — we may process basic usage data to improve the service, where this does not override your rights.</li>
-      <li><strong style="color:var(--tx);">Legal obligation</strong> — we may process data where required by law.</li>
-    </ul>
-  </div>
-
-  <div class="divider"></div>
-
-  <div class="section">
-    <h2 class="section-title">Your rights under GDPR (EEA users)</h2>
-    <p>If you are in the European Economic Area, you have the following rights in addition to those listed above:</p>
-    <ul>
-      <li><strong style="color:var(--tx);">Right to restrict processing</strong> — you can ask us to pause processing your data in certain circumstances.</li>
-      <li><strong style="color:var(--tx);">Right to object</strong> — you can object to processing based on legitimate interests.</li>
-      <li><strong style="color:var(--tx);">Right to data portability</strong> — you can request your data in a machine-readable format. Use the Download button in the app to export your entries at any time.</li>
-      <li><strong style="color:var(--tx);">Right to lodge a complaint</strong> — you have the right to complain to your local data protection authority if you believe we have not handled your data correctly.</li>
-    </ul>
-    <p>To exercise any of these rights, email <a href="mailto:hello@gauravmehta.me">hello@gauravmehta.me</a>. We will respond within 30 days.</p>
-  </div>
 
   <div class="divider"></div>
 
