@@ -1542,6 +1542,7 @@ async function load(){
       settings.signupDate=settingsData[0].signup_date||settings.signupDate||null;
       settings.isPaid=settingsData[0].is_paid||false;
       settings.country=settingsData[0].country||null;
+      settings.lastLogin=settingsData[0].last_login||null;
     }
     userGoal=settings.goal||null;
     userResume=settings.resume_text||null;
@@ -1581,6 +1582,7 @@ async function saveSettings(){
     is_paid:settings.isPaid||false,
     entry_count:settings.entryCount||0,
     country:settings.country||null,
+    last_login:settings.lastLogin||null,
     updated_at:new Date().toISOString()
   });
 }
@@ -1968,8 +1970,10 @@ async function afterLogin(){
       const geo=await geoRes.json();
       if(geo&&geo.country_code)settings.country=geo.country_code;
     }catch(e){}
-    await saveSettings();
   }
+  // Always update last login timestamp
+  settings.lastLogin=new Date().toISOString();
+  await saveSettings();
   renderTrialBanner();
   if(!userGoal)goTo('screen-goal');
   else if(!userResume&&localStorage.getItem('bb_resume_done')!=='1')goTo('screen-resume');
