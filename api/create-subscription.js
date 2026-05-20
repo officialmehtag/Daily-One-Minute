@@ -41,7 +41,7 @@ export default async function handler(req, res) {
       total_count: 120,
       quantity: 1,
       customer_notify: 1,
-      notes: { customer_email: cleanEmail, plan_tier: plan || 'pro' }
+      notes: { customer_email: cleanEmail, plan_tier: plan || 'pro', product: 'speak' }
     };
     if (customerId) {
       subPayload.customer_id = customerId;
