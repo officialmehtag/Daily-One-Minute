@@ -20,7 +20,8 @@ export default async function handler(req, res) {
         headers: { 'Authorization': auth, 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
           email: email.toLowerCase().trim(),
-          'metadata[plan_tier]': plan || 'pro.'
+          'metadata[plan_tier]': plan || 'pro.',
+          'metadata[product]': 'speak'
         }).toString()
       });
       const createData = await createRes.json();
@@ -38,8 +39,10 @@ export default async function handler(req, res) {
         'line_items[0][quantity]': '1',
         'metadata[customer_email]': email.toLowerCase().trim(),
         'metadata[plan_tier]': plan || 'pro.',
+        'metadata[product]': 'speak',
         'subscription_data[metadata][customer_email]': email.toLowerCase().trim(),
         'subscription_data[metadata][plan_tier]': plan || 'pro.',
+        'subscription_data[metadata][product]': 'speak',
         'customer_email': email.toLowerCase().trim(),
         success_url: `${origin}/dailyoneminute?session_id={CHECKOUT_SESSION_ID}&email=${encodeURIComponent(email)}`,
         cancel_url: `${origin}/dailyoneminute`,
