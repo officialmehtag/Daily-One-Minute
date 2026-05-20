@@ -169,15 +169,8 @@ a{color:var(--acc);}
   <div class="divider"></div>
 
   <div class="section">
-    <h2 class="section-title">California users (CCPA)</h2>
-    <p>If you are a California resident, you have rights under the California Consumer Privacy Act (CCPA):</p>
-    <ul>
-      <li>The right to know what personal information we collect and how we use it.</li>
-      <li>The right to delete your personal information.</li>
-      <li>The right to opt out of the sale of your personal information.</li>
-    </ul>
-    <p><strong style="color:var(--tx);">We do not sell your personal information.</strong> We do not share your personal information with third parties for their own marketing purposes.</p>
-    <p>To exercise your CCPA rights, email <a href="mailto:hello@gauravmehta.me">hello@gauravmehta.me</a>.</p>
+    <h2 class="section-title">Data selling</h2>
+    <p>We do not sell your personal information. We do not share your personal information with third parties for their own marketing purposes.</p>
   </div>
 
   <div class="divider"></div>
