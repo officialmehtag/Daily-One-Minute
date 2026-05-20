@@ -1,7 +1,5 @@
 import crypto from 'crypto';
-
 export const config = { api: { bodyParser: false } };
-
 async function getRawBody(req) {
   return new Promise((resolve, reject) => {
     let data = '';
@@ -10,13 +8,11 @@ async function getRawBody(req) {
     req.on('error', reject);
   });
 }
-
 async function stripeGet(path) {
   const auth = 'Basic ' + Buffer.from(process.env.STRIPE_SECRET_KEY + ':').toString('base64');
   const res = await fetch(`https://api.stripe.com/v1${path}`, { headers: { 'Authorization': auth } });
   return res.json();
 }
-
 async function updatePaidUser(email, subscriptionId, status, expiresAt = null, planTier = 'pro.') {
   const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_KEY = process.env.SUPABASE_KEY;
@@ -42,7 +38,6 @@ async function updatePaidUser(email, subscriptionId, status, expiresAt = null, p
     body: JSON.stringify(payload)
   });
 }
-
 function verifyStripeSignature(payload, sig, secret) {
   const parts = sig.split(',');
   let timestamp = '';
@@ -56,22 +51,19 @@ function verifyStripeSignature(payload, sig, secret) {
   const expected = crypto.createHmac('sha256', secret).update(signedPayload).digest('hex');
   return signatures.some(sig => sig === expected);
 }
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
-
   const rawBody = await getRawBody(req);
   const sig = req.headers['stripe-signature'];
-
   if (!verifyStripeSignature(rawBody, sig, process.env.STRIPE_WEBHOOK_SECRET)) {
     return res.status(400).json({ error: 'Invalid signature' });
   }
-
   const event = JSON.parse(rawBody);
-
   try {
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object;
+      // Only process Speak (DOM.com) payments
+      if (session.metadata?.product !== 'speak') return res.status(200).json({ received: true });
       const email = session.metadata?.customer_email || session.customer_details?.email;
       const planTier = session.metadata?.plan_tier || 'pro.';
       const subscriptionId = session.subscription;
@@ -87,6 +79,8 @@ export default async function handler(req, res) {
       const subscriptionId = invoice.subscription;
       if (subscriptionId) {
         const subscription = await stripeGet(`/subscriptions/${subscriptionId}`);
+        // Only process Speak (DOM.com) payments
+        if (subscription.metadata?.product !== 'speak') return res.status(200).json({ received: true });
         const email = subscription.metadata?.customer_email;
         const planTier = subscription.metadata?.plan_tier || 'pro.';
         const expiresAt = subscription.current_period_end
@@ -96,12 +90,13 @@ export default async function handler(req, res) {
       }
     } else if (event.type === 'customer.subscription.deleted') {
       const subscription = event.data.object;
+      // Only process Speak (DOM.com) cancellations
+      if (subscription.metadata?.product !== 'speak') return res.status(200).json({ received: true });
       const email = subscription.metadata?.customer_email;
       if (email) await updatePaidUser(email, subscription.id, 'cancelled');
     }
   } catch (err) {
     return res.status(500).json({ error: 'Webhook processing error', message: err.message });
   }
-
   return res.status(200).json({ received: true });
 }
