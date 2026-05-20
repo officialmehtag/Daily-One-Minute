@@ -54,6 +54,8 @@ export default async function handler(req, res) {
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
+    // Only process YourBragBook payments
+    if (session.metadata?.product !== 'brag') return res.status(200).json({ received: true });
     const email = session.customer_details?.email || session.customer_email;
     const customerId = session.customer;
     const subscriptionId = session.subscription;
@@ -70,6 +72,8 @@ export default async function handler(req, res) {
 
   if (event.type === 'customer.subscription.deleted') {
     const subscription = event.data.object;
+    // Only process YourBragBook cancellations
+    if (subscription.metadata?.product !== 'brag') return res.status(200).json({ received: true });
     const customerId = subscription.customer;
     const customerRes = await fetch(`https://api.stripe.com/v1/customers/${customerId}`, {
       headers: { 'Authorization': `Bearer ${process.env.STRIPE_SECRET_KEY}` }
