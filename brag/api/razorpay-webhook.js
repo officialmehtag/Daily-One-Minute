@@ -49,6 +49,10 @@ export default async function handler(req, res) {
   const event = JSON.parse(rawBody);
 
   if (event.event === 'subscription.activated' || event.event === 'payment.captured') {
+    // Only process YourBragBook payments
+    const product = event.payload?.subscription?.entity?.notes?.product
+      || event.payload?.payment?.entity?.notes?.product;
+    if (product && product !== 'brag') return res.status(200).json({ received: true });
     const email = event.payload?.payment?.entity?.email
       || event.payload?.subscription?.entity?.notes?.email;
     const subscriptionId = event.payload?.subscription?.entity?.id
@@ -64,6 +68,8 @@ export default async function handler(req, res) {
   }
 
   if (event.event === 'subscription.cancelled' || event.event === 'subscription.completed') {
+    const product = event.payload?.subscription?.entity?.notes?.product;
+    if (product && product !== 'brag') return res.status(200).json({ received: true });
     const email = event.payload?.subscription?.entity?.notes?.email;
     if (email) {
       await updateSupabase(email, {
