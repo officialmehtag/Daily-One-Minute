@@ -793,7 +793,7 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;}
           <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>Works across 8 career situations. Goal changes any time.</li>
           <li><div class="plan-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#2EC97A" stroke-width="2" stroke-linecap="round"/></svg></div>Your entries are always exportable. One click, plain text.</li>
         </ul>
-        <button class="btn-primary" style="width:100%;padding:14px;font-size:15px;" onclick="handlePayment()" id="land-get-started-btn">Get started</button>
+        <button class="btn-primary" style="width:100%;padding:14px;font-size:15px;" onclick="goTo('screen-login')" id="land-get-started-btn">Free Trial</button>
       </div>
 
     </div>
@@ -3539,7 +3539,7 @@ function updateAllPrices(){
   if(pwUpgBtn)pwUpgBtn.textContent='Upgrade';
   // Landing page get started button
   const landBtn=document.getElementById('land-get-started-btn');
-  if(landBtn)landBtn.textContent='Get started';
+  if(landBtn)landBtn.textContent='Free Trial';
   // Paywall heading price
   const pwPrice=document.getElementById('paywall-price-label');
   if(pwPrice)pwPrice.textContent='What you get for '+py;
@@ -3548,7 +3548,7 @@ function updateAllPrices(){
   if(pwContinueBtn)pwContinueBtn.textContent='Continue — get full access';
   // Landing get started button
   const landBtn2=document.getElementById('land-get-started-btn');
-  if(landBtn2)landBtn2.textContent='Get started';
+  if(landBtn2)landBtn2.textContent='Free Trial';
   // Landing price display
   const currencySymbol=document.getElementById('landing-currency-symbol');
   const priceAmount=document.getElementById('landing-price-amount');
