@@ -1553,6 +1553,9 @@ async function load(){
       settings.isPaid=settingsData[0].is_paid||false;
       settings.country=settingsData[0].country||null;
       settings.lastLogin=settingsData[0].last_login||null;
+      settings.daysLimitOverride=settingsData[0].days_limit_override!==undefined&&settingsData[0].days_limit_override!==null?parseInt(settingsData[0].days_limit_override):null;
+      settings.entriesLimitOverride=settingsData[0].entries_limit_override!==undefined&&settingsData[0].entries_limit_override!==null?parseInt(settingsData[0].entries_limit_override):null;
+      settings.reportsLimitOverride=settingsData[0].reports_limit_override!==undefined&&settingsData[0].reports_limit_override!==null?parseInt(settingsData[0].reports_limit_override):null;
     }
     userGoal=settings.goal||null;
     userResume=settings.resume_text||null;
@@ -1642,13 +1645,16 @@ async function api(prompt, onChunk){
 function entriesThisYear(){const cutoff=Date.now()-(365*24*60*60*1000);return entries.filter(e=>e.id>cutoff);}
 function entriesInMonth(mk){return entries.filter(e=>e.mk===mk);}
 function canAddEntry(){
-  const limit=settings.isPaid?PLAN.MAX_ENTRIES_YEAR:25;
+  let limit=settings.isPaid?PLAN.MAX_ENTRIES_YEAR:25;
+  if(settings.entriesLimitOverride!==undefined&&settings.entriesLimitOverride!==null)limit=settings.entriesLimitOverride;
   const usedY=settings.entryCount!==undefined&&settings.entryCount!==null?settings.entryCount:entriesThisYear().length;
   return{ok:usedY<limit,usedYear:usedY,maxYear:limit,isPaid:settings.isPaid};
 }
 function canGenerateReport(){
-  const allowed=PLAN.MAX_REPORTS_YEAR+bonusReports;
-  return{ok:reportCount<allowed,used:reportCount,max:allowed,bonus:bonusReports};
+  let baseMax=settings.isPaid?PLAN.MAX_REPORTS_YEAR:1;
+  if(settings.reportsLimitOverride!==undefined&&settings.reportsLimitOverride!==null)baseMax=settings.reportsLimitOverride;
+  const allowed=baseMax+(settings.isPaid?bonusReports:0);
+  return{ok:reportCount<allowed,used:reportCount,max:allowed,bonus:settings.isPaid?bonusReports:0};
 }
 
 // ── GOAL ONBOARDING ────────────────────────────────────────────────────
@@ -1996,16 +2002,21 @@ function isTrialExpired(){
   const signup=new Date(settings.signupDate);
   const now=new Date();
   const daysDiff=Math.floor((now-signup)/(1000*60*60*24));
-  return daysDiff>=14;
+  const limit=(settings.daysLimitOverride!==undefined&&settings.daysLimitOverride!==null)?settings.daysLimitOverride:14;
+  return daysDiff>=limit;
 }
 
 function freeEntryLimitReached(){
   if(settings.isPaid)return false;
-  return(settings.entryCount!==undefined&&settings.entryCount!==null?settings.entryCount:entries.length)>=25;
+  const used=settings.entryCount!==undefined&&settings.entryCount!==null?settings.entryCount:entries.length;
+  const limit=(settings.entriesLimitOverride!==undefined&&settings.entriesLimitOverride!==null)?settings.entriesLimitOverride:25;
+  return used>=limit;
 }
 
 function hasUsedFreePlaybook(){
-  return settings.isPaid?false:(reportCount||0)>=1;
+  if(settings.isPaid)return false;
+  const limit=(settings.reportsLimitOverride!==undefined&&settings.reportsLimitOverride!==null)?settings.reportsLimitOverride:1;
+  return(reportCount||0)>=limit;
 }
 
 function isPaywalled(){
