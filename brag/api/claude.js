@@ -57,7 +57,7 @@ export default async function handler(req, res) {
   let settings;
   try {
     const settingsResp = await fetch(
-      `${SUPABASE_URL}/rest/v1/bb_user_settings?user_id=eq.${userId}&select=is_paid,signup_date,report_count,bonus_reports,entry_count`,
+      `${SUPABASE_URL}/rest/v1/bb_user_settings?user_id=eq.${userId}&select=is_paid,signup_date,report_count,bonus_reports,entry_count,days_limit_override,entries_limit_override,reports_limit_override`,
       {
         headers: {
           'apikey': SUPABASE_ANON_KEY,
@@ -77,27 +77,33 @@ export default async function handler(req, res) {
   const entryCount = parseInt(settings.entry_count) || 0;
   const signupDate = settings.signup_date ? new Date(settings.signup_date) : null;
 
+  // Per-user overrides (null = use defaults)
+  const daysOverride = (settings.days_limit_override !== undefined && settings.days_limit_override !== null) ? parseInt(settings.days_limit_override) : null;
+  const entriesOverride = (settings.entries_limit_override !== undefined && settings.entries_limit_override !== null) ? parseInt(settings.entries_limit_override) : null;
+  const reportsOverride = (settings.reports_limit_override !== undefined && settings.reports_limit_override !== null) ? parseInt(settings.reports_limit_override) : null;
+
   // ── 3. Apply the same gating rules the front end uses ───────────────
   if (!isPaid) {
     // Free / trial user
     if (!signupDate) {
       return res.status(402).json({ error: 'No signup date on record' });
     }
-    // Mirrors isTrialExpired(): daysDiff >= 14
+    const daysLimit = daysOverride !== null ? daysOverride : TRIAL_DAYS;
+    const entriesLimit = entriesOverride !== null ? entriesOverride : TRIAL_MAX_ENTRIES;
+    const reportsLimit = reportsOverride !== null ? reportsOverride : TRIAL_MAX_REPORTS;
+
     const daysSinceSignup = Math.floor((Date.now() - signupDate.getTime()) / (1000 * 60 * 60 * 24));
-    if (daysSinceSignup >= TRIAL_DAYS) {
+    if (daysSinceSignup >= daysLimit) {
       return res.status(402).json({ error: 'Trial expired' });
     }
-    // Mirrors freeEntryLimitReached(): entryCount >= 25
-    if (entryCount >= TRIAL_MAX_ENTRIES) {
+    if (entryCount >= entriesLimit) {
       return res.status(402).json({ error: 'Free entry limit reached' });
     }
-    // Mirrors hasUsedFreePlaybook(): reportCount >= 1
-    if (reportCount >= TRIAL_MAX_REPORTS) {
+    if (reportCount >= reportsLimit) {
       return res.status(402).json({ error: 'Free playbook already used' });
     }
   } else {
-    // Paid user — check 12-month subscription window + quotas
+    // Paid user — 12-month subscription window + quotas (with optional overrides)
     if (signupDate) {
       const now = new Date();
       const yearsElapsed = Math.floor((now - signupDate) / (365.25 * 24 * 60 * 60 * 1000));
@@ -107,10 +113,12 @@ export default async function handler(req, res) {
         return res.status(402).json({ error: 'Subscription expired' });
       }
     }
-    if (reportCount >= PAID_MAX_REPORTS_YEAR + bonusReports) {
+    const reportsMax = (reportsOverride !== null ? reportsOverride : PAID_MAX_REPORTS_YEAR) + bonusReports;
+    const entriesMax = entriesOverride !== null ? entriesOverride : PAID_MAX_ENTRIES_YEAR;
+    if (reportCount >= reportsMax) {
       return res.status(402).json({ error: 'Playbook quota exceeded for this year' });
     }
-    if (entryCount >= PAID_MAX_ENTRIES_YEAR) {
+    if (entryCount >= entriesMax) {
       return res.status(402).json({ error: 'Entry quota exceeded for this year' });
     }
   }
