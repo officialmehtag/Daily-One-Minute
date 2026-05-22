@@ -1886,8 +1886,10 @@ function renderTrialBanner(){
   } else if(settings.signupDate){
     const signup=new Date(settings.signupDate);
     const now=new Date();
-    const daysLeft=14-Math.floor((now-signup)/(1000*60*60*24));
-    const entriesLeft=25-entryCount;
+    const daysLimit=(settings.daysLimitOverride!==undefined&&settings.daysLimitOverride!==null)?settings.daysLimitOverride:14;
+    const entriesLimit=(settings.entriesLimitOverride!==undefined&&settings.entriesLimitOverride!==null)?settings.entriesLimitOverride:25;
+    const daysLeft=daysLimit-Math.floor((now-signup)/(1000*60*60*24));
+    const entriesLeft=Math.max(0,entriesLimit-entryCount);
     if(daysLeft<=7||entriesLeft<=5){
       b.style.display='flex';
       t.textContent=`Free trial: ${entriesLeft} ${entriesLeft===1?'entry':'entries'} and ${daysLeft} ${daysLeft===1?'day':'days'} remaining.`;
