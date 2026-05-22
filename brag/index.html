@@ -3354,7 +3354,47 @@ function toggleUse(card){
   body.style.display=open?'none':'inline';
   chevron.style.transform=open?'':'rotate(180deg)';
 }
+// Helpers: visually indicate the upgrade flow is in progress on every button that triggers it.
+// Stored original states are restored on error or when the modal is dismissed.
+const _payBtnOriginalStates=new Map();
+function _setPaymentButtonsLoading(){
+  _payBtnOriginalStates.clear();
+  const buttons=document.querySelectorAll('button[onclick*="handlePayment"]');
+  buttons.forEach((btn,i)=>{
+    const key='pb_'+i;
+    btn.dataset._payKey=key;
+    _payBtnOriginalStates.set(key,{html:btn.innerHTML,disabled:btn.disabled,opacity:btn.style.opacity,cursor:btn.style.cursor});
+    btn.disabled=true;
+    btn.style.opacity='0.7';
+    btn.style.cursor='not-allowed';
+    btn.innerHTML='<span style="display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:_pbspin 0.8s linear infinite;vertical-align:-2px;margin-right:8px;opacity:0.85;"></span>Opening secure checkout...';
+  });
+  // Inject spinner keyframes once
+  if(!document.getElementById('_pb-spin-style')){
+    const s=document.createElement('style');
+    s.id='_pb-spin-style';
+    s.textContent='@keyframes _pbspin{to{transform:rotate(360deg)}}';
+    document.head.appendChild(s);
+  }
+}
+function _restorePaymentButtons(){
+  const buttons=document.querySelectorAll('button[onclick*="handlePayment"]');
+  buttons.forEach(btn=>{
+    const key=btn.dataset._payKey;
+    if(!key)return;
+    const orig=_payBtnOriginalStates.get(key);
+    if(!orig)return;
+    btn.innerHTML=orig.html;
+    btn.disabled=orig.disabled;
+    btn.style.opacity=orig.opacity||'';
+    btn.style.cursor=orig.cursor||'';
+    delete btn.dataset._payKey;
+  });
+  _payBtnOriginalStates.clear();
+}
+
 async function handlePayment(){
+  _setPaymentButtonsLoading();
   try{
     // Detect country — use cached region first, fall back to timezone
     const cachedRegion=sessionStorage.getItem('bb_region');
@@ -3377,13 +3417,16 @@ async function handlePayment(){
 
     if(gateway==='stripe'){
       if(data.url){
+        // Leave buttons in loading state — page is navigating away
         window.location.href=data.url;
       }else{
+        _restorePaymentButtons();
         alert('Could not start payment. Please try again.');
       }
     }else{
       // Razorpay checkout
       if(!data.subscriptionId){
+        _restorePaymentButtons();
         alert('Could not start payment. Please try again.');
         return;
       }
@@ -3398,12 +3441,15 @@ async function handlePayment(){
           showToast('Payment successful. Activating your account...');
           setTimeout(()=>location.reload(),4000);
         },
-        modal:{ondismiss:function(){}}
+        modal:{ondismiss:function(){_restorePaymentButtons();}}
       };
       const rzp=new window.Razorpay(options);
       rzp.open();
+      // Modal is now overlaying the page. Button stays in loading state
+      // until the modal is dismissed (handled in modal.ondismiss above).
     }
   }catch(e){
+    _restorePaymentButtons();
     alert('Something went wrong. Please try again.');
   }
 }
