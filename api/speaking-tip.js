@@ -32,7 +32,7 @@ export default async function handler(req, res) {
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-6',
         max_tokens: maxTokens,
         system: 'You are a speaking coach. Respond ONLY with valid JSON. No markdown, no code blocks, no explanation.',
         messages: [{ role: 'user', content: prompt }]
