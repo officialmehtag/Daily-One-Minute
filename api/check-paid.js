@@ -19,11 +19,11 @@ export default async function handler(req, res) {
       return res.status(200).json({ plan: null, expires_at: null });
     }
     const { status, expires_at, plan } = data[0];
-    const isActive = status === 'active' || (
-      status === 'cancelled' &&
+    const isActive = (
+      status === 'active' || status === 'cancelled'
+    ) &&
       expires_at &&
-      new Date(expires_at) > new Date()
-    );
+      new Date(expires_at) > new Date();
     if (!isActive) return res.status(200).json({ plan: null, expires_at: null });
     return res.status(200).json({
       plan: plan || null,
