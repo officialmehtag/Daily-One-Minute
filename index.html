@@ -1325,7 +1325,7 @@ a.btn-ghost.locked{opacity:0.38;cursor:not-allowed;}
       <button class="btn-grad" id="start-timer-btn" onclick="startTimer()">Start — 60 seconds →</button>
       <div class="btn-row">
         <button class="btn-ghost" onclick="if(currentDiff === 'mytopics'){advanceMyTopicsIndex();showMyTopic();}else{getTopicAndShow();}">Different topic</button>
-        <button class="btn-ghost locked" onclick="showLockedMsg()">Change level</button>
+        <button class="btn-ghost locked" onclick="changeLevel()">Change level</button>
       </div>
     </div>
 
@@ -1395,7 +1395,7 @@ a.btn-ghost.locked{opacity:0.38;cursor:not-allowed;}
 
         </div>
         <button class="btn-grad" onclick="hideEval();if(currentDiff === 'mytopics'){advanceMyTopicsIndex();showMyTopic();}else{getTopicAndShow();}">Try another topic →</button>
-        <button class="btn-ghost locked" style="margin-top:10px;" onclick="hideEval();showLockedMsg()">Change level</button>
+        <button class="btn-ghost locked" style="margin-top:10px;" onclick="hideEval();changeLevel()">Change level</button>
       </div>
       <div class="done-right" id="done-right-eval" style="display:none;">
         <div class="eval-wrap" id="eval-desktop">
@@ -2118,6 +2118,65 @@ submitGate = async function () {
   }
   return result;
 };
+</script>
+
+<!-- ══════════════════════════════════════════════
+     SUBSCRIPTION-AWARE UPGRADE PROMPT
+     Never show pricing to someone who already pays.
+═══════════════════════════════════════════════ -->
+<script>
+function knownPaid() {
+  return window.isPaidUser === true || window.isPlatinum === true;
+}
+
+// Re-check with Supabase when local state says "not paid" but we have an email.
+// Covers the case where sbCheckPaid hasn't come back yet.
+async function verifyPaid() {
+  if (knownPaid()) return true;
+  if (!userEmail) return false;
+  try {
+    const plan = await sbCheckPaid(userEmail);
+    if (plan === 'pro' || plan === 'platinum') {
+      unlockPaidFeatures();
+      if (plan === 'platinum' && typeof unlockPlatinumFeatures === 'function') {
+        unlockPlatinumFeatures();
+      }
+      return true;
+    }
+  } catch (e) { /* network trouble - fall through to pricing */ }
+  return false;
+}
+
+// "Change level" should change the level for a subscriber, not sell to them
+function changeLevel() {
+  if (knownPaid()) { showScreen('screen-start'); return; }
+  verifyPaid().then(function (paid) {
+    if (paid) showScreen('screen-start');
+    else showLockedMsg();
+  });
+}
+
+// Last line of defence: every route to the pricing page runs through here
+const _origShowLockedMsg = showLockedMsg;
+showLockedMsg = function () {
+  if (knownPaid()) { unlockPaidFeatures(); return; }
+  if (!userEmail) { _origShowLockedMsg(); return; }
+  verifyPaid().then(function (paid) {
+    if (!paid) _origShowLockedMsg();
+  });
+};
+
+// Same guard on the speaking-tips paywall
+if (typeof showTipLocked === 'function') {
+  const _origShowTipLocked = showTipLocked;
+  showTipLocked = function () {
+    if (knownPaid()) return;
+    if (!userEmail) { _origShowTipLocked(); return; }
+    verifyPaid().then(function (paid) {
+      if (!paid) _origShowTipLocked();
+    });
+  };
+}
 </script>
 </body>
 </html>
